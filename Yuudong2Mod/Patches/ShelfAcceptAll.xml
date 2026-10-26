@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Patch>
+
+  <!-- 선반(바닐라 선반·작은 선반, 그리고 같은 선반 묶음에 속한 다른 모드 선반)이 비축 구역처럼 보관 가능한 물건을 모두 받게 한다.
+       바닐라 선반은 덩어리·식물·건물(포장된 가구)·폐기물팩·큰 시체를 막는데, 그 금지 목록만 지운다. -->
+  <Operation Class="Yuudong2Mod.PatchOperationFeature">
+    <feature>ShelfAcceptAll</feature>
+    <enabled Class="PatchOperationSequence">
+      <operations>
+        <li Class="PatchOperationConditional">
+          <xpath>/Defs/ThingDef[building/storageGroupTag="Shelf"]/building/fixedStorageSettings/filter/disallowedCategories</xpath>
+          <match Class="PatchOperationRemove">
+            <xpath>/Defs/ThingDef[building/storageGroupTag="Shelf"]/building/fixedStorageSettings/filter/disallowedCategories</xpath>
+          </match>
+        </li>
+        <li Class="PatchOperationConditional">
+          <xpath>/Defs/ThingDef[building/storageGroupTag="Shelf"]/building/fixedStorageSettings/filter/disallowedThingDefs</xpath>
+          <match Class="PatchOperationRemove">
+            <xpath>/Defs/ThingDef[building/storageGroupTag="Shelf"]/building/fixedStorageSettings/filter/disallowedThingDefs</xpath>
+          </match>
+        </li>
+        <li Class="PatchOperationConditional">
+          <xpath>/Defs/ThingDef[building/storageGroupTag="Shelf"]/building/fixedStorageSettings/filter/specialFiltersToDisallow</xpath>
+          <match Class="PatchOperationRemove">
+            <xpath>/Defs/ThingDef[building/storageGroupTag="Shelf"]/building/fixedStorageSettings/filter/specialFiltersToDisallow</xpath>
+          </match>
+        </li>
+      </operations>
+    </enabled>
+  </Operation>
+
+</Patch>

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Patch>
+
+  <!-- Roles untied to memes 포팅: 전문가 역할이 특정 밈 없이도 생긴다. -->
+  <Operation Class="Yuudong2Mod.PatchOperationFeature">
+    <feature>RolesUntiedToMemes</feature>
+    <enabled Class="PatchOperationSequence">
+      <success>Always</success>
+      <operations>
+<li Class="PatchOperationRemove">
+		<xpath>/Defs/PreceptDef[defName="IdeoRole_ShootingSpecialist"]/requiredMemes</xpath>
+	</li>
+
+	<li Class="PatchOperationRemove">
+		<xpath>/Defs/PreceptDef[defName="IdeoRole_MeleeSpecialist"]/requiredMemes</xpath>
+	</li>
+
+	<li Class="PatchOperationRemove">
+		<xpath>/Defs/PreceptDef[defName="IdeoRole_ResearchSpecialist"]/requiredMemes</xpath>
+	</li>
+
+	<li Class="PatchOperationRemove">
+		<xpath>/Defs/PreceptDef[defName="IdeoRole_PlantSpecialist"]/requiredMemes</xpath>
+	</li>
+	
+	<li Class="PatchOperationRemove">
+		<xpath>/Defs/PreceptDef[defName="IdeoRole_ProductionSpecialist"]/requiredMemes</xpath>
+	</li>
+	
+	<li Class="PatchOperationRemove">
+		<xpath>/Defs/PreceptDef[defName="IdeoRole_MiningSpecialist"]/requiredMemes</xpath>
+	</li>
+	
+	<li Class="PatchOperationRemove">
+		<xpath>/Defs/PreceptDef[defName="IdeoRole_AnimalsSpecialist"]/requiredMemes</xpath>
+	</li>
+	
+	<li Class="PatchOperationRemove">
+		<xpath>/Defs/PreceptDef[defName="IdeoRole_MedicalSpecialist"]/requiredMemes</xpath>
+	</li>
+      </operations>
+    </enabled>
+  </Operation>
+
+</Patch>

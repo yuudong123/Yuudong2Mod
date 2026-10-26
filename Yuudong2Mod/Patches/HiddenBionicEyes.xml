@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Patch>
+
+  <!-- Hidden Eyes 포팅: 바이오닉 눈과 아코텍 눈 오버레이를 얼굴에 그리지 않는다. 같은 텍스처를 쓰는 모드 눈도 함께 숨긴다. -->
+  <Operation Class="Yuudong2Mod.PatchOperationFeature">
+    <feature>HiddenBionicEyes</feature>
+    <enabled Class="PatchOperationConditional">
+      <xpath>/Defs/HediffDef/renderNodeProperties/li[texPath="Things/Pawn/Wounds/BionicEye" or texPath="Things/Pawn/Wounds/ArchotechEye"]</xpath>
+      <match Class="PatchOperationRemove">
+        <xpath>/Defs/HediffDef/renderNodeProperties/li[texPath="Things/Pawn/Wounds/BionicEye" or texPath="Things/Pawn/Wounds/ArchotechEye"]</xpath>
+      </match>
+    </enabled>
+  </Operation>
+
+</Patch>

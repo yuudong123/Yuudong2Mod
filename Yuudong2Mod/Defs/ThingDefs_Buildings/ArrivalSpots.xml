@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+
+  <ThingDef Name="Yuudong2_ArrivalSpotBase" ParentName="BuildingBase" Abstract="True">
+    <thingClass>Yuudong2Mod.UniqueSpotBuilding</thingClass>
+    <graphicData>
+      <graphicClass>Graphic_Single</graphicClass>
+      <drawSize>(1,1)</drawSize>
+    </graphicData>
+    <altitudeLayer>FloorEmplacement</altitudeLayer>
+    <statBases>
+      <WorkToBuild>0</WorkToBuild>
+    </statBases>
+    <useHitPoints>false</useHitPoints>
+    <rotatable>false</rotatable>
+    <scatterableOnMapGen>false</scatterableOnMapGen>
+    <passability>Standable</passability>
+    <building>
+      <sowTag>SupportPlantsOnly</sowTag>
+      <canPlaceOverImpassablePlant>false</canPlaceOverImpassablePlant>
+      <ai_chillDestination>false</ai_chillDestination>
+      <wakeDormantPawnsOnConstruction>false</wakeDormantPawnsOnConstruction>
+      <artificialForMeditationPurposes>false</artificialForMeditationPurposes>
+    </building>
+  </ThingDef>
+
+  <ThingDef ParentName="Yuudong2_ArrivalSpotBase">
+    <defName>Yuudong2_CaravanArrivalSpot</defName>
+    <label>caravan arrival spot</label>
+    <description>Visiting trader caravans enter from the map edge nearest this spot and wait near it to trade. Only one per map; placing a new one moves the old one.</description>
+    <graphicData>
+      <texPath>Things/Building/Misc/CaravanHitchingSpot</texPath>
+      <color>(255,200,90)</color>
+    </graphicData>
+    <designationCategory>Misc</designationCategory>
+    <uiOrder>2011</uiOrder>
+  </ThingDef>
+
+  <ThingDef ParentName="Yuudong2_ArrivalSpotBase">
+    <defName>Yuudong2_TradeShipDropSpot</defName>
+    <label>supply drop spot</label>
+    <description>Drop pods carrying goods bought from orbital traders, quest rewards, royal aid and returning colonists land near this spot. Enemy raids are not affected. Place it under open sky. Only one per map; placing a new one moves the old one.</description>
+    <graphicData>
+      <texPath>Things/Building/Misc/PartySpot</texPath>
+      <color>(110,200,255)</color>
+    </graphicData>
+    <designationCategory>Misc</designationCategory>
+    <uiOrder>2012</uiOrder>
+  </ThingDef>
+
+</Defs>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Patch>
+
+  <!-- 건축 > 구조물 메뉴에 재질 교체 버튼을 추가한다. -->
+  <Operation Class="Yuudong2Mod.PatchOperationFeature">
+    <feature>ReplaceStuff</feature>
+    <enabled Class="PatchOperationAdd">
+      <xpath>Defs/DesignationCategoryDef[defName="Structure"]/specialDesignatorClasses</xpath>
+      <value>
+        <li>Yuudong2Mod.Designator_ReplaceStuff</li>
+      </value>
+    </enabled>
+  </Operation>
+
+</Patch>

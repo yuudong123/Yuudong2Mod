@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Patch>
+
+  <!-- Roofed Scanning 포팅: 스캐너를 지붕 아래에도 지을 수 있게 한다. -->
+  <Operation Class="Yuudong2Mod.PatchOperationFeature">
+    <feature>RoofedScanning</feature>
+    <enabled Class="PatchOperationSequence">
+      <success>Always</success>
+      <operations>
+        <li Class="PatchOperationReplace">
+          <xpath>/Defs/ThingDef[defName="GroundPenetratingScanner" or defName="LongRangeMineralScanner"]/canBeUsedUnderRoof</xpath>
+          <value>
+            <canBeUsedUnderRoof>true</canBeUsedUnderRoof>
+          </value>
+        </li>
+        <li Class="PatchOperationReplace">
+          <xpath>/Defs/ThingDef[defName="GroundPenetratingScanner" or defName="LongRangeMineralScanner"]/placeWorkers</xpath>
+          <value>
+            <placeWorkers>
+              <li>PlaceWorker_PreventInteractionSpotOverlap</li>
+            </placeWorkers>
+          </value>
+        </li>
+      </operations>
+    </enabled>
+  </Operation>
+
+</Patch>

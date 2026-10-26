@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+
+  <GL_HeavyDoor.label>강화 문</GL_HeavyDoor.label>
+  <GL_HeavyDoor.description>튼튼한 글루미 문입니다. 재질과 상관없이 진공을 막고 폭발에 강합니다. 손으로 여닫아야 해서 지나갈 때 느려집니다.</GL_HeavyDoor.description>
+  <GL_HeavySterileDoor.label>강화 항균 문</GL_HeavySterileDoor.label>
+  <GL_HeavySterileDoor.description>의료 시설에 어울리는 깨끗하고 튼튼한 글루미 문입니다. 재질과 상관없이 진공을 막고 폭발에 강합니다. 손으로 여닫아야 해서 지나갈 때 느려집니다.</GL_HeavySterileDoor.description>
+  <GL_HeavyAutodoor.label>강화 자동문</GL_HeavyAutodoor.label>
+  <GL_HeavyAutodoor.description>전기로 움직이는 튼튼한 글루미 문입니다. 재질과 상관없이 진공을 막고 폭발에 강합니다. 자동으로 열려 지나갈 때 느려지지 않습니다.</GL_HeavyAutodoor.description>
+  <GL_HeavySterileAutodoor.label>강화 항균 자동문</GL_HeavySterileAutodoor.label>
+  <GL_HeavySterileAutodoor.description>의료 시설에 어울리는, 전기로 움직이는 깨끗하고 튼튼한 글루미 문입니다. 재질과 상관없이 진공을 막고 폭발에 강합니다. 자동으로 열려 지나갈 때 느려지지 않습니다.</GL_HeavySterileAutodoor.description>
+
+</LanguageData>

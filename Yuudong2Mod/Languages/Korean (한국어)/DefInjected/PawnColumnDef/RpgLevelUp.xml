@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <Yuudong2_Rpg_Level.label>레벨</Yuudong2_Rpg_Level.label>
+  <Yuudong2_Rpg_Exp.label>경험치</Yuudong2_Rpg_Exp.label>
+  <Yuudong2_Rpg_NeedExp.label>필요 경험치</Yuudong2_Rpg_NeedExp.label>
+  <Yuudong2_Rpg_Points.label>포인트</Yuudong2_Rpg_Points.label>
+  <Yuudong2_Rpg_STR.label>힘</Yuudong2_Rpg_STR.label>
+  <Yuudong2_Rpg_DEX.label>재주</Yuudong2_Rpg_DEX.label>
+  <Yuudong2_Rpg_AGL.label>민첩</Yuudong2_Rpg_AGL.label>
+  <Yuudong2_Rpg_CON.label>체력</Yuudong2_Rpg_CON.label>
+  <Yuudong2_Rpg_INT.label>지능</Yuudong2_Rpg_INT.label>
+  <Yuudong2_Rpg_CHA.label>매력</Yuudong2_Rpg_CHA.label>
+</LanguageData>

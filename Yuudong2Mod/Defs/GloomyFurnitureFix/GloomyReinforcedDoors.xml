@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+	<!-- Yuudong2Mod: Gloomy 문(옛날 문)과 같은 그래픽의 강화 문, 강화 항균 문.
+	     강화 벽처럼 재질과 상관없이 진공을 막고 폭발에 강하다. GloomyFurniture (Continued)의 문 텍스처를 쓴다. -->
+
+	<ThingDef ParentName="DoorBase" Name="GL_HeavyDoorBase" Abstract="True" MayRequire="Gloomy.Furniture.Continued,yuudong2.yuudong2mod">
+		<thingClass>Building_Door</thingClass>
+		<graphicData>
+			<texPath>Things/Building/Furniture/DoorOld_Mover</texPath>
+			<graphicClass>Graphic_Single</graphicClass>
+			<damageData>
+				<enabled>false</enabled>
+			</damageData>
+		</graphicData>
+		<uiIconPath>Things/Building/Furniture/DoorOld_MenuIcon</uiIconPath>
+		<stuffCategories Inherit="False">
+			<li>Woody</li>
+			<li>Stony</li>
+			<li>Metallic</li>
+		</stuffCategories>
+		<terrainAffordanceNeeded>Heavy</terrainAffordanceNeeded>
+		<constructionSkillPrerequisite>6</constructionSkillPrerequisite>
+		<building>
+			<blueprintGraphicData>
+				<texPath>Things/Building/Furniture/DoorOld_Blueprint_Atlas</texPath>
+			</blueprintGraphicData>
+			<paintable>true</paintable>
+			<isStuffableAirtight>true</isStuffableAirtight>
+			<!-- 중력선 선체처럼 재질과 상관없이 진공을 막는다. -->
+			<isAirtight>true</isAirtight>
+		</building>
+		<damageMultipliers Inherit="False">
+			<li>
+				<damageDef>Bomb</damageDef>
+				<multiplier>0.5</multiplier>
+			</li>
+		</damageMultipliers>
+		<designationCategory>Structure</designationCategory>
+	</ThingDef>
+
+	<ThingDef ParentName="GL_HeavyDoorBase" MayRequire="Gloomy.Furniture.Continued,yuudong2.yuudong2mod">
+		<defName>GL_HeavyDoor</defName>
+		<label>reinforced door</label>
+		<description>A strong Gloomy door. Keeps out vacuum regardless of material and resists explosions. Simple doors must be manually opened, which slows people down.</description>
+		<statBases>
+			<MaxHitPoints>480</MaxHitPoints>
+			<WorkToBuild>1130</WorkToBuild>
+			<Flammability>0</Flammability>
+		</statBases>
+		<costStuffCount>50</costStuffCount>
+		<costList>
+			<Steel>10</Steel>
+		</costList>
+		<researchPrerequisites Inherit="False">
+			<li>ResearchGLReinforcedWalls</li>
+		</researchPrerequisites>
+	</ThingDef>
+
+	<ThingDef ParentName="GL_HeavyDoorBase" MayRequire="Gloomy.Furniture.Continued,yuudong2.yuudong2mod">
+		<defName>GL_HeavySterileDoor</defName>
+		<label>reinforced sterile door</label>
+		<description>A strong, clean Gloomy door for your medical needs. Keeps out vacuum regardless of material and resists explosions. Simple doors must be manually opened, which slows people down.</description>
+		<statBases>
+			<MaxHitPoints>480</MaxHitPoints>
+			<WorkToBuild>1630</WorkToBuild>
+			<Flammability>0</Flammability>
+			<Beauty>3</Beauty>
+			<Cleanliness>0.6</Cleanliness>
+		</statBases>
+		<costStuffCount>50</costStuffCount>
+		<costList>
+			<Steel>10</Steel>
+			<Silver>15</Silver>
+		</costList>
+		<researchPrerequisites Inherit="False">
+			<li>ResearchGLReinforcedWalls</li>
+			<li>SterileMaterials</li>
+		</researchPrerequisites>
+	</ThingDef>
+
+	<!-- 자동문: 강화 문에 바닐라 자동문처럼 전력(50W)·고장을 붙인다. -->
+	<ThingDef ParentName="GL_HeavyDoorBase" Name="GL_HeavyAutodoorBase" Abstract="True" MayRequire="Gloomy.Furniture.Continued,yuudong2.yuudong2mod">
+		<comps>
+			<li Class="CompProperties_Power">
+				<compClass>CompPowerTrader</compClass>
+				<basePowerConsumption>50</basePowerConsumption>
+			</li>
+			<li Class="CompProperties_Breakdownable"/>
+		</comps>
+	</ThingDef>
+
+	<ThingDef ParentName="GL_HeavyAutodoorBase" MayRequire="Gloomy.Furniture.Continued,yuudong2.yuudong2mod">
+		<defName>GL_HeavyAutodoor</defName>
+		<label>reinforced autodoor</label>
+		<description>A strong powered Gloomy door. Keeps out vacuum regardless of material and resists explosions. Powered operation allows people to move through the door without slowing down.</description>
+		<statBases>
+			<MaxHitPoints>480</MaxHitPoints>
+			<WorkToBuild>1430</WorkToBuild>
+			<Flammability>0</Flammability>
+		</statBases>
+		<costStuffCount>50</costStuffCount>
+		<costList>
+			<Steel>50</Steel>
+			<ComponentIndustrial>2</ComponentIndustrial>
+		</costList>
+		<researchPrerequisites Inherit="False">
+			<li>ResearchGLReinforcedWalls</li>
+			<li>Autodoors</li>
+		</researchPrerequisites>
+	</ThingDef>
+
+	<ThingDef ParentName="GL_HeavyAutodoorBase" MayRequire="Gloomy.Furniture.Continued,yuudong2.yuudong2mod">
+		<defName>GL_HeavySterileAutodoor</defName>
+		<label>reinforced sterile autodoor</label>
+		<description>A strong, clean powered Gloomy door for your medical needs. Keeps out vacuum regardless of material and resists explosions. Powered operation allows people to move through the door without slowing down.</description>
+		<statBases>
+			<MaxHitPoints>480</MaxHitPoints>
+			<WorkToBuild>1930</WorkToBuild>
+			<Flammability>0</Flammability>
+			<Beauty>3</Beauty>
+			<Cleanliness>0.6</Cleanliness>
+		</statBases>
+		<costStuffCount>50</costStuffCount>
+		<costList>
+			<Steel>50</Steel>
+			<Silver>15</Silver>
+			<ComponentIndustrial>2</ComponentIndustrial>
+		</costList>
+		<researchPrerequisites Inherit="False">
+			<li>ResearchGLReinforcedWalls</li>
+			<li>SterileMaterials</li>
+			<li>Autodoors</li>
+		</researchPrerequisites>
+	</ThingDef>
+
+</Defs>

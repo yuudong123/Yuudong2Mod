@@ -1,0 +1,427 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+
+  <Yuudong2.Settings.RestartNote>기능을 켜고 끈 결과는 게임을 다시 시작해야 적용됩니다.</Yuudong2.Settings.RestartNote>
+  <Yuudong2.Settings.RestartPending>바뀐 설정이 있습니다. 게임을 다시 시작하세요.</Yuudong2.Settings.RestartPending>
+  <Yuudong2.Group.Romance>연애</Yuudong2.Group.Romance>
+  <Yuudong2.Group.Colony>정착지</Yuudong2.Group.Colony>
+  <Yuudong2.Group.Pawn>폰</Yuudong2.Group.Pawn>
+  <Yuudong2.Group.Trade>거래와 세력</Yuudong2.Group.Trade>
+  <Yuudong2.Group.Compatibility>모드 호환</Yuudong2.Group.Compatibility>
+  <Yuudong2.Feature.AlwaysAcceptProposal>청혼 항상 수락</Yuudong2.Feature.AlwaysAcceptProposal>
+  <Yuudong2.Feature.AlwaysAcceptProposal.Desc>청혼이 거절되지 않습니다.</Yuudong2.Feature.AlwaysAcceptProposal.Desc>
+  <Yuudong2.Feature.NoBreakup>이별 방지</Yuudong2.Feature.NoBreakup>
+  <Yuudong2.Feature.NoBreakup.Desc>기본 이별, 파혼, 이혼 경로를 막습니다.</Yuudong2.Feature.NoBreakup.Desc>
+  <Yuudong2.Feature.SameBedLovin>같은 침대 사랑나누기</Yuudong2.Feature.SameBedLovin>
+  <Yuudong2.Feature.SameBedLovin.Desc>연인 관계가 없어도 같은 다인용 침대에 누워 있으면 사랑나누기를 할 수 있습니다.</Yuudong2.Feature.SameBedLovin.Desc>
+  <Yuudong2.Feature.ShelfNoSlowdown>선반 이동 감속 제거</Yuudong2.Feature.ShelfNoSlowdown>
+  <Yuudong2.Feature.ShelfNoSlowdown.Desc>선반과 작은 선반 위를 지날 때 느려지지 않고, 소집한 폰이 선반 위에 설 수 있습니다.</Yuudong2.Feature.ShelfNoSlowdown.Desc>
+  <Yuudong2.Feature.ShelfAcceptAll>선반 보관 제한 제거</Yuudong2.Feature.ShelfAcceptAll>
+  <Yuudong2.Feature.ShelfAcceptAll.Desc>선반과 작은 선반이 비축 구역처럼 보관할 수 있는 물건을 모두 받습니다 (덩어리, 식물, 포장된 가구, 폐기물팩, 큰 시체 포함). 받을 물건은 선반의 보관 설정에서 고릅니다.</Yuudong2.Feature.ShelfAcceptAll.Desc>
+  <Yuudong2.Feature.HealthCardSorting>건강 탭 정렬</Yuudong2.Feature.HealthCardSorting>
+  <Yuudong2.Feature.HealthCardSorting.Desc>같은 부위 안에서 상처가 아닌 항목을 먼저, 상처를 뒤에 이름순으로 정렬합니다.</Yuudong2.Feature.HealthCardSorting.Desc>
+  <Yuudong2.Feature.MessagePlacement>메시지 위치 조정</Yuudong2.Feature.MessagePlacement>
+  <Yuudong2.Feature.MessagePlacement.Desc>화면 메시지를 정착민 바 아래로 내립니다. (Better Message Placement)</Yuudong2.Feature.MessagePlacement.Desc>
+  <Yuudong2.Feature.NoMapEdgeLimit>맵 가장자리 제한 제거</Yuudong2.Feature.NoMapEdgeLimit>
+  <Yuudong2.Feature.NoMapEdgeLimit.Desc>맵 가장자리에도 건설하고 구역을 만들 수 있습니다. (Change map edge limit)</Yuudong2.Feature.NoMapEdgeLimit.Desc>
+  <Yuudong2.Feature.PowerOnDemand>사용할 때만 전력 소모</Yuudong2.Feature.PowerOnDemand>
+  <Yuudong2.Feature.PowerOnDemand.Desc>작업대, TV, 연구대 같은 건물이 쓰는 동안만 정격 전력을 쓰고 쉬는 동안에는 1W만 씁니다. (Turn It On and Off)</Yuudong2.Feature.PowerOnDemand.Desc>
+  <Yuudong2.Feature.DurableClothes>옷 마모 감소</Yuudong2.Feature.DurableClothes>
+  <Yuudong2.Feature.DurableClothes.Desc>입은 옷의 하루 마모량이 바닐라의 5%로 줄어듭니다. (Durable Clothes)</Yuudong2.Feature.DurableClothes.Desc>
+  <Yuudong2.Feature.InfiniteApparelDurability>옷 내구도 유지</Yuudong2.Feature.InfiniteApparelDurability>
+  <Yuudong2.Feature.InfiniteApparelDurability.Desc>플레이어 쪽 폰이 입은 옷의 내구도를 계속 최대로 유지합니다. (Infinite apparel durability)</Yuudong2.Feature.InfiniteApparelDurability.Desc>
+  <Yuudong2.Feature.AllSpecialistsCanWork>역할 작업 제한 제거</Yuudong2.Feature.AllSpecialistsCanWork>
+  <Yuudong2.Feature.AllSpecialistsCanWork.Desc>이데올로기 역할을 맡아도 작업 제한과 무기 제한이 생기지 않습니다. (All Specialists Can Work)</Yuudong2.Feature.AllSpecialistsCanWork.Desc>
+  <Yuudong2.Feature.FasterBiosculpter>빠른 바이오스컬프터</Yuudong2.Feature.FasterBiosculpter>
+  <Yuudong2.Feature.FasterBiosculpter.Desc>바이오스컬프터 포드의 모든 주기가 1일로 줄고 생체조율 유지 기간이 없어집니다. (Faster Biosculpter Pod)</Yuudong2.Feature.FasterBiosculpter.Desc>
+  <Yuudong2.Feature.CaravanArrivalSpot>상단 도착 지점</Yuudong2.Feature.CaravanArrivalSpot>
+  <Yuudong2.Feature.CaravanArrivalSpot.Desc>건축 &gt; 기타의 상단 도착 지점을 쓸 수 있습니다. 상단이 가장 가까운 가장자리로 들어와 그 지점에 머뭅니다.</Yuudong2.Feature.CaravanArrivalSpot.Desc>
+  <Yuudong2.Feature.TradeShipDropSpot>물자 낙하 지점</Yuudong2.Feature.TradeShipDropSpot>
+  <Yuudong2.Feature.TradeShipDropSpot.Desc>건축 &gt; 기타의 물자 낙하 지점을 쓸 수 있습니다. 궤도 상선 구매품, 퀘스트 보상, 왕족 지원 물자, 돌아오는 정착민의 수송 포드가 그 근처에 떨어집니다. 적 공습은 영향을 받지 않습니다. (예전 이름: 궤도 상선 낙하 지점)</Yuudong2.Feature.TradeShipDropSpot.Desc>
+  <Yuudong2.Feature.TradeStockBoost>상인 재고 8배</Yuudong2.Feature.TradeStockBoost>
+  <Yuudong2.Feature.TradeStockBoost.Desc>궤도 상선, 정착지, 상단의 재고와 은이 8배가 됩니다. 방문객 상인은 그대로입니다. (Trading Options)</Yuudong2.Feature.TradeStockBoost.Desc>
+  <Yuudong2.Feature.OrbitalTraderFrequency>궤도 상선 빈도 4배</Yuudong2.Feature.OrbitalTraderFrequency>
+  <Yuudong2.Feature.OrbitalTraderFrequency.Desc>랜디처럼 무작위 사건을 쓰는 스토리텔러에서 궤도 상선이 4배 자주 옵니다. (Trading Options)</Yuudong2.Feature.OrbitalTraderFrequency.Desc>
+  <Yuudong2.Feature.InsultFaction>세력 모욕하기</Yuudong2.Feature.InsultFaction>
+  <Yuudong2.Feature.InsultFaction.Desc>통신기 세력 대화에 모욕하기를 추가합니다. 적대 세력을 모욕하면 1~7시간 뒤 습격이 옵니다. (Raids For Me)</Yuudong2.Feature.InsultFaction.Desc>
+  <Yuudong2.Feature.EpoeAiCore>EPOE 인공자아 핵</Yuudong2.Feature.EpoeAiCore>
+  <Yuudong2.Feature.EpoeAiCore.Desc>EPOE-Forked가 있으면 인공자아 핵의 주기 치료와 AI 결함을 없애고 최고 상태 보너스만 남깁니다.</Yuudong2.Feature.EpoeAiCore.Desc>
+  <Yuudong2.Feature.DragonianGenes>드래고니안 유전자 제한 제거</Yuudong2.Feature.DragonianGenes>
+  <Yuudong2.Feature.DragonianGenes.Desc>드래고니안 모드가 있으면 드래곤본 유전자의 동시 발현 불가 제한을 없앱니다.</Yuudong2.Feature.DragonianGenes.Desc>
+  <Yuudong2.Feature.DragonianHealing>드래곤본 회복 유전자 수정</Yuudong2.Feature.DragonianHealing>
+  <Yuudong2.Feature.DragonianHealing.Desc>드래곤본 유전자가 상처 회복 유전자에 덮여 꺼지는 문제를 불러오기 때 바로잡습니다. (Dragonian to Super Fast Healing Patch)</Yuudong2.Feature.DragonianHealing.Desc>
+  <Yuudong2.Settings.Details>세부 설정</Yuudong2.Settings.Details>
+  <Yuudong2.Group.Ideology>이데올로기</Yuudong2.Group.Ideology>
+  <Yuudong2.Feature.HairUnderHats>모자 아래 머리카락 표시</Yuudong2.Feature.HairUnderHats>
+  <Yuudong2.Feature.HairUnderHats.Desc>모자를 써도 머리카락을 숨기지 않고 모자를 머리카락 위에 그립니다. 모드 종족과 모드 모자에도 적용됩니다. 세부 설정은 바로 적용됩니다. (Show Hair With Hats, Dubs Apparel Tweaks 대체)</Yuudong2.Feature.HairUnderHats.Desc>
+  <Yuudong2.Feature.CustomMapSize>맵 크기 직접 지정</Yuudong2.Feature.CustomMapSize>
+  <Yuudong2.Feature.CustomMapSize.Desc>새 게임의 고급 설정에서 시작 맵 크기를 가로·세로로 직접 정할 수 있고, 기본 맵 크기를 세부 설정에서 고릅니다. (Better Map Sizes)</Yuudong2.Feature.CustomMapSize.Desc>
+  <Yuudong2.Feature.NoIdeologyLimits>이데올로기 제한 해제</Yuudong2.Feature.NoIdeologyLimits>
+  <Yuudong2.Feature.NoIdeologyLimits.Desc>밈, 교리, 의식 개수 제한을 풀고 모든 교리를 편집 화면에서 지울 수 있게 합니다. (Ducks' No Limits - Ideology)</Yuudong2.Feature.NoIdeologyLimits.Desc>
+  <Yuudong2.Hair.UnderUpper>모자 아래 머리카락 표시</Yuudong2.Hair.UnderUpper>
+  <Yuudong2.Hair.UnderUpper.Desc>윗머리만 덮는 모자를 써도 머리카락을 그립니다.</Yuudong2.Hair.UnderUpper.Desc>
+  <Yuudong2.Hair.UnderFull>헬멧 아래 머리카락 표시</Yuudong2.Hair.UnderFull>
+  <Yuudong2.Hair.UnderFull.Desc>머리 전체를 덮는 헬멧을 써도 머리카락을 그립니다.</Yuudong2.Hair.UnderFull.Desc>
+  <Yuudong2.Hair.BeardUnderFull>헬멧 아래 수염 표시</Yuudong2.Hair.BeardUnderFull>
+  <Yuudong2.Hair.BeardUnderFull.Desc>머리 전체를 덮는 헬멧을 써도 수염을 그립니다.</Yuudong2.Hair.BeardUnderFull.Desc>
+  <Yuudong2.Hair.AboveHair>모자를 항상 머리카락 위에 그리기</Yuudong2.Hair.AboveHair>
+  <Yuudong2.Hair.AboveHair.Desc>모자의 그리기 순서가 머리카락보다 아래로 잡혀 있으면 머리카락 바로 위로 올립니다.</Yuudong2.Hair.AboveHair.Desc>
+  <Yuudong2.Hair.OnlyPlayer>플레이어 폰에만 적용</Yuudong2.Hair.OnlyPlayer>
+  <Yuudong2.Hair.OnlyPlayer.Desc>플레이어 세력 폰에만 적용하고, 다른 폰은 바닐라대로 머리카락을 숨깁니다.</Yuudong2.Hair.OnlyPlayer.Desc>
+  <Yuudong2.Hair.Scale>모자 크기: {0}</Yuudong2.Hair.Scale>
+  <Yuudong2.Hair.Scale.Desc>머리카락이 모자 밖으로 삐져나오면 모자를 조금 키웁니다.</Yuudong2.Hair.Scale.Desc>
+  <Yuudong2.Hair.HeadgearList>체크한 모자는 머리카락을 숨깁니다</Yuudong2.Hair.HeadgearList>
+  <Yuudong2.Hair.HairList>체크한 머리 모양은 모자 아래에서 숨깁니다</Yuudong2.Hair.HairList>
+  <Yuudong2.Hair.ClearAll>모두 해제</Yuudong2.Hair.ClearAll>
+  <Yuudong2.MapSize.Custom>직접 지정</Yuudong2.MapSize.Custom>
+  <Yuudong2.MapSize.CustomLabel>{0}x{1} ({2}칸)</Yuudong2.MapSize.CustomLabel>
+  <Yuudong2.MapSize.Width>가로:</Yuudong2.MapSize.Width>
+  <Yuudong2.MapSize.Height>세로:</Yuudong2.MapSize.Height>
+  <Yuudong2.MapSize.SettingsDesc>새 게임을 만들 때 미리 고를 기본 맵 크기입니다. 이미 있는 저장 파일에는 영향이 없습니다.</Yuudong2.MapSize.SettingsDesc>
+  <Yuudong2.Ideology.OnlyPlayer>플레이어에게만 적용</Yuudong2.Ideology.OnlyPlayer>
+  <Yuudong2.Ideology.OnlyPlayer.Desc>AI 세력의 이데올로기에는 제한 해제를 적용하지 않습니다.</Yuudong2.Ideology.OnlyPlayer.Desc>
+  <Yuudong2.Feature.ReplaceStuff>재질 교체</Yuudong2.Feature.ReplaceStuff>
+  <Yuudong2.Feature.ReplaceStuff.Desc>건축 &gt; 구조물에 재질 교체 버튼을 추가하고, 같은 건물을 다른 재질로 지으면 해체 없이 그 자리에서 재질만 바꿉니다. 방이 깨지지 않고 작업대 작업 목록도 유지됩니다. (Replace Stuff의 재질 교체 기능만 포팅)</Yuudong2.Feature.ReplaceStuff.Desc>
+  <Yuudong2.Replace.Label>재질 교체</Yuudong2.Replace.Label>
+  <Yuudong2.Replace.Desc>건물을 해체하지 않고 재질만 바꿉니다. 예: 나무 벽을 화강암 벽으로.\n\n클릭해서 바꿀 재질을 고른 뒤, 바꿀 건물을 끌어서 지정하세요.</Yuudong2.Replace.Desc>
+  <Yuudong2.Replace.Tag> (재질 교체 중)</Yuudong2.Replace.Tag>
+  <Yuudong2.Replace.BeingReplaced>재질 교체 중</Yuudong2.Replace.BeingReplaced>
+  <Yuudong2.SpotMoved>{0} 위치를 옮겼습니다.</Yuudong2.SpotMoved>
+  <Yuudong2.Insult.Option>{0}({1}) 모욕하기</Yuudong2.Insult.Option>
+  <Yuudong2.Insult.Ally>{0}({1})이(가) 크게 실망해 관계가 나빠졌습니다.</Yuudong2.Insult.Ally>
+  <Yuudong2.Insult.RaidDropPod>{0}({1})이(가) 드롭 포드로 습격을 시작했습니다!</Yuudong2.Insult.RaidDropPod>
+  <Yuudong2.Insult.RaidDelayed>{0}({1})이(가) 단단히 화났습니다! {2} 뒤에 습격합니다!</Yuudong2.Insult.RaidDelayed>
+  <Yuudong2.Group.Interface>화면과 조작</Yuudong2.Group.Interface>
+  <Yuudong2.Feature.NoRandomRelations>무작위 관계 생성 안 함</Yuudong2.Feature.NoRandomRelations>
+  <Yuudong2.Feature.NoRandomRelations.Desc>새로 생성되는 폰에 무작위 가족·연인 관계를 만들지 않습니다. (No Random Relations)</Yuudong2.Feature.NoRandomRelations.Desc>
+  <Yuudong2.Feature.RoomFood>식탁 있는 방의 음식 먼저 먹기</Yuudong2.Feature.RoomFood>
+  <Yuudong2.Feature.RoomFood.Desc>정착민이 밥을 먹을 때 근처 식탁이 있는 방 안의 음식을 먼저 고릅니다. (Room Food)</Yuudong2.Feature.RoomFood.Desc>
+  <Yuudong2.Feature.MeatOptimization>고기 통합</Yuudong2.Feature.MeatOptimization>
+  <Yuudong2.Feature.MeatOptimization.Desc>동물마다 따로 생기는 고기를 날고기·인육·곤충 고기로 합칩니다. 종족별 정책은 세부 설정에서 고르며, 바꾸면 재시작해야 합니다. (Optimization: Meats)</Yuudong2.Feature.MeatOptimization.Desc>
+  <Yuudong2.Feature.SinglePlantTexture>작물 한 포기씩 그리기</Yuudong2.Feature.SinglePlantTexture>
+  <Yuudong2.Feature.SinglePlantTexture.Desc>쌀과 건초처럼 한 칸에 여러 포기가 그려지는 작물을 한 포기만 그립니다. (Single Plant Texture Patch)</Yuudong2.Feature.SinglePlantTexture.Desc>
+  <Yuudong2.Feature.DamageIndicators>피해 수치 표시</Yuudong2.Feature.DamageIndicators>
+  <Yuudong2.Feature.DamageIndicators.Desc>피해량, 보호막 흡수량, 근접 공격 빗나감을 화면에 숫자로 띄웁니다. (Damage Indicators)</Yuudong2.Feature.DamageIndicators.Desc>
+  <Yuudong2.Feature.LetterStackCleaner>편지 한꺼번에 지우기</Yuudong2.Feature.LetterStackCleaner>
+  <Yuudong2.Feature.LetterStackCleaner.Desc>지정한 키로 화면 오른쪽의 편지를 지웁니다. 기본 키는 Delete입니다. (Letter stack cleaner)</Yuudong2.Feature.LetterStackCleaner.Desc>
+  <Yuudong2.Feature.SmartSpeed>게임 속도 조절</Yuudong2.Feature.SmartSpeed>
+  <Yuudong2.Feature.SmartSpeed.Desc>속도별 배율을 바꾸고, 초고속 버튼을 항상 보여주며, 시간 버튼을 오른쪽 클릭해 이벤트 중 감속 방식을 고릅니다. (Smart Speed)</Yuudong2.Feature.SmartSpeed.Desc>
+  <Yuudong2.Feature.DragSelect>끌어서 여러 개 누르기</Yuudong2.Feature.DragSelect>
+  <Yuudong2.Feature.DragSelect.Desc>작업 탭 우선순위, 복사·붙여넣기 버튼, 거래 수량 버튼을 끌어서 한 번에 누릅니다. (DragSelect)</Yuudong2.Feature.DragSelect.Desc>
+  <Yuudong2.Feature.HiddenBionicEyes>바이오닉 눈 숨기기</Yuudong2.Feature.HiddenBionicEyes>
+  <Yuudong2.Feature.HiddenBionicEyes.Desc>바이오닉 눈과 아코텍 눈 그림을 얼굴에 그리지 않습니다. (Hidden Eyes)</Yuudong2.Feature.HiddenBionicEyes.Desc>
+  <Yuudong2.Feature.EndlessGrowth>기술 레벨 제한 해제</Yuudong2.Feature.EndlessGrowth>
+  <Yuudong2.Feature.EndlessGrowth.Desc>기술 레벨 20 제한을 없애고 경험치, 제작 품질, 작업 지시 범위를 그에 맞춥니다. 세부 설정을 바꾸면 재시작해야 합니다. (EndlessGrowth)</Yuudong2.Feature.EndlessGrowth.Desc>
+  <Yuudong2.Feature.RolesUntiedToMemes>전문가 역할 밈 조건 제거</Yuudong2.Feature.RolesUntiedToMemes>
+  <Yuudong2.Feature.RolesUntiedToMemes.Desc>사격·근접·연구 같은 전문가 역할을 특정 밈 없이도 만들 수 있습니다. (Roles untied to memes)</Yuudong2.Feature.RolesUntiedToMemes.Desc>
+  <Yuudong2.Feature.AutoCastSpecialistCommands>전문가 명령 자동 사용</Yuudong2.Feature.AutoCastSpecialistCommands>
+  <Yuudong2.Feature.AutoCastSpecialistCommands.Desc>농사·채굴·생산·연구 같은 전문가 명령을 해당 작업을 시작할 때 자동으로 씁니다. 명령 버튼을 오른쪽 클릭해 켜고 끕니다. (Auto-Cast Specialist Commands)</Yuudong2.Feature.AutoCastSpecialistCommands.Desc>
+  <Yuudong2.Feature.EmpireGoodwillFix>시나리오 제국 호감도 수정</Yuudong2.Feature.EmpireGoodwillFix>
+  <Yuudong2.Feature.EmpireGoodwillFix.Desc>일부 시나리오에서 제국 호감도가 -100으로 시작하는 문제를 막습니다. (Empire -100 goodwill in scenarios Fix)</Yuudong2.Feature.EmpireGoodwillFix.Desc>
+  <Yuudong2.Feature.GloomyFurnitureFix>Gloomy 가구·벽 추가</Yuudong2.Feature.GloomyFurnitureFix>
+  <Yuudong2.Feature.GloomyFurnitureFix.Desc>GloomyFurniture (Continued)가 있을 때 벽난로, 조명, 가구 등 추가 가구와 수정 패치를 넣고, 벽걸이 가구 칸에 청사진을 놓을 수 있게 합니다. 항균 벽·강화 벽·총안 강화 벽은 본편 없이도 추가됩니다. 재시작해야 적용됩니다. (Gloomy Furniture Fix, MoreGloomyWalls)</Yuudong2.Feature.GloomyFurnitureFix.Desc>
+  <Yuudong2.RoomFood.Distance>식탁을 찾는 거리: {0}</Yuudong2.RoomFood.Distance>
+  <Yuudong2.RoomFood.Distance.Desc>이 거리 안에 음식이 있는 방의 식탁이 있으면 그 방의 음식을 먼저 고릅니다.</Yuudong2.RoomFood.Distance.Desc>
+  <Yuudong2.Damage.Neutral>중립 세력에도 표시</Yuudong2.Damage.Neutral>
+  <Yuudong2.Damage.Neutral.Desc>끄면 공격자나 대상이 세력이 없을 때 표시하지 않습니다.</Yuudong2.Damage.Neutral.Desc>
+  <Yuudong2.Damage.PawnsOnly>폰이 받은 피해만 표시</Yuudong2.Damage.PawnsOnly>
+  <Yuudong2.Damage.PawnsOnly.Desc>대상이 폰이 아니면 표시하지 않습니다.</Yuudong2.Damage.PawnsOnly.Desc>
+  <Yuudong2.Damage.PawnInstigatorOnly>폰이 입힌 피해만 표시</Yuudong2.Damage.PawnInstigatorOnly>
+  <Yuudong2.Damage.PawnInstigatorOnly.Desc>자연 노화나 불처럼 폰이 아닌 원인의 피해는 표시하지 않습니다.</Yuudong2.Damage.PawnInstigatorOnly.Desc>
+  <Yuudong2.Damage.ShieldBroken>파괴됨</Yuudong2.Damage.ShieldBroken>
+  <Yuudong2.Damage.Miss>빗나감</Yuudong2.Damage.Miss>
+  <Yuudong2.AutoCast.Tip>게임 안에서 명령 버튼을 오른쪽 클릭해도 자동 사용을 켜고 끌 수 있습니다.</Yuudong2.AutoCast.Tip>
+  <Yuudong2.AutoCast.Farming>농사 명령 자동 사용 (씨앗 심기·수확할 때)</Yuudong2.AutoCast.Farming>
+  <Yuudong2.AutoCast.Mining>채굴 명령 자동 사용</Yuudong2.AutoCast.Mining>
+  <Yuudong2.AutoCast.Production>생산 명령 자동 사용 (제작 작업 시작할 때)</Yuudong2.AutoCast.Production>
+  <Yuudong2.AutoCast.Research>연구 명령 자동 사용</Yuudong2.AutoCast.Research>
+  <Yuudong2.AutoCast.Cooking>연회 준비 자동 사용 (요리·도축할 때)</Yuudong2.AutoCast.Cooking>
+  <Yuudong2.AutoCast.Void>공허 암시 자동 사용 (포획한 존재를 연구할 때)</Yuudong2.AutoCast.Void>
+  <Yuudong2.AutoCast.Majordomo>집사의 작업 명령 자동 사용</Yuudong2.AutoCast.Majordomo>
+  <Yuudong2.Meat.Note>고기 통합 정책은 기본값(자동)으로 두는 것을 권장합니다. 바꾸면 게임을 다시 시작해야 적용됩니다.</Yuudong2.Meat.Note>
+  <Yuudong2.Meat.Debug>디버그 로그 출력</Yuudong2.Meat.Debug>
+  <Yuudong2.Meat.Search>검색:</Yuudong2.Meat.Search>
+  <Yuudong2.Meat.Reset>정책 초기화</Yuudong2.Meat.Reset>
+  <Yuudong2.Meat.Automatic>자동</Yuudong2.Meat.Automatic>
+  <Yuudong2.Meat.Vanilla>바닐라</Yuudong2.Meat.Vanilla>
+  <Yuudong2.Meat.ToCow>날고기로</Yuudong2.Meat.ToCow>
+  <Yuudong2.Meat.ToHuman>인육으로</Yuudong2.Meat.ToHuman>
+  <Yuudong2.Meat.ToInsect>곤충 고기로</Yuudong2.Meat.ToInsect>
+  <Yuudong2.Meat.UseMeatFrom>다른 종족의 고기를 씀: {0}</Yuudong2.Meat.UseMeatFrom>
+  <Yuudong2.Meat.SpecificMeat>고기가 따로 지정됨: {0}</Yuudong2.Meat.SpecificMeat>
+  <Yuudong2.Meat.Special>기준 고기라서 바꿀 수 없음</Yuudong2.Meat.Special>
+  <Yuudong2.Meat.WhiteListRace>제외 목록(종족)에 있어 통합하지 않음</Yuudong2.Meat.WhiteListRace>
+  <Yuudong2.Meat.WhiteListMeat>제외 목록(고기)에 있어 통합하지 않음</Yuudong2.Meat.WhiteListMeat>
+  <Yuudong2.Meat.RawMeat>날고기</Yuudong2.Meat.RawMeat>
+  <Yuudong2.Meat.ExistingSaveWarning>고기 통합을 처음 켠 상태로 기존 저장 파일을 불러오면 오류가 날 수 있습니다.</Yuudong2.Meat.ExistingSaveWarning>
+  <Yuudong2.Letter.Key>편지를 지울 키:</Yuudong2.Letter.Key>
+  <Yuudong2.Letter.OneAtATime>한 번에 하나씩만 지우기</Yuudong2.Letter.OneAtATime>
+  <Yuudong2.Letter.OldestFirst>오래된 편지부터 지우기</Yuudong2.Letter.OldestFirst>
+  <Yuudong2.Letter.Delete>Delete 키</Yuudong2.Letter.Delete>
+  <Yuudong2.Letter.Mouse4>마우스 버튼 4</Yuudong2.Letter.Mouse4>
+  <Yuudong2.Letter.Mouse5>마우스 버튼 5</Yuudong2.Letter.Mouse5>
+  <Yuudong2.Letter.Mouse6>마우스 버튼 6</Yuudong2.Letter.Mouse6>
+  <Yuudong2.Letter.Mouse7>마우스 버튼 7</Yuudong2.Letter.Mouse7>
+  <Yuudong2.Speed.Note>시간 조절 버튼을 오른쪽 클릭하면 이벤트 중 감속 방식을 고를 수 있습니다.</Yuudong2.Speed.Note>
+  <Yuudong2.Speed.Reset>초기화</Yuudong2.Speed.Reset>
+  <Yuudong2.Speed.Normal>보통 속도(1단)</Yuudong2.Speed.Normal>
+  <Yuudong2.Speed.Normal.Desc>기본 1, 초당 60틱입니다.</Yuudong2.Speed.Normal.Desc>
+  <Yuudong2.Speed.Fast>빠른 속도(2단)</Yuudong2.Speed.Fast>
+  <Yuudong2.Speed.Fast.Desc>기본 3, 초당 180틱입니다.</Yuudong2.Speed.Fast.Desc>
+  <Yuudong2.Speed.Superfast>매우 빠른 속도(3단)</Yuudong2.Speed.Superfast>
+  <Yuudong2.Speed.Superfast.Desc>기본 6, 초당 360틱입니다.</Yuudong2.Speed.Superfast.Desc>
+  <Yuudong2.Speed.Ultrafast>초고속(4단)</Yuudong2.Speed.Ultrafast>
+  <Yuudong2.Speed.Ultrafast.Desc>기본 15, 초당 900틱입니다. 컴퓨터가 감당할 수 있는 만큼만 빨라집니다.</Yuudong2.Speed.Ultrafast.Desc>
+  <Yuudong2.Speed.EventSpeed>이벤트 중 속도</Yuudong2.Speed.EventSpeed>
+  <Yuudong2.Speed.Event.Slow>느리게 (보통 속도의 절반)</Yuudong2.Speed.Event.Slow>
+  <Yuudong2.Speed.Event.Normal>보통</Yuudong2.Speed.Event.Normal>
+  <Yuudong2.Speed.Event.Fast>빠르게 (보통 속도의 두 배)</Yuudong2.Speed.Event.Fast>
+  <Yuudong2.Speed.Event.Half>현재 속도의 절반</Yuudong2.Speed.Event.Half>
+  <Yuudong2.Speed.Event.Ignore>감속 안 함</Yuudong2.Speed.Event.Ignore>
+  <Yuudong2.Endless.Restart>이 설정은 게임을 다시 시작해야 적용됩니다.</Yuudong2.Endless.Restart>
+  <Yuudong2.Endless.MaxLevel>최대 레벨 (-1은 무제한):</Yuudong2.Endless.MaxLevel>
+  <Yuudong2.Endless.UnlimitedPrice>판매가가 구매가보다 높아질 수 있게 허용</Yuudong2.Endless.UnlimitedPrice>
+  <Yuudong2.Endless.BillGap>작업 지시의 기술 범위 최대치를 가장 높은 정착민 레벨보다 얼마나 크게 둘지 (기존 작업 지시는 다시 맞춰야 할 수 있음)</Yuudong2.Endless.BillGap>
+  <Yuudong2.Endless.CraftNotifications>걸작·전설 제작 알림 표시</Yuudong2.Endless.CraftNotifications>
+  <Skill21>초월</Skill21>
+  <Skill22>초월</Skill22>
+  <Skill23>초월</Skill23>
+  <Skill24>초월</Skill24>
+  <Skill25>초월</Skill25>
+  <Skill26>초월 전문가</Skill26>
+  <Skill27>초월 전문가</Skill27>
+  <Skill28>초월 전문가</Skill28>
+  <Skill29>초월 전문가</Skill29>
+  <Skill30>초월 전문가</Skill30>
+  <Skill31>초월 달인</Skill31>
+  <Skill32>초월 달인</Skill32>
+  <Skill33>초월 달인</Skill33>
+  <Skill34>초월 달인</Skill34>
+  <Skill35>초월 달인</Skill35>
+  <Skill36>초월 전설</Skill36>
+  <Skill37>초월 전설</Skill37>
+  <Skill38>초월 전설</Skill38>
+  <Skill39>초월 전설</Skill39>
+  <Skill40>초월 전설</Skill40>
+  <Skill41>반신</Skill41>
+  <Skill42>반신</Skill42>
+  <Skill43>반신</Skill43>
+  <Skill44>반신</Skill44>
+  <Skill45>반신</Skill45>
+  <Skill46>신참 신</Skill46>
+  <Skill47>신참 신</Skill47>
+  <Skill48>신참 신</Skill48>
+  <Skill49>신참 신</Skill49>
+  <Skill50>신참 신</Skill50>
+  <Skill51>신</Skill51>
+  <Skill52>신</Skill52>
+  <Skill53>신</Skill53>
+  <Skill54>신</Skill54>
+  <Skill55>신</Skill55>
+  <Skill56>숙련된 신</Skill56>
+  <Skill57>숙련된 신</Skill57>
+  <Skill58>숙련된 신</Skill58>
+  <Skill59>숙련된 신</Skill59>
+  <Skill60>숙련된 신</Skill60>
+  <Skill61>달인 신</Skill61>
+  <Skill62>달인 신</Skill62>
+  <Skill63>달인 신</Skill63>
+  <Skill64>달인 신</Skill64>
+  <Skill65>달인 신</Skill65>
+  <Skill66>신들의 신</Skill66>
+  <Skill67>신들의 신</Skill67>
+  <Skill68>신들의 신</Skill68>
+  <Skill69>신들의 신</Skill69>
+  <Skill70>신들의 신</Skill70>
+  <Skill71>초월신</Skill71>
+  <Skill72>초월신</Skill72>
+  <Skill73>초월신</Skill73>
+  <Skill74>초월신</Skill74>
+  <Skill75>초월신</Skill75>
+  <Skill76>초월신들의 신</Skill76>
+  <Skill77>초월신들의 신</Skill77>
+  <Skill78>초월신들의 신</Skill78>
+  <Skill79>초월신들의 신</Skill79>
+  <Skill80>초월신들의 신</Skill80>
+  <Skill81>파멸의 초월신</Skill81>
+  <Skill82>파멸의 초월신</Skill82>
+  <Skill83>파멸의 초월신</Skill83>
+  <Skill84>파멸의 초월신</Skill84>
+  <Skill85>파멸의 초월신</Skill85>
+  <Skill86>파멸의 초월신들의 신</Skill86>
+  <Skill87>파멸의 초월신들의 신</Skill87>
+  <Skill88>파멸의 초월신들의 신</Skill88>
+  <Skill89>파멸의 초월신들의 신</Skill89>
+  <Skill90>파멸의 초월신들의 신</Skill90>
+  <Skill91>초월적 파멸의 초월신</Skill91>
+  <Skill92>초월적 파멸의 초월신</Skill92>
+  <Skill93>초월적 파멸의 초월신</Skill93>
+  <Skill94>초월적 파멸의 초월신</Skill94>
+  <Skill95>초월적 파멸의 초월신</Skill95>
+  <Skill96>초월적 파멸의 초월신들의 신</Skill96>
+  <Skill97>초월적 파멸의 초월신들의 신</Skill97>
+  <Skill98>초월적 파멸의 초월신들의 신</Skill98>
+  <Skill99>초월적 파멸의 초월신들의 신</Skill99>
+  <Skill100>초월적 파멸의 초월신들의 초월신</Skill100>
+  <Yuudong2.Feature.RomanceTweaks>연애 확률 조절</Yuudong2.Feature.RomanceTweaks>
+  <Yuudong2.Feature.RomanceTweaks.Desc>연애 시도·성공·이별 확률에 배율을 곱합니다. 기본값은 바람 피우기·다른 세력과의 연애·이별을 0배로 막습니다. (Romance Tweaks)</Yuudong2.Feature.RomanceTweaks.Desc>
+  <Yuudong2.Feature.RoofedScanning>지붕 아래 스캐너 사용</Yuudong2.Feature.RoofedScanning>
+  <Yuudong2.Feature.RoofedScanning.Desc>지하 자원 스캐너와 장거리 광물 스캐너를 지붕 아래에 짓고 쓸 수 있습니다. (Roofed Scanning)</Yuudong2.Feature.RoofedScanning.Desc>
+  <Yuudong2.Feature.RpgLevelUp>RPG 레벨업</Yuudong2.Feature.RpgLevelUp>
+  <Yuudong2.Feature.RpgLevelUp.Desc>폰이 스킬 경험치와 적 처치로 레벨을 올리고, 레벨업 포인트를 힘·재주·민첩·체력·지능·매력에 나눠 여러 스탯을 올립니다. 화면 위 '레벨' 탭과 폰 정보의 '레벨' 탭에서 관리하며, 각 능력치에 마우스를 올리면 효과와 한계가 나옵니다. 기존 저장 파일의 레벨은 그대로 이어집니다. (RPG Style Level Up Mod)</Yuudong2.Feature.RpgLevelUp.Desc>
+  <Yuudong2.Feature.GeneAssistant>유전자 도우미</Yuudong2.Feature.GeneAssistant>
+  <Yuudong2.Feature.GeneAssistant.Desc>유전자 조립기에서 보유한 유전자를 색으로 표시하고, 유전자 서고·중복 유전자팩 배출·채운 슬롯 표시·정렬 개선을 추가합니다. (Random's Gene Assistant)</Yuudong2.Feature.GeneAssistant.Desc>
+  <Yuudong2.Feature.DragonianMix>DragonianMix</Yuudong2.Feature.DragonianMix>
+  <Yuudong2.Feature.DragonianMix.Desc>드래고니안 종족 모드가 있을 때 DragonianMix의 세력, 폰, 능력, 무기, 가스 등을 넣습니다. 끄면 추가 Def를 지우므로 이 내용이 들어간 저장 파일에서는 끄지 마세요. 재시작해야 적용됩니다. (DragonianMix)</Yuudong2.Feature.DragonianMix.Desc>
+  <Yuudong2.Romance.Debug>디버그 로그 출력</Yuudong2.Romance.Debug>
+  <Yuudong2.Romance.Chance>연애 시도 배율 (전체)</Yuudong2.Romance.Chance>
+  <Yuudong2.Romance.Chance.Desc>모든 연애 시도 확률에 곱합니다.</Yuudong2.Romance.Chance.Desc>
+  <Yuudong2.Romance.Single>연애 시도 배율 (둘 다 솔로)</Yuudong2.Romance.Single>
+  <Yuudong2.Romance.Single.Desc>두 폰 모두 연인이 없을 때 곱합니다.</Yuudong2.Romance.Single.Desc>
+  <Yuudong2.Romance.Cheating>연애 시도 배율 (바람)</Yuudong2.Romance.Cheating>
+  <Yuudong2.Romance.Cheating.Desc>한쪽이라도 다른 폰과 사귀고 있을 때 곱합니다. 0이면 바람을 피우지 않습니다.</Yuudong2.Romance.Cheating.Desc>
+  <Yuudong2.Romance.Faction>연애 시도 배율 (다른 세력)</Yuudong2.Romance.Faction>
+  <Yuudong2.Romance.Faction.Desc>두 폰의 세력이 다를 때 곱합니다.</Yuudong2.Romance.Faction.Desc>
+  <Yuudong2.Romance.Success>연애 성공 배율</Yuudong2.Romance.Success>
+  <Yuudong2.Romance.Success.Desc>모든 연애 시도의 성공 확률에 곱합니다.</Yuudong2.Romance.Success.Desc>
+  <Yuudong2.Romance.Breakup>이별 배율</Yuudong2.Romance.Breakup>
+  <Yuudong2.Romance.Breakup.Desc>기존 관계의 이별 확률에 곱합니다. '이별 방지'를 켜 두면 이 값과 상관없이 이별하지 않습니다.</Yuudong2.Romance.Breakup.Desc>
+  <Yuudong2.Rpg.Attr.STR>힘</Yuudong2.Rpg.Attr.STR>
+  <Yuudong2.Rpg.Attr.DEX>재주</Yuudong2.Rpg.Attr.DEX>
+  <Yuudong2.Rpg.Attr.AGL>민첩</Yuudong2.Rpg.Attr.AGL>
+  <Yuudong2.Rpg.Attr.CON>체력</Yuudong2.Rpg.Attr.CON>
+  <Yuudong2.Rpg.Attr.INT>지능</Yuudong2.Rpg.Attr.INT>
+  <Yuudong2.Rpg.Attr.CHA>매력</Yuudong2.Rpg.Attr.CHA>
+  <Yuudong2.Rpg.Desc.STR>근력이 필요한 일과 근접 공격을 강하게 합니다.</Yuudong2.Rpg.Desc.STR>
+  <Yuudong2.Rpg.Desc.DEX>명중률과 손재주가 필요한 작업을 좋게 합니다.</Yuudong2.Rpg.Desc.DEX>
+  <Yuudong2.Rpg.Desc.AGL>이동 속도, 회피, 조준 속도를 높입니다.</Yuudong2.Rpg.Desc.AGL>
+  <Yuudong2.Rpg.Desc.CON>받는 피해를 줄이고 면역·휴식·온도 적응을 좋게 합니다.</Yuudong2.Rpg.Desc.CON>
+  <Yuudong2.Rpg.Desc.INT>연구, 의료, 수확량, 사이킥, 기계체 관련 능력을 높이고 레벨 경험치를 더 받게 합니다.</Yuudong2.Rpg.Desc.INT>
+  <Yuudong2.Rpg.Desc.CHA>협상, 동물 다루기, 개종·억압 같은 사교 능력을 높입니다.</Yuudong2.Rpg.Desc.CHA>
+  <Yuudong2.Rpg.PerPoint>능력치 1당 효과</Yuudong2.Rpg.PerPoint>
+  <Yuudong2.Rpg.Now>현재 {0}</Yuudong2.Rpg.Now>
+  <Yuudong2.Rpg.Effect.Multiply>+{0}%</Yuudong2.Rpg.Effect.Multiply>
+  <Yuudong2.Rpg.Effect.ReduceToHalf>-0.3% (최소 50%까지)</Yuudong2.Rpg.Effect.ReduceToHalf>
+  <Yuudong2.Rpg.Effect.Yield>+0.2% (최대 +50%까지)</Yuudong2.Rpg.Effect.Yield>
+  <Yuudong2.Rpg.Effect.Bandwidth>10당 +1</Yuudong2.Rpg.Effect.Bandwidth>
+  <Yuudong2.Rpg.Effect.ComfyMin>최저 쾌적 온도 -0.3°C (0 이하는 효과 없음)</Yuudong2.Rpg.Effect.ComfyMin>
+  <Yuudong2.Rpg.Effect.ComfyMax>최고 쾌적 온도 +0.3°C (0 이하는 효과 없음)</Yuudong2.Rpg.Effect.ComfyMax>
+  <Yuudong2.Rpg.Effect.Vacuum>+3% (최대 +50%까지)</Yuudong2.Rpg.Effect.Vacuum>
+  <Yuudong2.Rpg.Special.Melee>근접 공격 피해: +0.3%</Yuudong2.Rpg.Special.Melee>
+  <Yuudong2.Rpg.Special.Mass>최대 운반 무게(소지품): +1%</Yuudong2.Rpg.Special.Mass>
+  <Yuudong2.Rpg.Special.Heal>{0}을 넘으면 20초마다 무작위 부상 하나를 (체력 - 100) × 0.01만큼 회복</Yuudong2.Rpg.Special.Heal>
+  <Yuudong2.Rpg.Special.HealInactive>아직 효과 없음</Yuudong2.Rpg.Special.HealInactive>
+  <Yuudong2.Rpg.Special.Exp>레벨 경험치 획득량: +1%</Yuudong2.Rpg.Special.Exp>
+  <Yuudong2.Rpg.Limits>능력치 자체에는 상한이 없습니다. 0보다 낮으면 효과가 반대로(감소) 적용됩니다. 위에 최소·최대가 적힌 효과는 그 값을 넘지 않습니다.</Yuudong2.Rpg.Limits>
+  <Yuudong2.Rpg.LevelTip>레벨이 오를 때마다 능력치 포인트 1을 얻습니다.</Yuudong2.Rpg.LevelTip>
+  <Yuudong2.Rpg.ExpSources>레벨 경험치를 얻는 방법</Yuudong2.Rpg.ExpSources>
+  <Yuudong2.Rpg.ExpFromSkills>스킬 경험치를 얻을 때 그 {0}% (지능이 높을수록 더 받음)</Yuudong2.Rpg.ExpFromSkills>
+  <Yuudong2.Rpg.ExpFromKills>적을 처치하면 그 적 전투력의 {0}%</Yuudong2.Rpg.ExpFromKills>
+  <Yuudong2.Rpg.ExpFromAnimals>동물은 10초마다 {0}</Yuudong2.Rpg.ExpFromAnimals>
+  <Yuudong2.Rpg.NeedExpFormula>다음 레벨까지 필요한 경험치 = 100 × ln(레벨 + 1) × (1 + 레벨 × 1%)</Yuudong2.Rpg.NeedExpFormula>
+  <Yuudong2.Rpg.MaxLevel>최대 레벨: {0}</Yuudong2.Rpg.MaxLevel>
+  <Yuudong2.Rpg.MaxLevelNone>최대 레벨: 제한 없음</Yuudong2.Rpg.MaxLevelNone>
+  <Yuudong2.Rpg.LevelNow>현재 레벨 {0}, 경험치 {1} / {2}</Yuudong2.Rpg.LevelNow>
+  <Yuudong2.Rpg.PointsTip>나눠 줄 수 있는 능력치 포인트입니다. 포인트가 있으면 능력치 칸의 버튼으로 나눠 주세요. 포인트가 없을 때 능력치 칸의 체크박스를 켜면 레벨업 포인트가 그 능력치에 자동으로 들어갑니다(하나만 켤 수 있음). 회수는 시작 능력치 최솟값({0})까지 됩니다.</Yuudong2.Rpg.PointsTip>
+  <Yuudong2.Rpg.AutoNow>자동 분배: {0}</Yuudong2.Rpg.AutoNow>
+  <Yuudong2.Rpg.AutoTip>켜면 레벨업 포인트가 {0}에 자동으로 들어갑니다. 한 능력치만 켤 수 있습니다.</Yuudong2.Rpg.AutoTip>
+  <Yuudong2.Rpg.Auto>자동</Yuudong2.Rpg.Auto>
+  <Yuudong2.Rpg.DistributeTip>포인트 분배\n클릭: +1\nShift+클릭: +10\nCtrl+클릭: +100\nAlt+클릭: 회수 (Shift·Ctrl과 함께 누르면 10·100씩, 시작 능력치 최솟값 {0}까지)</Yuudong2.Rpg.DistributeTip>
+  <Yuudong2.Rpg.Reroll>능력치 다시 정하기 (개발자 모드): 포인트를 레벨만큼 돌려받고 시작 능력치를 다시 정합니다.</Yuudong2.Rpg.Reroll>
+  <Yuudong2.Rpg.GodPoints>포인트 추가 (개발자 모드)\n클릭 +1, Shift +10, Ctrl +100, Alt 0으로</Yuudong2.Rpg.GodPoints>
+  <Yuudong2.Rpg.Category>보기: {0} (다음)</Yuudong2.Rpg.Category>
+  <Yuudong2.Rpg.CategoryTip>정착민, 동물, 기계체, 구울 순서로 바꿔 봅니다.</Yuudong2.Rpg.CategoryTip>
+  <Yuudong2.Rpg.Category.0>정착민</Yuudong2.Rpg.Category.0>
+  <Yuudong2.Rpg.Category.1>동물</Yuudong2.Rpg.Category.1>
+  <Yuudong2.Rpg.Category.2>기계체</Yuudong2.Rpg.Category.2>
+  <Yuudong2.Rpg.Category.3>구울</Yuudong2.Rpg.Category.3>
+  <Yuudong2.Rpg.Tab>레벨</Yuudong2.Rpg.Tab>
+  <Yuudong2.Rpg.Level>레벨</Yuudong2.Rpg.Level>
+  <Yuudong2.Rpg.Exp>경험치</Yuudong2.Rpg.Exp>
+  <Yuudong2.Rpg.Points>포인트</Yuudong2.Rpg.Points>
+  <Yuudong2.Rpg.TabHint>각 줄에 마우스를 올리면 자세한 효과가 나옵니다. 포인트 분배는 화면 위 '레벨' 탭에서 합니다.</Yuudong2.Rpg.TabHint>
+  <Yuudong2.Rpg.Set.Flat>시작 능력치를 모두 0으로</Yuudong2.Rpg.Set.Flat>
+  <Yuudong2.Rpg.Set.Flat.Desc>켜면 새로 생기는 폰의 능력치가 모두 0에서 시작하고, 끄면 아래 최솟값~최댓값 사이에서 무작위로 정합니다.</Yuudong2.Rpg.Set.Flat.Desc>
+  <Yuudong2.Rpg.Set.SkillExp>스킬 경험치 → 레벨 경험치 비율: {0}%</Yuudong2.Rpg.Set.SkillExp>
+  <Yuudong2.Rpg.Set.SkillExp.Desc>스킬 경험치를 얻을 때 그 몇 %를 레벨 경험치로 받을지 정합니다.</Yuudong2.Rpg.Set.SkillExp.Desc>
+  <Yuudong2.Rpg.Set.AnimalExp>동물이 10초마다 얻는 경험치: {0}</Yuudong2.Rpg.Set.AnimalExp>
+  <Yuudong2.Rpg.Set.AnimalExp.Desc>동물은 스킬이 없어서 시간이 지나면 경험치를 얻습니다.</Yuudong2.Rpg.Set.AnimalExp.Desc>
+  <Yuudong2.Rpg.Set.KillExp>적 처치 경험치: 전투력의 {0}%</Yuudong2.Rpg.Set.KillExp>
+  <Yuudong2.Rpg.Set.KillExp.Desc>적을 처치했을 때 그 적 전투력의 몇 %를 경험치로 받을지 정합니다.</Yuudong2.Rpg.Set.KillExp.Desc>
+  <Yuudong2.Rpg.Set.StartMin>무작위 시작 능력치 최솟값: {0}</Yuudong2.Rpg.Set.StartMin>
+  <Yuudong2.Rpg.Set.StartMin.Desc>'시작 능력치를 모두 0으로'가 꺼져 있을 때 쓰입니다. 포인트 회수도 이 값까지 됩니다.</Yuudong2.Rpg.Set.StartMin.Desc>
+  <Yuudong2.Rpg.Set.StartMax>무작위 시작 능력치 최댓값: {0}</Yuudong2.Rpg.Set.StartMax>
+  <Yuudong2.Rpg.Set.StartMax.Desc>'시작 능력치를 모두 0으로'가 꺼져 있을 때 쓰입니다.</Yuudong2.Rpg.Set.StartMax.Desc>
+  <Yuudong2.Rpg.Set.MaxLevel>최대 레벨 (0은 제한 없음):</Yuudong2.Rpg.Set.MaxLevel>
+  <Yuudong2.Rpg.Set.MaxLevel.Desc>이 레벨에 도달하면 더 오르지 않습니다.</Yuudong2.Rpg.Set.MaxLevel.Desc>
+  <Yuudong2.Rpg.Set.Scaling>새 폰 레벨 스케일링: 정착민 평균 레벨의 {0}%</Yuudong2.Rpg.Set.Scaling>
+  <Yuudong2.Rpg.Set.Scaling.Desc>새로 생기는 폰(적 포함)의 레벨을 정착민 평균 레벨의 몇 %로 맞출지 정합니다. 0이면 쓰지 않습니다.</Yuudong2.Rpg.Set.Scaling.Desc>
+  <Yuudong2.Gene.OverrideSorting>유전자팩 정렬 개선</Yuudong2.Gene.OverrideSorting>
+  <Yuudong2.Gene.OverrideSorting.Desc>유전자 조립기에서 유전자팩을 첫 유전자가 아니라 가장 영향이 큰 유전자 기준으로 정렬합니다.</Yuudong2.Gene.OverrideSorting.Desc>
+  <Yuudong2.Gene.SinglesFirst>단일 유전자팩을 먼저</Yuudong2.Gene.SinglesFirst>
+  <Yuudong2.Gene.SinglesFirst.Desc>유전자가 하나뿐인 유전자팩을 앞에 놓습니다.</Yuudong2.Gene.SinglesFirst.Desc>
+  <Yuudong2.Gene.Saturation>배경 색 진하기: {0}</Yuudong2.Gene.Saturation>
+  <Yuudong2.Gene.Saturation.Desc>보유 여부를 표시하는 배경 색의 진하기입니다.</Yuudong2.Gene.Saturation.Desc>
+  <Yuudong2.Gene.AltColors>다른 색 구성 사용</Yuudong2.Gene.AltColors>
+  <Yuudong2.Gene.AltColors.Desc>초록·노랑·빨강 대신 다른 색 구성을 씁니다.</Yuudong2.Gene.AltColors.Desc>
+  <Yuudong2.Gene.SellFromBanks>유전자 은행에서 바로 팔기</Yuudong2.Gene.SellFromBanks>
+  <Yuudong2.Gene.SellFromBanks.Desc>유전자 은행에 들어 있는 유전자팩도 거래 목록에 올립니다.</Yuudong2.Gene.SellFromBanks.Desc>
+  <Yuudong2.Gene.LibraryHint>무시할 유전자는 유전자 조립기의 '유전자 서고' 버튼에서 고릅니다. 지금 {0}개를 무시하고 있습니다.</Yuudong2.Gene.LibraryHint>
+  <Yuudong2.Gene.UI.ViewLibrary>유전자 서고</Yuudong2.Gene.UI.ViewLibrary>
+  <Yuudong2.Gene.UI.ViewLibrary.Desc>유전자 서고를 엽니다.</Yuudong2.Gene.UI.ViewLibrary.Desc>
+  <Yuudong2.Gene.UI.Library>유전자 서고</Yuudong2.Gene.UI.Library>
+  <Yuudong2.Gene.UI.Cancel>취소</Yuudong2.Gene.UI.Cancel>
+  <Yuudong2.Gene.UI.Ignore>무시</Yuudong2.Gene.UI.Ignore>
+  <Yuudong2.Gene.UI.Allow>허용</Yuudong2.Gene.UI.Allow>
+  <Yuudong2.Gene.UI.Cosmetic>외형</Yuudong2.Gene.UI.Cosmetic>
+  <Yuudong2.Gene.UI.Positive>긍정적</Yuudong2.Gene.UI.Positive>
+  <Yuudong2.Gene.UI.Negative>부정적</Yuudong2.Gene.UI.Negative>
+  <Yuudong2.Gene.UI.Archite>아카이트</Yuudong2.Gene.UI.Archite>
+  <Yuudong2.Gene.UI.All>전부</Yuudong2.Gene.UI.All>
+  <Yuudong2.Gene.UI.SwitchVisibility>보기 전환</Yuudong2.Gene.UI.SwitchVisibility>
+  <Yuudong2.Gene.UI.Hide0>모든 유전자 보기</Yuudong2.Gene.UI.Hide0>
+  <Yuudong2.Gene.UI.Hide1>다 모은 유전자 숨기기</Yuudong2.Gene.UI.Hide1>
+  <Yuudong2.Gene.UI.Hide2>다 모았거나 일부 모은 유전자 숨기기</Yuudong2.Gene.UI.Hide2>
+  <Yuudong2.Gene.UI.Hide3>무시한 유전자 숨기기</Yuudong2.Gene.UI.Hide3>
+  <Yuudong2.Gene.UI.Hide4>다 모은 유전자와 무시한 유전자 숨기기</Yuudong2.Gene.UI.Hide4>
+  <Yuudong2.Gene.UI.Hide5>다 모았거나 일부 모은 유전자와 무시한 유전자 숨기기</Yuudong2.Gene.UI.Hide5>
+  <Yuudong2.Gene.UI.SaveAndClose>저장하고 닫기</Yuudong2.Gene.UI.SaveAndClose>
+  <Yuudong2.Gene.UI.Eject>유전자팩 꺼내기</Yuudong2.Gene.UI.Eject>
+  <Yuudong2.Gene.UI.Eject.Desc>팔기 쉽도록 중복 유전자팩을 꺼냅니다. 외형 유전자팩이나 여러 유전자가 합쳐진 유전자팩만 꺼내는 선택지도 있습니다.</Yuudong2.Gene.UI.Eject.Desc>
+  <Yuudong2.Gene.UI.EjectDuplicates>중복 꺼내기</Yuudong2.Gene.UI.EjectDuplicates>
+  <Yuudong2.Gene.UI.EjectCosmetic>외형 꺼내기</Yuudong2.Gene.UI.EjectCosmetic>
+  <Yuudong2.Gene.UI.EjectCombined>합쳐진 유전자팩 꺼내기</Yuudong2.Gene.UI.EjectCombined>
+  <Yuudong2.Gene.UI.NoDuplicates>중복 유전자팩이 없습니다.</Yuudong2.Gene.UI.NoDuplicates>
+  <Yuudong2.Gene.UI.NoCosmetic>외형 유전자팩이 없습니다.</Yuudong2.Gene.UI.NoCosmetic>
+  <Yuudong2.Gene.UI.NoCombined>합쳐진 유전자팩이 없습니다.</Yuudong2.Gene.UI.NoCombined>
+  <Yuudong2.Gene.UI.Ejected>유전자팩 {0}개를 꺼냈습니다.</Yuudong2.Gene.UI.Ejected>
+  <Yuudong2.Gene.UI.FilledSlots>채운 슬롯: {0}/{1}</Yuudong2.Gene.UI.FilledSlots>
+  <Yuudong2.Feature.RealisticRooms>현실적인 방 크기</Yuudong2.Feature.RealisticRooms>
+  <Yuudong2.Feature.RealisticRooms.Desc>방 크기 등급(빡빡함~매우 넓음)에 필요한 넓이를 낮추고, 실내 흙·모래 오염의 아름다움 감소를 -15에서 -4로 줄입니다. (Realistic Rooms Rewritten)</Yuudong2.Feature.RealisticRooms.Desc>
+  <Yuudong2.Rooms.Note>각 등급이 되는 최소 넓이입니다. 아래 등급은 위 등급보다 클 수 없습니다. 게임이 반올림하므로 .5로 끝나는 값을 권장합니다. 바꾸면 바로 적용됩니다.</Yuudong2.Rooms.Note>
+  <Yuudong2.Rooms.Stage0>빡빡함 (2/7)</Yuudong2.Rooms.Stage0>
+  <Yuudong2.Rooms.Stage1>평범 (3/7)</Yuudong2.Rooms.Stage1>
+  <Yuudong2.Rooms.Stage2>약간 넓음 (4/7)</Yuudong2.Rooms.Stage2>
+  <Yuudong2.Rooms.Stage3>꽤나 넓음 (5/7)</Yuudong2.Rooms.Stage3>
+  <Yuudong2.Rooms.Stage4>상당히 넓음 (6/7)</Yuudong2.Rooms.Stage4>
+  <Yuudong2.Rooms.Stage5>매우 넓음 (7/7)</Yuudong2.Rooms.Stage5>
+  <Yuudong2.Rooms.Reset>기본값으로</Yuudong2.Rooms.Reset>
+  <Yuudong2.Rooms.Filth>실내 흙·모래 아름다움 -4</Yuudong2.Rooms.Filth>
+  <Yuudong2.Rooms.Filth.Desc>켜면 실내 흙과 모래 오염의 아름다움이 -4가 됩니다. 끄면 원래 값(바닐라 -15)으로 돌아갑니다.</Yuudong2.Rooms.Filth.Desc>
+  <Yuudong2.Feature.GloomyWallReplace>Gloomy 벽 교체</Yuudong2.Feature.GloomyWallReplace>
+  <Yuudong2.Feature.GloomyWallReplace.Desc>Gloomy 벽(환풍벽·창문 벽·항균 벽·강화 벽 등)을 이미 지은 벽 위에 지으면 해체하지 않고 그 자리에서 그 벽으로 바꿉니다. 지붕과 방이 그대로 유지되고, 기존 벽 재료 일부가 돌아옵니다. 환풍벽은 설치 방향을 쓰되, 그 방향의 앞뒤 칸이 막혀 있으면 90도 돌린 방향으로 섭니다. 재질 교체 기능이 켜져 있어야 동작합니다.</Yuudong2.Feature.GloomyWallReplace.Desc>
+  <Yuudong2.Feature.MapWideTradeBeacon>무역 송신기 맵 전체 적용</Yuudong2.Feature.MapWideTradeBeacon>
+  <Yuudong2.Feature.MapWideTradeBeacon.Desc>전원이 들어온 궤도 무역 송신기가 하나라도 있으면, 반경 대신 맵 전체의 정착지 창고(비축 구역, 선반 같은 저장 건물, 책장·의상 거치대, 유전자 은행)에 있는 물건으로 궤도 상선과 거래합니다. 바닥에 떨어진 물건과 금지된 물건은 쓰지 않습니다. 대금 은도 창고에서 냅니다. 송신기 반경 표시는 숨기고, 건설 비용은 10배가 됩니다.</Yuudong2.Feature.MapWideTradeBeacon.Desc>
+  <Yuudong2.TradeBeacon.DescNote>(Yuudong2Mod) 반경과 상관없이 맵 전체의 정착지 창고에 있는 물건을 거래에 씁니다. 바닥에 떨어진 물건과 금지된 물건은 제외합니다. 하나만 있으면 됩니다.</Yuudong2.TradeBeacon.DescNote>
+  <Yuudong2.Feature.TechprintTradeHighlight>거래창 기술 청사진 표시</Yuudong2.Feature.TechprintTradeHighlight>
+  <Yuudong2.Feature.TechprintTradeHighlight.Desc>거래창에서 기술 청사진 줄에 색을 칠합니다. 초록은 이미 연구했거나 적용한 것과 정착지에 있는 것으로 충분함, 노랑은 일부만 적용·보유, 빨강은 하나도 없음입니다. 마우스를 올리면 적용 수와 보유 수를 보여 줍니다. 색은 유전자 도우미 설정을 따릅니다.</Yuudong2.Feature.TechprintTradeHighlight.Desc>
+  <Yuudong2.Techprint.Finished>{0}: 이미 연구를 마쳤습니다. 이 기술 청사진은 필요 없습니다.</Yuudong2.Techprint.Finished>
+  <Yuudong2.Techprint.Status>{0}\n적용한 기술 청사진: {1}/{2}\n정착지에 있는 기술 청사진: {3}</Yuudong2.Techprint.Status>
+  <Yuudong2.Feature.RatkinDrawScaleFix>Ratkin 폰 그리기 안정화</Yuudong2.Feature.RatkinDrawScaleFix>
+  <Yuudong2.Feature.RatkinDrawScaleFix.Desc>NewRatkinPlus의 유전자 크기 캐시가 여러 스레드에서 동시에 쓰이다 깨져, 모든 폰이 안 보이게 되는 문제를 막습니다. 같은 계산을 동시 접근에 안전한 캐시로 대신합니다. NewRatkinPlus가 없으면 아무것도 하지 않습니다.</Yuudong2.Feature.RatkinDrawScaleFix.Desc>
+  <Yuudong2.Feature.TpsDisplay>TPS 표시</Yuudong2.Feature.TpsDisplay>
+  <Yuudong2.Feature.TpsDisplay.Desc>화면 오른쪽 아래 날씨·상태 표시 위에 "TPS : 현재(목표)"를 보여줍니다. 현재 값은 1초마다 갱신되며, 그 1초 동안 실제로 진행된 틱 수, 목표 값은 지금 배속의 초당 틱 수입니다(1배속 60, 정지 0).</Yuudong2.Feature.TpsDisplay.Desc>
+  <Yuudong2.Feature.BetterWorkbench>작업대 관리 개선</Yuudong2.Feature.BetterWorkbench>
+  <Yuudong2.Feature.BetterWorkbench.Desc>작업 목표 개수를 셀 때 품질·내구도·재질·장소 조건, 다른 물건 함께 세기, 자리 비운 정착민 것도 세기를 추가하고, 계획서 복사·붙여넣기·연결, 정착민·작업대 제한 같은 편의 기능을 더합니다. 원본과 달리 퀘스트로 빌려준 정착민 등 월드에 있는 정착민과, 세이브를 불러온 뒤에도 자리 비운 정착민을 셉니다. (Better Workbench Management)</Yuudong2.Feature.BetterWorkbench.Desc>
+
+</LanguageData>

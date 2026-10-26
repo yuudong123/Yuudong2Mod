@@ -1,0 +1,427 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+
+  <Yuudong2.Settings.RestartNote>Changes take effect after restarting the game.</Yuudong2.Settings.RestartNote>
+  <Yuudong2.Settings.RestartPending>Settings changed. Restart the game to apply them.</Yuudong2.Settings.RestartPending>
+  <Yuudong2.Group.Romance>Romance</Yuudong2.Group.Romance>
+  <Yuudong2.Group.Colony>Colony</Yuudong2.Group.Colony>
+  <Yuudong2.Group.Pawn>Pawns</Yuudong2.Group.Pawn>
+  <Yuudong2.Group.Trade>Trade and factions</Yuudong2.Group.Trade>
+  <Yuudong2.Group.Compatibility>Mod compatibility</Yuudong2.Group.Compatibility>
+  <Yuudong2.Feature.AlwaysAcceptProposal>Proposals always accepted</Yuudong2.Feature.AlwaysAcceptProposal>
+  <Yuudong2.Feature.AlwaysAcceptProposal.Desc>Marriage proposals are never rejected.</Yuudong2.Feature.AlwaysAcceptProposal.Desc>
+  <Yuudong2.Feature.NoBreakup>No breakups</Yuudong2.Feature.NoBreakup>
+  <Yuudong2.Feature.NoBreakup.Desc>Blocks the vanilla breakup, broken engagement and divorce paths.</Yuudong2.Feature.NoBreakup.Desc>
+  <Yuudong2.Feature.SameBedLovin>Same-bed lovin</Yuudong2.Feature.SameBedLovin>
+  <Yuudong2.Feature.SameBedLovin.Desc>Pawns lying in the same shared bed can do lovin without a romantic relationship.</Yuudong2.Feature.SameBedLovin.Desc>
+  <Yuudong2.Feature.ShelfNoSlowdown>No shelf slowdown</Yuudong2.Feature.ShelfNoSlowdown>
+  <Yuudong2.Feature.ShelfNoSlowdown.Desc>Shelves and small shelves no longer slow movement, and drafted pawns can stand on them.</Yuudong2.Feature.ShelfNoSlowdown.Desc>
+  <Yuudong2.Feature.ShelfAcceptAll>Shelves accept everything</Yuudong2.Feature.ShelfAcceptAll>
+  <Yuudong2.Feature.ShelfAcceptAll.Desc>Shelves and small shelves can hold everything a stockpile can (including chunks, plants, packaged furniture, wastepacks and large corpses). Pick what they take in the shelf's storage settings.</Yuudong2.Feature.ShelfAcceptAll.Desc>
+  <Yuudong2.Feature.HealthCardSorting>Health tab sorting</Yuudong2.Feature.HealthCardSorting>
+  <Yuudong2.Feature.HealthCardSorting.Desc>Within each body part, lists non-injury entries first and injuries after, both sorted by name.</Yuudong2.Feature.HealthCardSorting.Desc>
+  <Yuudong2.Feature.MessagePlacement>Message placement</Yuudong2.Feature.MessagePlacement>
+  <Yuudong2.Feature.MessagePlacement.Desc>Moves on-screen messages below the colonist bar. (Better Message Placement)</Yuudong2.Feature.MessagePlacement.Desc>
+  <Yuudong2.Feature.NoMapEdgeLimit>No map edge limit</Yuudong2.Feature.NoMapEdgeLimit>
+  <Yuudong2.Feature.NoMapEdgeLimit.Desc>Allows building and zoning at the map edge. (Change map edge limit)</Yuudong2.Feature.NoMapEdgeLimit.Desc>
+  <Yuudong2.Feature.PowerOnDemand>Power on demand</Yuudong2.Feature.PowerOnDemand>
+  <Yuudong2.Feature.PowerOnDemand.Desc>Workbenches, TVs, research benches and similar buildings draw full power only while in use and 1 W while idle. (Turn It On and Off)</Yuudong2.Feature.PowerOnDemand.Desc>
+  <Yuudong2.Feature.DurableClothes>Durable clothes</Yuudong2.Feature.DurableClothes>
+  <Yuudong2.Feature.DurableClothes.Desc>Daily wear on worn apparel drops to 5% of vanilla. (Durable Clothes)</Yuudong2.Feature.DurableClothes.Desc>
+  <Yuudong2.Feature.InfiniteApparelDurability>Infinite apparel durability</Yuudong2.Feature.InfiniteApparelDurability>
+  <Yuudong2.Feature.InfiniteApparelDurability.Desc>Keeps apparel worn by player pawns at full hit points. (Infinite apparel durability)</Yuudong2.Feature.InfiniteApparelDurability.Desc>
+  <Yuudong2.Feature.AllSpecialistsCanWork>Specialists can work</Yuudong2.Feature.AllSpecialistsCanWork>
+  <Yuudong2.Feature.AllSpecialistsCanWork.Desc>Ideoligion roles no longer disable work types or weapons. (All Specialists Can Work)</Yuudong2.Feature.AllSpecialistsCanWork.Desc>
+  <Yuudong2.Feature.FasterBiosculpter>Faster biosculpter</Yuudong2.Feature.FasterBiosculpter>
+  <Yuudong2.Feature.FasterBiosculpter.Desc>All biosculpter pod cycles take 1 day and biotuning does not persist. (Faster Biosculpter Pod)</Yuudong2.Feature.FasterBiosculpter.Desc>
+  <Yuudong2.Feature.CaravanArrivalSpot>Caravan arrival spot</Yuudong2.Feature.CaravanArrivalSpot>
+  <Yuudong2.Feature.CaravanArrivalSpot.Desc>Enables the caravan arrival spot in Architect &gt; Misc. Trader caravans enter from the nearest map edge and wait at the spot.</Yuudong2.Feature.CaravanArrivalSpot.Desc>
+  <Yuudong2.Feature.TradeShipDropSpot>Supply drop spot</Yuudong2.Feature.TradeShipDropSpot>
+  <Yuudong2.Feature.TradeShipDropSpot.Desc>Enables the supply drop spot in Architect &gt; Misc. Drop pods with orbital trade goods, quest rewards, royal aid and returning colonists land near it. Enemy raids are not affected. (Formerly the trade ship drop spot)</Yuudong2.Feature.TradeShipDropSpot.Desc>
+  <Yuudong2.Feature.TradeStockBoost>8x trader stock</Yuudong2.Feature.TradeStockBoost>
+  <Yuudong2.Feature.TradeStockBoost.Desc>Orbital, settlement and caravan traders get 8x stock and silver. Visitor traders are unchanged. (Trading Options)</Yuudong2.Feature.TradeStockBoost.Desc>
+  <Yuudong2.Feature.OrbitalTraderFrequency>4x orbital trader frequency</Yuudong2.Feature.OrbitalTraderFrequency>
+  <Yuudong2.Feature.OrbitalTraderFrequency.Desc>Orbital traders come 4x as often under storytellers that use random incidents, such as Randy. (Trading Options)</Yuudong2.Feature.OrbitalTraderFrequency.Desc>
+  <Yuudong2.Feature.InsultFaction>Insult factions</Yuudong2.Feature.InsultFaction>
+  <Yuudong2.Feature.InsultFaction.Desc>Adds an insult option to comms console faction dialogs. Insulting a hostile faction brings a raid in 1 to 7 hours. (Raids For Me)</Yuudong2.Feature.InsultFaction.Desc>
+  <Yuudong2.Feature.EpoeAiCore>EPOE persona core</Yuudong2.Feature.EpoeAiCore>
+  <Yuudong2.Feature.EpoeAiCore.Desc>With EPOE-Forked, removes the AI persona core's maintenance and AI issues and keeps only its best-state bonuses.</Yuudong2.Feature.EpoeAiCore.Desc>
+  <Yuudong2.Feature.DragonianGenes>Dragonian gene limits</Yuudong2.Feature.DragonianGenes>
+  <Yuudong2.Feature.DragonianGenes.Desc>With the Dragonian race mod, removes the dragonborn genes' exclusivity limits.</Yuudong2.Feature.DragonianGenes.Desc>
+  <Yuudong2.Feature.DragonianHealing>Dragonborn healing fix</Yuudong2.Feature.DragonianHealing>
+  <Yuudong2.Feature.DragonianHealing.Desc>On load, re-enables dragonborn genes that were overridden by wound healing genes. (Dragonian to Super Fast Healing Patch)</Yuudong2.Feature.DragonianHealing.Desc>
+  <Yuudong2.Settings.Details>Details</Yuudong2.Settings.Details>
+  <Yuudong2.Group.Ideology>Ideology</Yuudong2.Group.Ideology>
+  <Yuudong2.Feature.HairUnderHats>Hair under headgear</Yuudong2.Feature.HairUnderHats>
+  <Yuudong2.Feature.HairUnderHats.Desc>Keeps hair visible under headgear and draws headgear above hair, including modded races and hats. Detail settings apply immediately. (Replaces Show Hair With Hats and Dubs Apparel Tweaks)</Yuudong2.Feature.HairUnderHats.Desc>
+  <Yuudong2.Feature.CustomMapSize>Custom map size</Yuudong2.Feature.CustomMapSize>
+  <Yuudong2.Feature.CustomMapSize.Desc>Lets you set the starting map width and height in the advanced game settings, and pick the default map size in the details. (Better Map Sizes)</Yuudong2.Feature.CustomMapSize.Desc>
+  <Yuudong2.Feature.NoIdeologyLimits>No ideology limits</Yuudong2.Feature.NoIdeologyLimits>
+  <Yuudong2.Feature.NoIdeologyLimits.Desc>Removes meme, precept and ritual count limits and lets every precept be removed in the editor. (Ducks' No Limits - Ideology)</Yuudong2.Feature.NoIdeologyLimits.Desc>
+  <Yuudong2.Hair.UnderUpper>Show hair under hats</Yuudong2.Hair.UnderUpper>
+  <Yuudong2.Hair.UnderUpper.Desc>Draws hair under headgear that covers the upper head.</Yuudong2.Hair.UnderUpper.Desc>
+  <Yuudong2.Hair.UnderFull>Show hair under helmets</Yuudong2.Hair.UnderFull>
+  <Yuudong2.Hair.UnderFull.Desc>Draws hair under headgear that covers the full head.</Yuudong2.Hair.UnderFull.Desc>
+  <Yuudong2.Hair.BeardUnderFull>Show beards under helmets</Yuudong2.Hair.BeardUnderFull>
+  <Yuudong2.Hair.BeardUnderFull.Desc>Draws beards under headgear that covers the full head.</Yuudong2.Hair.BeardUnderFull.Desc>
+  <Yuudong2.Hair.AboveHair>Always draw headgear above hair</Yuudong2.Hair.AboveHair>
+  <Yuudong2.Hair.AboveHair.Desc>If a hat would be drawn below the hair, moves it just above the hair.</Yuudong2.Hair.AboveHair.Desc>
+  <Yuudong2.Hair.OnlyPlayer>Only player pawns</Yuudong2.Hair.OnlyPlayer>
+  <Yuudong2.Hair.OnlyPlayer.Desc>Applies only to pawns of the player faction; others hide hair as in vanilla.</Yuudong2.Hair.OnlyPlayer.Desc>
+  <Yuudong2.Hair.Scale>Headgear size: {0}</Yuudong2.Hair.Scale>
+  <Yuudong2.Hair.Scale.Desc>Enlarges headgear slightly if hair pokes out from under it.</Yuudong2.Hair.Scale.Desc>
+  <Yuudong2.Hair.HeadgearList>Checked headgear hides hair</Yuudong2.Hair.HeadgearList>
+  <Yuudong2.Hair.HairList>Checked hairstyles are hidden under headgear</Yuudong2.Hair.HairList>
+  <Yuudong2.Hair.ClearAll>Clear all</Yuudong2.Hair.ClearAll>
+  <Yuudong2.MapSize.Custom>Custom</Yuudong2.MapSize.Custom>
+  <Yuudong2.MapSize.CustomLabel>{0}x{1} ({2} cells)</Yuudong2.MapSize.CustomLabel>
+  <Yuudong2.MapSize.Width>Width:</Yuudong2.MapSize.Width>
+  <Yuudong2.MapSize.Height>Height:</Yuudong2.MapSize.Height>
+  <Yuudong2.MapSize.SettingsDesc>The default map size preselected for new games. Existing saves are not affected.</Yuudong2.MapSize.SettingsDesc>
+  <Yuudong2.Ideology.OnlyPlayer>Only for the player</Yuudong2.Ideology.OnlyPlayer>
+  <Yuudong2.Ideology.OnlyPlayer.Desc>AI faction ideologies keep the normal limits.</Yuudong2.Ideology.OnlyPlayer.Desc>
+  <Yuudong2.Feature.ReplaceStuff>Replace stuff</Yuudong2.Feature.ReplaceStuff>
+  <Yuudong2.Feature.ReplaceStuff.Desc>Adds a Replace stuff button under Architect &gt; Structure, and building the same thing with another material replaces the material in place without deconstructing. Rooms stay sealed and bills are kept. (Only the stuff replacement part of Replace Stuff)</Yuudong2.Feature.ReplaceStuff.Desc>
+  <Yuudong2.Replace.Label>Replace stuff</Yuudong2.Replace.Label>
+  <Yuudong2.Replace.Desc>Replaces the material of a building without deconstructing it, e.g. a wooden wall into a granite wall.\n\nClick to choose the material, then drag over the buildings to replace.</Yuudong2.Replace.Desc>
+  <Yuudong2.Replace.Tag> (replacing)</Yuudong2.Replace.Tag>
+  <Yuudong2.Replace.BeingReplaced>material being replaced</Yuudong2.Replace.BeingReplaced>
+  <Yuudong2.SpotMoved>{0} has been moved.</Yuudong2.SpotMoved>
+  <Yuudong2.Insult.Option>Insult {0} ({1})</Yuudong2.Insult.Option>
+  <Yuudong2.Insult.Ally>{0} ({1}) is very disappointed. Relations have worsened.</Yuudong2.Insult.Ally>
+  <Yuudong2.Insult.RaidDropPod>{0} ({1}) started a drop pod raid on you!</Yuudong2.Insult.RaidDropPod>
+  <Yuudong2.Insult.RaidDelayed>{0} ({1}) is furious! You will be raided in {2}!</Yuudong2.Insult.RaidDelayed>
+  <Yuudong2.Group.Interface>Interface</Yuudong2.Group.Interface>
+  <Yuudong2.Feature.NoRandomRelations>No random relations</Yuudong2.Feature.NoRandomRelations>
+  <Yuudong2.Feature.NoRandomRelations.Desc>Newly generated pawns get no random family or romantic relations. (No Random Relations)</Yuudong2.Feature.NoRandomRelations.Desc>
+  <Yuudong2.Feature.RoomFood>Room food</Yuudong2.Feature.RoomFood>
+  <Yuudong2.Feature.RoomFood.Desc>Colonists prefer food stored in a room with a nearby table. (Room Food)</Yuudong2.Feature.RoomFood.Desc>
+  <Yuudong2.Feature.MeatOptimization>Meat merge</Yuudong2.Feature.MeatOptimization>
+  <Yuudong2.Feature.MeatOptimization.Desc>Merges per-animal meats into raw, human and insect meat. Per-race policy is in the details and needs a restart. (Optimization: Meats)</Yuudong2.Feature.MeatOptimization.Desc>
+  <Yuudong2.Feature.SinglePlantTexture>Single plant texture</Yuudong2.Feature.SinglePlantTexture>
+  <Yuudong2.Feature.SinglePlantTexture.Desc>Draws one plant per cell for crops like rice and haygrass. (Single Plant Texture Patch)</Yuudong2.Feature.SinglePlantTexture.Desc>
+  <Yuudong2.Feature.DamageIndicators>Damage indicators</Yuudong2.Feature.DamageIndicators>
+  <Yuudong2.Feature.DamageIndicators.Desc>Shows damage, shield absorption and melee misses as floating numbers. (Damage Indicators)</Yuudong2.Feature.DamageIndicators.Desc>
+  <Yuudong2.Feature.LetterStackCleaner>Letter stack cleaner</Yuudong2.Feature.LetterStackCleaner>
+  <Yuudong2.Feature.LetterStackCleaner.Desc>Clears the letter stack with a key, Delete by default. (Letter stack cleaner)</Yuudong2.Feature.LetterStackCleaner.Desc>
+  <Yuudong2.Feature.SmartSpeed>Smart speed</Yuudong2.Feature.SmartSpeed>
+  <Yuudong2.Feature.SmartSpeed.Desc>Changes speed multipliers, always shows the ultrafast button, and lets you pick event slowdown by right-clicking the time controls. (Smart Speed)</Yuudong2.Feature.SmartSpeed.Desc>
+  <Yuudong2.Feature.DragSelect>Drag select</Yuudong2.Feature.DragSelect>
+  <Yuudong2.Feature.DragSelect.Desc>Drag across work priorities, copy/paste buttons and trade count buttons to press many at once. (DragSelect)</Yuudong2.Feature.DragSelect.Desc>
+  <Yuudong2.Feature.HiddenBionicEyes>Hidden bionic eyes</Yuudong2.Feature.HiddenBionicEyes>
+  <Yuudong2.Feature.HiddenBionicEyes.Desc>Hides bionic and archotech eye graphics on faces. (Hidden Eyes)</Yuudong2.Feature.HiddenBionicEyes.Desc>
+  <Yuudong2.Feature.EndlessGrowth>Endless growth</Yuudong2.Feature.EndlessGrowth>
+  <Yuudong2.Feature.EndlessGrowth.Desc>Removes the skill level 20 cap and adjusts XP, crafting quality and bill ranges. Detail changes need a restart. (EndlessGrowth)</Yuudong2.Feature.EndlessGrowth.Desc>
+  <Yuudong2.Feature.RolesUntiedToMemes>Roles untied to memes</Yuudong2.Feature.RolesUntiedToMemes>
+  <Yuudong2.Feature.RolesUntiedToMemes.Desc>Specialist roles no longer require specific memes. (Roles untied to memes)</Yuudong2.Feature.RolesUntiedToMemes.Desc>
+  <Yuudong2.Feature.AutoCastSpecialistCommands>Auto-cast specialist commands</Yuudong2.Feature.AutoCastSpecialistCommands>
+  <Yuudong2.Feature.AutoCastSpecialistCommands.Desc>Auto-casts specialist commands when the matching work starts. Right-click a command button to toggle. (Auto-Cast Specialist Commands)</Yuudong2.Feature.AutoCastSpecialistCommands.Desc>
+  <Yuudong2.Feature.EmpireGoodwillFix>Empire scenario goodwill fix</Yuudong2.Feature.EmpireGoodwillFix>
+  <Yuudong2.Feature.EmpireGoodwillFix.Desc>Prevents the Empire starting at -100 goodwill in some scenarios. (Empire -100 goodwill in scenarios Fix)</Yuudong2.Feature.EmpireGoodwillFix.Desc>
+  <Yuudong2.Feature.GloomyFurnitureFix>Gloomy furniture and walls</Yuudong2.Feature.GloomyFurnitureFix>
+  <Yuudong2.Feature.GloomyFurnitureFix.Desc>Adds extra furniture and fixes when GloomyFurniture (Continued) is active, allows blueprints over wall-mounted furniture, and adds sterile and reinforced walls. Needs a restart. (Gloomy Furniture Fix, MoreGloomyWalls)</Yuudong2.Feature.GloomyFurnitureFix.Desc>
+  <Yuudong2.RoomFood.Distance>Distance to look for a table: {0}</Yuudong2.RoomFood.Distance>
+  <Yuudong2.RoomFood.Distance.Desc>If a table in a room with food is within this distance, food in that room is preferred.</Yuudong2.RoomFood.Distance.Desc>
+  <Yuudong2.Damage.Neutral>Show for neutral factions</Yuudong2.Damage.Neutral>
+  <Yuudong2.Damage.Neutral.Desc>When off, nothing is shown if the attacker or target has no faction.</Yuudong2.Damage.Neutral.Desc>
+  <Yuudong2.Damage.PawnsOnly>Only damage to pawns</Yuudong2.Damage.PawnsOnly>
+  <Yuudong2.Damage.PawnsOnly.Desc>Nothing is shown if the target is not a pawn.</Yuudong2.Damage.PawnsOnly.Desc>
+  <Yuudong2.Damage.PawnInstigatorOnly>Only damage dealt by pawns</Yuudong2.Damage.PawnInstigatorOnly>
+  <Yuudong2.Damage.PawnInstigatorOnly.Desc>Damage from non-pawn sources such as decay or fire is not shown.</Yuudong2.Damage.PawnInstigatorOnly.Desc>
+  <Yuudong2.Damage.ShieldBroken>BROKEN</Yuudong2.Damage.ShieldBroken>
+  <Yuudong2.Damage.Miss>Miss</Yuudong2.Damage.Miss>
+  <Yuudong2.AutoCast.Tip>You can also right-click the command buttons in game to toggle auto-cast.</Yuudong2.AutoCast.Tip>
+  <Yuudong2.AutoCast.Farming>Auto-cast Farming Command (sowing or harvesting)</Yuudong2.AutoCast.Farming>
+  <Yuudong2.AutoCast.Mining>Auto-cast Mining Command</Yuudong2.AutoCast.Mining>
+  <Yuudong2.AutoCast.Production>Auto-cast Production Command (crafting bills)</Yuudong2.AutoCast.Production>
+  <Yuudong2.AutoCast.Research>Auto-cast Research Command</Yuudong2.AutoCast.Research>
+  <Yuudong2.AutoCast.Cooking>Auto-cast Prepare Feast (cooking or butchering)</Yuudong2.AutoCast.Cooking>
+  <Yuudong2.AutoCast.Void>Auto-cast Void Suggestion (dark study)</Yuudong2.AutoCast.Void>
+  <Yuudong2.AutoCast.Majordomo>Auto-cast Majordomo's Work Command</Yuudong2.AutoCast.Majordomo>
+  <Yuudong2.Meat.Note>Leaving the policy on automatic is recommended. Changes need a restart.</Yuudong2.Meat.Note>
+  <Yuudong2.Meat.Debug>Debug log</Yuudong2.Meat.Debug>
+  <Yuudong2.Meat.Search>Search:</Yuudong2.Meat.Search>
+  <Yuudong2.Meat.Reset>Reset policy</Yuudong2.Meat.Reset>
+  <Yuudong2.Meat.Automatic>Automatic</Yuudong2.Meat.Automatic>
+  <Yuudong2.Meat.Vanilla>Vanilla</Yuudong2.Meat.Vanilla>
+  <Yuudong2.Meat.ToCow>To raw meat</Yuudong2.Meat.ToCow>
+  <Yuudong2.Meat.ToHuman>To human meat</Yuudong2.Meat.ToHuman>
+  <Yuudong2.Meat.ToInsect>To insect meat</Yuudong2.Meat.ToInsect>
+  <Yuudong2.Meat.UseMeatFrom>Uses another race's meat: {0}</Yuudong2.Meat.UseMeatFrom>
+  <Yuudong2.Meat.SpecificMeat>Has a specific meat: {0}</Yuudong2.Meat.SpecificMeat>
+  <Yuudong2.Meat.Special>Base meat, cannot be changed</Yuudong2.Meat.Special>
+  <Yuudong2.Meat.WhiteListRace>Excluded by the white list (race)</Yuudong2.Meat.WhiteListRace>
+  <Yuudong2.Meat.WhiteListMeat>Excluded by the white list (meat)</Yuudong2.Meat.WhiteListMeat>
+  <Yuudong2.Meat.RawMeat>raw meat</Yuudong2.Meat.RawMeat>
+  <Yuudong2.Meat.ExistingSaveWarning>Loading an existing save with meat merge newly enabled may cause errors.</Yuudong2.Meat.ExistingSaveWarning>
+  <Yuudong2.Letter.Key>Key to clear letters:</Yuudong2.Letter.Key>
+  <Yuudong2.Letter.OneAtATime>Clear one letter at a time</Yuudong2.Letter.OneAtATime>
+  <Yuudong2.Letter.OldestFirst>Clear the oldest letter first</Yuudong2.Letter.OldestFirst>
+  <Yuudong2.Letter.Delete>Delete key</Yuudong2.Letter.Delete>
+  <Yuudong2.Letter.Mouse4>Mouse button 4</Yuudong2.Letter.Mouse4>
+  <Yuudong2.Letter.Mouse5>Mouse button 5</Yuudong2.Letter.Mouse5>
+  <Yuudong2.Letter.Mouse6>Mouse button 6</Yuudong2.Letter.Mouse6>
+  <Yuudong2.Letter.Mouse7>Mouse button 7</Yuudong2.Letter.Mouse7>
+  <Yuudong2.Speed.Note>Right-click the time controls to choose the event slowdown.</Yuudong2.Speed.Note>
+  <Yuudong2.Speed.Reset>Reset</Yuudong2.Speed.Reset>
+  <Yuudong2.Speed.Normal>Normal speed (1)</Yuudong2.Speed.Normal>
+  <Yuudong2.Speed.Normal.Desc>Default 1, 60 ticks per second.</Yuudong2.Speed.Normal.Desc>
+  <Yuudong2.Speed.Fast>Fast speed (2)</Yuudong2.Speed.Fast>
+  <Yuudong2.Speed.Fast.Desc>Default 3, 180 ticks per second.</Yuudong2.Speed.Fast.Desc>
+  <Yuudong2.Speed.Superfast>Superfast speed (3)</Yuudong2.Speed.Superfast>
+  <Yuudong2.Speed.Superfast.Desc>Default 6, 360 ticks per second.</Yuudong2.Speed.Superfast.Desc>
+  <Yuudong2.Speed.Ultrafast>Ultrafast speed (4)</Yuudong2.Speed.Ultrafast>
+  <Yuudong2.Speed.Ultrafast.Desc>Default 15, 900 ticks per second. Limited by what your PC can handle.</Yuudong2.Speed.Ultrafast.Desc>
+  <Yuudong2.Speed.EventSpeed>Event speed</Yuudong2.Speed.EventSpeed>
+  <Yuudong2.Speed.Event.Slow>Slow (half of normal speed)</Yuudong2.Speed.Event.Slow>
+  <Yuudong2.Speed.Event.Normal>Normal</Yuudong2.Speed.Event.Normal>
+  <Yuudong2.Speed.Event.Fast>Fast (twice normal speed)</Yuudong2.Speed.Event.Fast>
+  <Yuudong2.Speed.Event.Half>Half current speed</Yuudong2.Speed.Event.Half>
+  <Yuudong2.Speed.Event.Ignore>Ignore (no slowdown)</Yuudong2.Speed.Event.Ignore>
+  <Yuudong2.Endless.Restart>These settings need a restart.</Yuudong2.Endless.Restart>
+  <Yuudong2.Endless.MaxLevel>Max level (-1 for infinite):</Yuudong2.Endless.MaxLevel>
+  <Yuudong2.Endless.UnlimitedPrice>Allow sell price above buy price</Yuudong2.Endless.UnlimitedPrice>
+  <Yuudong2.Endless.BillGap>Gap between your highest skill level and the max in bills (existing bills may need adjusting)</Yuudong2.Endless.BillGap>
+  <Yuudong2.Endless.CraftNotifications>Show masterwork/legendary craft notifications</Yuudong2.Endless.CraftNotifications>
+  <Skill21>Transcended</Skill21>
+  <Skill22>Transcended</Skill22>
+  <Skill23>Transcended</Skill23>
+  <Skill24>Transcended</Skill24>
+  <Skill25>Transcended</Skill25>
+  <Skill26>Transcended Expert</Skill26>
+  <Skill27>Transcended Expert</Skill27>
+  <Skill28>Transcended Expert</Skill28>
+  <Skill29>Transcended Expert</Skill29>
+  <Skill30>Transcended Expert</Skill30>
+  <Skill31>Transcended Master</Skill31>
+  <Skill32>Transcended Master</Skill32>
+  <Skill33>Transcended Master</Skill33>
+  <Skill34>Transcended Master</Skill34>
+  <Skill35>Transcended Master</Skill35>
+  <Skill36>Transcended Legend</Skill36>
+  <Skill37>Transcended Legend</Skill37>
+  <Skill38>Transcended Legend</Skill38>
+  <Skill39>Transcended Legend</Skill39>
+  <Skill40>Transcended Legend</Skill40>
+  <Skill41>Demigod</Skill41>
+  <Skill42>Demigod</Skill42>
+  <Skill43>Demigod</Skill43>
+  <Skill44>Demigod</Skill44>
+  <Skill45>Demigod</Skill45>
+  <Skill46>Rookie God</Skill46>
+  <Skill47>Rookie God</Skill47>
+  <Skill48>Rookie God</Skill48>
+  <Skill49>Rookie God</Skill49>
+  <Skill50>Rookie God</Skill50>
+  <Skill51>God</Skill51>
+  <Skill52>God</Skill52>
+  <Skill53>God</Skill53>
+  <Skill54>God</Skill54>
+  <Skill55>God</Skill55>
+  <Skill56>Expert God</Skill56>
+  <Skill57>Expert God</Skill57>
+  <Skill58>Expert God</Skill58>
+  <Skill59>Expert God</Skill59>
+  <Skill60>Expert God</Skill60>
+  <Skill61>Master God</Skill61>
+  <Skill62>Master God</Skill62>
+  <Skill63>Master God</Skill63>
+  <Skill64>Master God</Skill64>
+  <Skill65>Master God</Skill65>
+  <Skill66>God of Gods</Skill66>
+  <Skill67>God of Gods</Skill67>
+  <Skill68>God of Gods</Skill68>
+  <Skill69>God of Gods</Skill69>
+  <Skill70>God of Gods</Skill70>
+  <Skill71>Transcended God</Skill71>
+  <Skill72>Transcended God</Skill72>
+  <Skill73>Transcended God</Skill73>
+  <Skill74>Transcended God</Skill74>
+  <Skill75>Transcended God</Skill75>
+  <Skill76>God of Transcended Gods</Skill76>
+  <Skill77>God of Transcended Gods</Skill77>
+  <Skill78>God of Transcended Gods</Skill78>
+  <Skill79>God of Transcended Gods</Skill79>
+  <Skill80>God of Transcended Gods</Skill80>
+  <Skill81>Transcended God of Doom</Skill81>
+  <Skill82>Transcended God of Doom</Skill82>
+  <Skill83>Transcended God of Doom</Skill83>
+  <Skill84>Transcended God of Doom</Skill84>
+  <Skill85>Transcended God of Doom</Skill85>
+  <Skill86>God of Transcended Gods of Doom</Skill86>
+  <Skill87>God of Transcended Gods of Doom</Skill87>
+  <Skill88>God of Transcended Gods of Doom</Skill88>
+  <Skill89>God of Transcended Gods of Doom</Skill89>
+  <Skill90>God of Transcended Gods of Doom</Skill90>
+  <Skill91>Transcended God of Transcended Doom</Skill91>
+  <Skill92>Transcended God of Transcended Doom</Skill92>
+  <Skill93>Transcended God of Transcended Doom</Skill93>
+  <Skill94>Transcended God of Transcended Doom</Skill94>
+  <Skill95>Transcended God of Transcended Doom</Skill95>
+  <Skill96>God of Transcended Gods of Transcended Doom</Skill96>
+  <Skill97>God of Transcended Gods of Transcended Doom</Skill97>
+  <Skill98>God of Transcended Gods of Transcended Doom</Skill98>
+  <Skill99>God of Transcended Gods of Transcended Doom</Skill99>
+  <Skill100>Transcended God of Transcended Gods of Transcended Doom</Skill100>
+  <Yuudong2.Feature.RomanceTweaks>Romance tweaks</Yuudong2.Feature.RomanceTweaks>
+  <Yuudong2.Feature.RomanceTweaks.Desc>Multiplies romance attempt, success and breakup chances. Defaults block cheating, cross-faction romance and breakups. (Romance Tweaks)</Yuudong2.Feature.RomanceTweaks.Desc>
+  <Yuudong2.Feature.RoofedScanning>Roofed scanning</Yuudong2.Feature.RoofedScanning>
+  <Yuudong2.Feature.RoofedScanning.Desc>Ground-penetrating and long-range mineral scanners can be built and used under roofs. (Roofed Scanning)</Yuudong2.Feature.RoofedScanning.Desc>
+  <Yuudong2.Feature.RpgLevelUp>RPG level up</Yuudong2.Feature.RpgLevelUp>
+  <Yuudong2.Feature.RpgLevelUp.Desc>Pawns level up from skill XP and kills and spend points on six attributes that boost many stats. Manage them in the Level tab; hover an attribute to see its effects and limits. Existing save data carries over. (RPG Style Level Up Mod)</Yuudong2.Feature.RpgLevelUp.Desc>
+  <Yuudong2.Feature.GeneAssistant>Gene assistant</Yuudong2.Feature.GeneAssistant>
+  <Yuudong2.Feature.GeneAssistant.Desc>Colors genes by ownership in the gene assembler and adds a gene library, duplicate genepack ejection, filled slot display and better sorting. (Random's Gene Assistant)</Yuudong2.Feature.GeneAssistant.Desc>
+  <Yuudong2.Feature.DragonianMix>DragonianMix</Yuudong2.Feature.DragonianMix>
+  <Yuudong2.Feature.DragonianMix.Desc>With the Dragonian race mod, adds DragonianMix factions, pawns, abilities, weapons and gases. Turning it off removes its defs, so do not disable it in saves that use them. Needs a restart. (DragonianMix)</Yuudong2.Feature.DragonianMix.Desc>
+  <Yuudong2.Romance.Debug>Debug logging</Yuudong2.Romance.Debug>
+  <Yuudong2.Romance.Chance>Romance chance (general)</Yuudong2.Romance.Chance>
+  <Yuudong2.Romance.Chance.Desc>Multiplier for all romance attempts.</Yuudong2.Romance.Chance.Desc>
+  <Yuudong2.Romance.Single>Romance chance (both single)</Yuudong2.Romance.Single>
+  <Yuudong2.Romance.Single.Desc>Applied when both pawns are single.</Yuudong2.Romance.Single.Desc>
+  <Yuudong2.Romance.Cheating>Romance chance (cheating)</Yuudong2.Romance.Cheating>
+  <Yuudong2.Romance.Cheating.Desc>Applied when either pawn is with someone else. 0 prevents cheating.</Yuudong2.Romance.Cheating.Desc>
+  <Yuudong2.Romance.Faction>Romance chance (cross faction)</Yuudong2.Romance.Faction>
+  <Yuudong2.Romance.Faction.Desc>Applied when the pawns belong to different factions.</Yuudong2.Romance.Faction.Desc>
+  <Yuudong2.Romance.Success>Romance success</Yuudong2.Romance.Success>
+  <Yuudong2.Romance.Success.Desc>Multiplier for romance success chance.</Yuudong2.Romance.Success.Desc>
+  <Yuudong2.Romance.Breakup>Breakup chance</Yuudong2.Romance.Breakup>
+  <Yuudong2.Romance.Breakup.Desc>Multiplier for breakup chance. 'No breakups' blocks breakups regardless.</Yuudong2.Romance.Breakup.Desc>
+  <Yuudong2.Rpg.Attr.STR>Strength</Yuudong2.Rpg.Attr.STR>
+  <Yuudong2.Rpg.Attr.DEX>Dexterity</Yuudong2.Rpg.Attr.DEX>
+  <Yuudong2.Rpg.Attr.AGL>Agility</Yuudong2.Rpg.Attr.AGL>
+  <Yuudong2.Rpg.Attr.CON>Constitution</Yuudong2.Rpg.Attr.CON>
+  <Yuudong2.Rpg.Attr.INT>Intelligence</Yuudong2.Rpg.Attr.INT>
+  <Yuudong2.Rpg.Attr.CHA>Charisma</Yuudong2.Rpg.Attr.CHA>
+  <Yuudong2.Rpg.Desc.STR>Boosts physical labor and melee attacks.</Yuudong2.Rpg.Desc.STR>
+  <Yuudong2.Rpg.Desc.DEX>Improves accuracy and work that needs dexterity.</Yuudong2.Rpg.Desc.DEX>
+  <Yuudong2.Rpg.Desc.AGL>Improves movement, dodging and aiming speed.</Yuudong2.Rpg.Desc.AGL>
+  <Yuudong2.Rpg.Desc.CON>Reduces damage taken and improves immunity, rest and temperature tolerance.</Yuudong2.Rpg.Desc.CON>
+  <Yuudong2.Rpg.Desc.INT>Improves research, medicine, yields, psycasting and mech abilities, and grants more level XP.</Yuudong2.Rpg.Desc.INT>
+  <Yuudong2.Rpg.Desc.CHA>Improves negotiation, animal handling, conversion and suppression.</Yuudong2.Rpg.Desc.CHA>
+  <Yuudong2.Rpg.PerPoint>Effect per point</Yuudong2.Rpg.PerPoint>
+  <Yuudong2.Rpg.Now>now {0}</Yuudong2.Rpg.Now>
+  <Yuudong2.Rpg.Effect.Multiply>+{0}%</Yuudong2.Rpg.Effect.Multiply>
+  <Yuudong2.Rpg.Effect.ReduceToHalf>-0.3% (down to 50% at most)</Yuudong2.Rpg.Effect.ReduceToHalf>
+  <Yuudong2.Rpg.Effect.Yield>+0.2% (up to +50%)</Yuudong2.Rpg.Effect.Yield>
+  <Yuudong2.Rpg.Effect.Bandwidth>+1 per 10 points</Yuudong2.Rpg.Effect.Bandwidth>
+  <Yuudong2.Rpg.Effect.ComfyMin>-0.3°C minimum comfortable temperature (no effect below 0)</Yuudong2.Rpg.Effect.ComfyMin>
+  <Yuudong2.Rpg.Effect.ComfyMax>+0.3°C maximum comfortable temperature (no effect below 0)</Yuudong2.Rpg.Effect.ComfyMax>
+  <Yuudong2.Rpg.Effect.Vacuum>+3% (up to +50%)</Yuudong2.Rpg.Effect.Vacuum>
+  <Yuudong2.Rpg.Special.Melee>Melee damage: +0.3%</Yuudong2.Rpg.Special.Melee>
+  <Yuudong2.Rpg.Special.Mass>Carry mass capacity: +1%</Yuudong2.Rpg.Special.Mass>
+  <Yuudong2.Rpg.Special.Heal>Above {0}, heals a random injury by (CON - 100) × 0.01 every 20 seconds</Yuudong2.Rpg.Special.Heal>
+  <Yuudong2.Rpg.Special.HealInactive>not active yet</Yuudong2.Rpg.Special.HealInactive>
+  <Yuudong2.Rpg.Special.Exp>Level XP gain: +1%</Yuudong2.Rpg.Special.Exp>
+  <Yuudong2.Rpg.Limits>Attributes have no upper limit. Negative values apply the effects in reverse. Effects with a listed minimum or maximum never go beyond it.</Yuudong2.Rpg.Limits>
+  <Yuudong2.Rpg.LevelTip>Each level grants 1 attribute point.</Yuudong2.Rpg.LevelTip>
+  <Yuudong2.Rpg.ExpSources>How to gain level XP</Yuudong2.Rpg.ExpSources>
+  <Yuudong2.Rpg.ExpFromSkills>{0}% of skill XP gained (more with intelligence)</Yuudong2.Rpg.ExpFromSkills>
+  <Yuudong2.Rpg.ExpFromKills>{0}% of a killed enemy's combat power</Yuudong2.Rpg.ExpFromKills>
+  <Yuudong2.Rpg.ExpFromAnimals>Animals gain {0} every 10 seconds</Yuudong2.Rpg.ExpFromAnimals>
+  <Yuudong2.Rpg.NeedExpFormula>XP to next level = 100 × ln(level + 1) × (1 + level × 1%)</Yuudong2.Rpg.NeedExpFormula>
+  <Yuudong2.Rpg.MaxLevel>Max level: {0}</Yuudong2.Rpg.MaxLevel>
+  <Yuudong2.Rpg.MaxLevelNone>Max level: none</Yuudong2.Rpg.MaxLevelNone>
+  <Yuudong2.Rpg.LevelNow>Level {0}, XP {1} / {2}</Yuudong2.Rpg.LevelNow>
+  <Yuudong2.Rpg.PointsTip>Unspent attribute points. Use the buttons in the attribute columns to spend them. With no points, tick an attribute's box to auto-spend future points there (only one). Points can be refunded down to the starting minimum ({0}).</Yuudong2.Rpg.PointsTip>
+  <Yuudong2.Rpg.AutoNow>Auto-spending into: {0}</Yuudong2.Rpg.AutoNow>
+  <Yuudong2.Rpg.AutoTip>When on, level-up points go into {0} automatically. Only one attribute can be selected.</Yuudong2.Rpg.AutoTip>
+  <Yuudong2.Rpg.Auto>auto</Yuudong2.Rpg.Auto>
+  <Yuudong2.Rpg.DistributeTip>Spend points\nClick: +1\nShift+click: +10\nCtrl+click: +100\nAlt+click: refund (with Shift/Ctrl for 10/100, down to the starting minimum {0})</Yuudong2.Rpg.DistributeTip>
+  <Yuudong2.Rpg.Reroll>Reroll (god mode): refunds points equal to level and rerolls starting attributes.</Yuudong2.Rpg.Reroll>
+  <Yuudong2.Rpg.GodPoints>Add points (god mode)\nClick +1, Shift +10, Ctrl +100, Alt reset to 0</Yuudong2.Rpg.GodPoints>
+  <Yuudong2.Rpg.Category>Showing: {0} (next)</Yuudong2.Rpg.Category>
+  <Yuudong2.Rpg.CategoryTip>Cycles colonists, animals, mechanoids and ghouls.</Yuudong2.Rpg.CategoryTip>
+  <Yuudong2.Rpg.Category.0>colonists</Yuudong2.Rpg.Category.0>
+  <Yuudong2.Rpg.Category.1>animals</Yuudong2.Rpg.Category.1>
+  <Yuudong2.Rpg.Category.2>mechanoids</Yuudong2.Rpg.Category.2>
+  <Yuudong2.Rpg.Category.3>ghouls</Yuudong2.Rpg.Category.3>
+  <Yuudong2.Rpg.Tab>Level</Yuudong2.Rpg.Tab>
+  <Yuudong2.Rpg.Level>Level</Yuudong2.Rpg.Level>
+  <Yuudong2.Rpg.Exp>XP</Yuudong2.Rpg.Exp>
+  <Yuudong2.Rpg.Points>Points</Yuudong2.Rpg.Points>
+  <Yuudong2.Rpg.TabHint>Hover a row for details. Spend points in the Level tab at the bottom bar.</Yuudong2.Rpg.TabHint>
+  <Yuudong2.Rpg.Set.Flat>Flat starting attributes</Yuudong2.Rpg.Set.Flat>
+  <Yuudong2.Rpg.Set.Flat.Desc>When on, new pawns start with all attributes at 0. When off, they are rolled between the min and max below.</Yuudong2.Rpg.Set.Flat.Desc>
+  <Yuudong2.Rpg.Set.SkillExp>Skill XP to level XP: {0}%</Yuudong2.Rpg.Set.SkillExp>
+  <Yuudong2.Rpg.Set.SkillExp.Desc>Share of skill XP that also counts as level XP.</Yuudong2.Rpg.Set.SkillExp.Desc>
+  <Yuudong2.Rpg.Set.AnimalExp>Animal XP every 10 seconds: {0}</Yuudong2.Rpg.Set.AnimalExp>
+  <Yuudong2.Rpg.Set.AnimalExp.Desc>Animals have no skills, so they gain XP over time.</Yuudong2.Rpg.Set.AnimalExp.Desc>
+  <Yuudong2.Rpg.Set.KillExp>Kill XP: {0}% of combat power</Yuudong2.Rpg.Set.KillExp>
+  <Yuudong2.Rpg.Set.KillExp.Desc>XP gained from a kill as a share of the enemy's combat power.</Yuudong2.Rpg.Set.KillExp.Desc>
+  <Yuudong2.Rpg.Set.StartMin>Random starting attribute min: {0}</Yuudong2.Rpg.Set.StartMin>
+  <Yuudong2.Rpg.Set.StartMin.Desc>Used when flat starting attributes is off. Refunds also stop at this value.</Yuudong2.Rpg.Set.StartMin.Desc>
+  <Yuudong2.Rpg.Set.StartMax>Random starting attribute max: {0}</Yuudong2.Rpg.Set.StartMax>
+  <Yuudong2.Rpg.Set.StartMax.Desc>Used when flat starting attributes is off.</Yuudong2.Rpg.Set.StartMax.Desc>
+  <Yuudong2.Rpg.Set.MaxLevel>Max level (0 for none):</Yuudong2.Rpg.Set.MaxLevel>
+  <Yuudong2.Rpg.Set.MaxLevel.Desc>Pawns stop leveling at this level.</Yuudong2.Rpg.Set.MaxLevel.Desc>
+  <Yuudong2.Rpg.Set.Scaling>New pawn level scaling: {0}% of colonist average</Yuudong2.Rpg.Set.Scaling>
+  <Yuudong2.Rpg.Set.Scaling.Desc>Sets new pawns' (including enemies') level to this share of the colonist average. 0 disables it.</Yuudong2.Rpg.Set.Scaling.Desc>
+  <Yuudong2.Gene.OverrideSorting>Better genepack sorting</Yuudong2.Gene.OverrideSorting>
+  <Yuudong2.Gene.OverrideSorting.Desc>Sorts genepacks by their most impactful gene instead of the first one.</Yuudong2.Gene.OverrideSorting.Desc>
+  <Yuudong2.Gene.SinglesFirst>Single genes first</Yuudong2.Gene.SinglesFirst>
+  <Yuudong2.Gene.SinglesFirst.Desc>Puts single-gene packs first.</Yuudong2.Gene.SinglesFirst.Desc>
+  <Yuudong2.Gene.Saturation>Background saturation: {0}</Yuudong2.Gene.Saturation>
+  <Yuudong2.Gene.Saturation.Desc>Strength of the ownership background colors.</Yuudong2.Gene.Saturation.Desc>
+  <Yuudong2.Gene.AltColors>Alternate colors</Yuudong2.Gene.AltColors>
+  <Yuudong2.Gene.AltColors.Desc>Uses an alternate color scheme.</Yuudong2.Gene.AltColors.Desc>
+  <Yuudong2.Gene.SellFromBanks>Sell from gene banks</Yuudong2.Gene.SellFromBanks>
+  <Yuudong2.Gene.SellFromBanks.Desc>Lists genepacks stored in gene banks for trade.</Yuudong2.Gene.SellFromBanks.Desc>
+  <Yuudong2.Gene.LibraryHint>Pick ignored genes with the gene library button on the gene assembler. Currently ignoring {0}.</Yuudong2.Gene.LibraryHint>
+  <Yuudong2.Gene.UI.ViewLibrary>View library</Yuudong2.Gene.UI.ViewLibrary>
+  <Yuudong2.Gene.UI.ViewLibrary.Desc>Open the gene library.</Yuudong2.Gene.UI.ViewLibrary.Desc>
+  <Yuudong2.Gene.UI.Library>Gene library</Yuudong2.Gene.UI.Library>
+  <Yuudong2.Gene.UI.Cancel>Cancel</Yuudong2.Gene.UI.Cancel>
+  <Yuudong2.Gene.UI.Ignore>Ignore</Yuudong2.Gene.UI.Ignore>
+  <Yuudong2.Gene.UI.Allow>Allow</Yuudong2.Gene.UI.Allow>
+  <Yuudong2.Gene.UI.Cosmetic>Cosmetic</Yuudong2.Gene.UI.Cosmetic>
+  <Yuudong2.Gene.UI.Positive>Positive</Yuudong2.Gene.UI.Positive>
+  <Yuudong2.Gene.UI.Negative>Negative</Yuudong2.Gene.UI.Negative>
+  <Yuudong2.Gene.UI.Archite>Archite</Yuudong2.Gene.UI.Archite>
+  <Yuudong2.Gene.UI.All>All</Yuudong2.Gene.UI.All>
+  <Yuudong2.Gene.UI.SwitchVisibility>Switch visibility</Yuudong2.Gene.UI.SwitchVisibility>
+  <Yuudong2.Gene.UI.Hide0>Show all genes</Yuudong2.Gene.UI.Hide0>
+  <Yuudong2.Gene.UI.Hide1>Hide fully acquired genes</Yuudong2.Gene.UI.Hide1>
+  <Yuudong2.Gene.UI.Hide2>Hide fully and partially acquired genes</Yuudong2.Gene.UI.Hide2>
+  <Yuudong2.Gene.UI.Hide3>Hide ignored genes</Yuudong2.Gene.UI.Hide3>
+  <Yuudong2.Gene.UI.Hide4>Hide fully acquired and ignored genes</Yuudong2.Gene.UI.Hide4>
+  <Yuudong2.Gene.UI.Hide5>Hide fully, partially acquired and ignored genes</Yuudong2.Gene.UI.Hide5>
+  <Yuudong2.Gene.UI.SaveAndClose>Save and close</Yuudong2.Gene.UI.SaveAndClose>
+  <Yuudong2.Gene.UI.Eject>Eject genepacks</Yuudong2.Gene.UI.Eject>
+  <Yuudong2.Gene.UI.Eject.Desc>Ejects duplicate genepacks for selling. Can also eject cosmetic or combined genepacks.</Yuudong2.Gene.UI.Eject.Desc>
+  <Yuudong2.Gene.UI.EjectDuplicates>Eject duplicates</Yuudong2.Gene.UI.EjectDuplicates>
+  <Yuudong2.Gene.UI.EjectCosmetic>Eject cosmetic</Yuudong2.Gene.UI.EjectCosmetic>
+  <Yuudong2.Gene.UI.EjectCombined>Eject combined genepacks</Yuudong2.Gene.UI.EjectCombined>
+  <Yuudong2.Gene.UI.NoDuplicates>No duplicate genepacks.</Yuudong2.Gene.UI.NoDuplicates>
+  <Yuudong2.Gene.UI.NoCosmetic>No cosmetic genepacks.</Yuudong2.Gene.UI.NoCosmetic>
+  <Yuudong2.Gene.UI.NoCombined>No combined genepacks.</Yuudong2.Gene.UI.NoCombined>
+  <Yuudong2.Gene.UI.Ejected>Ejected {0} genepacks.</Yuudong2.Gene.UI.Ejected>
+  <Yuudong2.Gene.UI.FilledSlots>Filled slots: {0}/{1}</Yuudong2.Gene.UI.FilledSlots>
+  <Yuudong2.Feature.RealisticRooms>Realistic room sizes</Yuudong2.Feature.RealisticRooms>
+  <Yuudong2.Feature.RealisticRooms.Desc>Lowers the space needed for each room size tier and reduces the indoor beauty penalty of dirt and sand from -15 to -4. (Realistic Rooms Rewritten)</Yuudong2.Feature.RealisticRooms.Desc>
+  <Yuudong2.Rooms.Note>Minimum space for each tier. A lower tier cannot exceed the next one. Values ending in .5 are recommended because the game rounds. Changes apply immediately.</Yuudong2.Rooms.Note>
+  <Yuudong2.Rooms.Stage0>Rather tight</Yuudong2.Rooms.Stage0>
+  <Yuudong2.Rooms.Stage1>Average-sized</Yuudong2.Rooms.Stage1>
+  <Yuudong2.Rooms.Stage2>Somewhat spacious</Yuudong2.Rooms.Stage2>
+  <Yuudong2.Rooms.Stage3>Quite spacious</Yuudong2.Rooms.Stage3>
+  <Yuudong2.Rooms.Stage4>Very spacious</Yuudong2.Rooms.Stage4>
+  <Yuudong2.Rooms.Stage5>Extremely spacious</Yuudong2.Rooms.Stage5>
+  <Yuudong2.Rooms.Reset>Reset to defaults</Yuudong2.Rooms.Reset>
+  <Yuudong2.Rooms.Filth>Indoor dirt and sand beauty -4</Yuudong2.Rooms.Filth>
+  <Yuudong2.Rooms.Filth.Desc>When on, indoor dirt and sand filth has -4 beauty. When off, it returns to the original value (vanilla -15).</Yuudong2.Rooms.Filth.Desc>
+  <Yuudong2.Feature.GloomyWallReplace>Gloomy wall replacement</Yuudong2.Feature.GloomyWallReplace>
+  <Yuudong2.Feature.GloomyWallReplace.Desc>Building a Gloomy wall (vent, window, sterile, reinforced walls, etc.) on an existing wall replaces it in place without deconstructing, keeping the roof and room. Part of the old wall's materials is refunded. Vent walls use the placement rotation, or turn 90 degrees if both sides would be blocked. Requires the stuff replacement feature.</Yuudong2.Feature.GloomyWallReplace.Desc>
+  <Yuudong2.Feature.MapWideTradeBeacon>Map-wide trade beacon</Yuudong2.Feature.MapWideTradeBeacon>
+  <Yuudong2.Feature.MapWideTradeBeacon.Desc>While any powered orbital trade beacon exists, orbital trade uses everything in colony storage across the whole map (stockpiles, storage buildings such as shelves, bookcases and outfit stands, gene banks) instead of the beacon radius. Loose items on the ground and forbidden items are excluded. Silver payments come from storage too. The beacon radius is hidden and the beacon costs 10 times as much.</Yuudong2.Feature.MapWideTradeBeacon.Desc>
+  <Yuudong2.TradeBeacon.DescNote>(Yuudong2Mod) Trades everything in colony storage across the whole map regardless of range. Loose items on the ground and forbidden items are excluded. One beacon is enough.</Yuudong2.TradeBeacon.DescNote>
+  <Yuudong2.Feature.TechprintTradeHighlight>Techprint trade highlight</Yuudong2.Feature.TechprintTradeHighlight>
+  <Yuudong2.Feature.TechprintTradeHighlight.Desc>Colors techprint rows in the trade window: green if already researched or the applied and owned techprints are enough, yellow if partly applied or owned, red if none. Hover to see applied and owned counts. Uses the gene assistant colors.</Yuudong2.Feature.TechprintTradeHighlight.Desc>
+  <Yuudong2.Techprint.Finished>{0}: already researched. This techprint is not needed.</Yuudong2.Techprint.Finished>
+  <Yuudong2.Techprint.Status>{0}\nTechprints applied: {1}/{2}\nTechprints in your colony: {3}</Yuudong2.Techprint.Status>
+  <Yuudong2.Feature.RatkinDrawScaleFix>Ratkin pawn rendering fix</Yuudong2.Feature.RatkinDrawScaleFix>
+  <Yuudong2.Feature.RatkinDrawScaleFix.Desc>Prevents NewRatkinPlus's gene draw-scale cache from being corrupted by concurrent render threads, which made every pawn invisible. Uses a thread-safe cache for the same calculation. Does nothing without NewRatkinPlus.</Yuudong2.Feature.RatkinDrawScaleFix.Desc>
+  <Yuudong2.Feature.TpsDisplay>TPS display</Yuudong2.Feature.TpsDisplay>
+  <Yuudong2.Feature.TpsDisplay.Desc>Shows "TPS : current(target)" above the weather and condition readouts at the bottom right. Current updates once per second and is the ticks actually run in that second; target is the ticks per second for the current speed (60 at normal speed, 0 when paused).</Yuudong2.Feature.TpsDisplay.Desc>
+  <Yuudong2.Feature.BetterWorkbench>Better workbench management</Yuudong2.Feature.BetterWorkbench>
+  <Yuudong2.Feature.BetterWorkbench.Desc>Adds quality, hit point, material and stockpile limits for counted items, extra counted products, counting items on away colonists, bill copy/paste/linking and pawn/workbench restrictions. Unlike the original, away colonists are still counted after loading a save and when they are off-map, such as colonists lent to a quest. (Better Workbench Management)</Yuudong2.Feature.BetterWorkbench.Desc>
+
+</LanguageData>

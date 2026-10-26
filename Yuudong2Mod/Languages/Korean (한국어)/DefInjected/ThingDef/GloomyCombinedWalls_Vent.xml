@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+
+  <GL_HeavyVentWall.label>강화 환풍벽</GL_HeavyVentWall.label>
+  <GL_HeavyVentWall.description>폭발에 강한 튼튼한 글루미 환풍벽입니다. 열어 두면 공기가 통합니다.</GL_HeavyVentWall.description>
+  <GL_SterileVentWall.label>항균 환풍벽</GL_SterileVentWall.label>
+  <GL_SterileVentWall.description>의료 시설에 어울리는 깨끗한 글루미 환풍벽입니다. 열어 두면 공기가 통합니다.</GL_SterileVentWall.description>
+  <GL_HeavySterileVentWall.label>강화 항균 환풍 벽</GL_HeavySterileVentWall.label>
+  <GL_HeavySterileVentWall.description>폭발에 강하고 깨끗한 글루미 환풍벽입니다. 열어 두면 공기가 통합니다.</GL_HeavySterileVentWall.description>
+
+</LanguageData>

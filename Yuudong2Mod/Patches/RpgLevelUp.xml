@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Patch>
+
+  <!-- RPG 레벨업 기능이 꺼져 있으면 레벨 탭 버튼을 지운다. -->
+  <Operation Class="Yuudong2Mod.PatchOperationFeature">
+    <feature>RpgLevelUp</feature>
+    <disabled Class="PatchOperationRemove">
+      <xpath>/Defs/MainButtonDef[defName="Yuudong2_RpgLevel"]</xpath>
+    </disabled>
+  </Operation>
+
+</Patch>

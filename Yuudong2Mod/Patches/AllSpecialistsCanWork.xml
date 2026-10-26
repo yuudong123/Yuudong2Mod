@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Patch>
+
+  <!-- All Specialists Can Work 포팅: 역할에 따른 작업 제한과 무기 제한을 없앤다. -->
+  <Operation Class="Yuudong2Mod.PatchOperationFeature">
+    <feature>AllSpecialistsCanWork</feature>
+    <enabled Class="PatchOperationSequence">
+      <operations>
+        <li Class="PatchOperationReplace">
+          <xpath>/Defs/PreceptDef[@ParentName="PreceptRoleSingleBase" or @ParentName="PreceptRoleMultiBase"]/roleDisabledWorkTags</xpath>
+          <value>
+            <roleDisabledWorkTags></roleDisabledWorkTags>
+          </value>
+        </li>
+        <li Class="PatchOperationRemove">
+          <xpath>/Defs/PreceptDef[@ParentName="PreceptRoleSingleBase" or @ParentName="PreceptRoleMultiBase"]/roleEffects/li[starts-with(@Class,'RoleEffect_No')]</xpath>
+        </li>
+      </operations>
+    </enabled>
+  </Operation>
+
+</Patch>

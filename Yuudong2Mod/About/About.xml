@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ModMetaData>
+  <name>Yuudong2Mod</name>
+  <author>yuudong2</author>
+  <packageId>yuudong2.yuudong2mod</packageId>
+  <modVersion>0.1.0</modVersion>
+  <supportedVersions>
+    <li>1.7</li>
+  </supportedVersions>
+  <modDependencies>
+    <li>
+      <packageId>brrainz.harmony</packageId>
+      <displayName>하모니</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2009463077</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>ludeon.rimworld.biotech</packageId>
+      <displayName>바이오테크</displayName>
+    </li>
+  </modDependencies>
+  <loadAfter>
+    <li>brrainz.harmony</li>
+    <li>ludeon.rimworld.biotech</li>
+    <li>vat.epoeforked</li>
+    <li>RooAndGloomy.DragonianRaceMod</li>
+    <li>erdelf.HumanoidAlienRaces</li>
+    <li>erdelf.HumanoidAlienRaces.dev</li>
+    <li>hailuan.customquestframework</li>
+    <li>Solaris.FurnitureBase</li>
+    <li>Gloomy.Furniture.Continued</li>
+  </loadAfter>
+  <incompatibleWith>
+    <li>falconne.BWM</li>
+  </incompatibleWith>
+  <description><![CDATA[
+## 변경 내용
+
+- 청혼은 거절되지 않고 항상 수락됩니다.
+- 기본 이별, 파혼, 이혼 경로를 막습니다.
+- 사랑나누기는 연인/약혼자/배우자 관계가 없어도 같은 다인용 침대에 누워 있으면 가능하게 합니다. 이때 두 폰 모두 18세 이상 성인이어야 합니다.
+- 선반과 작은 선반 위를 지나갈 때 생기는 이동속도 감소를 제거하고, 소집한 폰이 선반 위에 서 있을 수 있게 합니다.
+- 건강 탭은 부위 순서를 유지한 채, 같은 부위 안에서 상처가 아닌 항목을 가나다/ABC 오름차순으로 먼저 정렬하고 상처 항목을 그 뒤에 오름차순으로 정렬합니다.
+- EPOE-Forked가 함께 활성화되어 있으면 인공자아 핵의 주기 치료와 AI 결함을 제거하고, 최고 상태의 능력치 보너스만 유지합니다.
+- 드래고니안 모드가 함께 활성화되어 있으면 드래곤본 유전자의 동시 발현 불가 제한을 제거합니다.
+- 건축 > 기타에 "상단 도착 지점"을 추가합니다. 놓아두면 방문 상단이 그 지점과 가장 가까운 맵 가장자리로 들어와 그 지점에 머물며 거래합니다.
+- 건축 > 기타에 "물자 낙하 지점"을 추가합니다. 놓아두면 궤도 상선 구매품, 퀘스트 보상, 왕족 지원 물자, 돌아오는 정착민의 수송 포드가 그 지점 근처에 떨어집니다. 적 공습은 영향을 받지 않습니다.
+- 두 지점은 맵마다 하나씩만 둘 수 있고, 새로 놓으면 기존 지점이 옮겨집니다. 지점이 없거나 쓸 수 없으면 바닐라 동작을 따릅니다.
+- 화면 메시지를 정착민 바 아래로 내립니다. (Better Message Placement 포팅)
+- 드래곤본 유전자가 상처 회복 유전자에 덮여 꺼지는 문제를 불러오기 때 바로잡습니다. (Dragonian to Super Fast Healing Patch 포팅)
+- 이데올로기 역할을 맡아도 작업 제한과 무기 제한이 생기지 않습니다. (All Specialists Can Work 포팅)
+- 옷 마모가 바닐라의 5%로 줄고, 플레이어 쪽 폰이 입은 옷은 내구도가 항상 최대로 유지됩니다. (Durable Clothes, Infinite apparel durability 포팅)
+- 바이오스컬프터 포드의 모든 주기가 1일로 줄고, 생체조율 유지 기간이 없어집니다. (Faster Biosculpter Pod 포팅)
+- 맵 가장자리 건설·구역 제한과 경계선을 없앱니다. (Change map edge limit 포팅)
+- 궤도 상선·정착지·상단의 재고와 은이 8배가 되고, 랜디 계열 스토리텔러에서 궤도 상선이 4배 자주 옵니다. (Trading Options Continue 포팅)
+- 통신기 세력 대화에 "모욕하기"를 추가합니다. 적대 세력을 모욕하면 1~7시간 뒤 습격이 옵니다. (Raids For Me 포팅)
+- 작업대·TV·연구대 같은 전력 건물이 쓰는 동안만 정격 전력을 쓰고 쉬는 동안에는 1W만 씁니다. (Turn It On and Off 포팅)
+- 모자를 써도 머리카락을 숨기지 않고 모자를 머리카락 위에 그립니다. 모드 종족과 모드 모자에도 적용되며, 헬멧·수염·모자 크기·모자별/머리 모양별 예외를 세부 설정에서 고릅니다. (Show Hair With Hats, Dubs Apparel Tweaks 대체)
+- 새 게임 고급 설정에서 시작 맵 크기를 가로·세로로 직접 정하고, 기본 맵 크기를 세부 설정에서 고릅니다. (Better Map Sizes 포팅)
+- 이데올로기의 밈, 교리, 의식 개수 제한을 풀고 모든 교리를 편집 화면에서 지울 수 있게 합니다. (Ducks' No Limits - Ideology 포팅)
+- 건축 > 구조물의 재질 교체 버튼이나 같은 건물을 다른 재질로 짓기로, 건물을 해체하지 않고 그 자리에서 재질만 바꿉니다. 방이 깨지지 않고 작업대 작업 목록도 유지됩니다. (Replace Stuff의 재질 교체 기능만 포팅)
+- 새로 생성되는 폰에 무작위 가족·연인 관계를 만들지 않습니다. (No Random Relations 포팅)
+- 정착민이 밥을 먹을 때 근처 식탁이 있는 방 안의 음식을 먼저 고릅니다. (Room Food 포팅)
+- 동물마다 따로 생기는 고기를 날고기·인육·곤충 고기로 합칩니다. 종족별 정책을 세부 설정에서 고릅니다. (Optimization: Meats 포팅)
+- 쌀과 건초처럼 한 칸에 여러 포기가 그려지는 작물을 한 포기만 그립니다. (Single Plant Texture Patch 포팅)
+- 피해량, 보호막 흡수량, 근접 공격 빗나감을 화면에 숫자로 띄웁니다. (Damage Indicators 포팅)
+- 지정한 키(기본 Delete)로 화면 오른쪽 편지를 지웁니다. (Letter stack cleaner 포팅)
+- 속도별 배율을 바꾸고 초고속 버튼을 항상 보여주며, 시간 버튼 오른쪽 클릭으로 이벤트 중 감속 방식을 고릅니다. (Smart Speed 포팅)
+- 작업 우선순위, 복사·붙여넣기, 거래 수량 버튼을 끌어서 한 번에 누릅니다. (DragSelect 포팅)
+- 바이오닉 눈과 아코텍 눈 그림을 얼굴에 그리지 않습니다. (Hidden Eyes 포팅, 텍스처 대신 렌더 노드 제거)
+- 기술 레벨 20 제한을 없애고 경험치, 제작 품질, 작업 지시 범위를 그에 맞춥니다. (EndlessGrowth 포팅)
+- 전문가 역할을 특정 밈 없이도 만들 수 있습니다. (Roles untied to memes 포팅)
+- 전문가 명령을 해당 작업을 시작할 때 자동으로 씁니다. 명령 버튼 오른쪽 클릭으로 켜고 끕니다. (Auto-Cast Specialist Commands 포팅)
+- 일부 시나리오에서 제국 호감도가 -100으로 시작하는 문제를 막습니다. (Empire -100 goodwill in scenarios Fix 포팅)
+- GloomyFurniture (Continued)가 있으면 추가 가구 Def 116개와 수정 패치를 넣고, 벽걸이 가구 칸에 청사진을 놓을 수 있게 합니다. (Gloomy Furniture Fix 포팅)
+- 항균 벽, 강화 벽, 총안 강화 벽과 강화 벽 연구를 추가합니다. Gloomy 가구 기능과 함께 켜고 끕니다. (MoreGloomyWalls 포팅)
+- 강화 항균 벽과, GloomyFurniture (Continued)가 있으면 강화 환풍벽·항균 환풍벽·강화 항균 환풍 벽을 추가합니다. Gloomy 벽은 모두 건축 > 구조물에 모읍니다.
+- 강화 벽·강화 항균 벽(과 강화 문)은 중력선 선체처럼 재질과 상관없이 진공을 막습니다.
+- GloomyFurniture (Continued)가 있으면 Gloomy 문과 같은 그래픽의 강화 문·강화 항균 문과, 전기로 움직이는 강화 자동문·강화 항균 자동문을 추가합니다.
+- Gloomy 벽을 이미 지은 벽 위에 지으면 해체 없이 그 자리에서 교체합니다 (재질 교체 프레임 사용).
+- 연애 시도·성공·이별 확률에 배율을 곱합니다. 기본값은 바람·다른 세력 연애·이별 0배입니다. (Romance Tweaks 포팅)
+- 지하 자원 스캐너와 장거리 광물 스캐너를 지붕 아래에서도 쓸 수 있습니다. (Roofed Scanning 포팅)
+- 폰이 스킬 경험치와 처치로 레벨을 올리고 힘·재주·민첩·체력·지능·매력에 포인트를 나눕니다. 능력치에 마우스를 올리면 어떤 스탯이 얼마나 바뀌는지, 한계가 어디까지인지, 현재 효과가 얼마인지 보여줍니다. (RPG Style Level Up Mod 포팅)
+- 유전자 조립기에 보유 여부 색 표시, 유전자 서고, 중복 유전자팩 배출, 채운 슬롯 표시를 추가합니다. (Random's Gene Assistant 포팅)
+- 드래고니안 종족 모드가 있으면 DragonianMix의 세력, 폰, 능력, 무기, 가스 등을 넣습니다. (DragonianMix 포팅)
+- 방 크기 등급에 필요한 넓이를 낮추고, 실내 흙·모래 오염의 아름다움 감소를 -4로 줄입니다. (Realistic Rooms Rewritten 포팅)
+- 작업 목표 개수 세기 조건(품질·내구도·재질·창고·다른 물건 함께 세기·자리 비운 정착민 것도 세기), 계획서 복사·연결, 정착민·작업대 제한을 추가합니다. (Better Workbench Management 포팅)
+- 화면 오른쪽 아래 날씨·상태 표시 위에 "TPS : 현재(목표)"를 보여줍니다. 목표 값은 배속에 따라 바뀝니다.
+- 상단 도착 지점은 NewRatkinPlus 유랑단에도 적용됩니다.
+- 거래창에서 기술 청사진 줄에 이미 적용·보유했는지 색으로 표시합니다 (유전자팩 표시와 같은 색).
+- 궤도 무역 송신기가 하나만 있어도 맵 전체의 정착지 창고 물건으로 궤도 상선과 거래합니다. 반경 표시는 숨기고 건설 비용은 10배입니다.
+  ]]></description>
+</ModMetaData>

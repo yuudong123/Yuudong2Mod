@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+
+  <!-- RPG Style Level Up Mod 포팅: 레벨 탭 -->
+  <MainButtonDef>
+    <defName>Yuudong2_RpgLevel</defName>
+    <label>level</label>
+    <description>Manage colonist levels and attribute points.</description>
+    <tabWindowClass>Yuudong2Mod.Rpg.MainTabWindow_RpgLevel</tabWindowClass>
+    <order>15</order>
+  </MainButtonDef>
+
+  <PawnColumnDef>
+    <defName>Yuudong2_Rpg_Label</defName>
+    <workerClass>Yuudong2Mod.Rpg.PawnColumnWorker_RpgLabel</workerClass>
+    <sortable>true</sortable>
+    <widthPriority>100</widthPriority>
+  </PawnColumnDef>
+
+  <PawnColumnDef>
+    <defName>Yuudong2_Rpg_Level</defName>
+    <workerClass>Yuudong2Mod.Rpg.PawnColumnWorker_RpgLevel</workerClass>
+    <sortable>true</sortable>
+    <label>level</label>
+  </PawnColumnDef>
+
+  <PawnColumnDef>
+    <defName>Yuudong2_Rpg_Exp</defName>
+    <workerClass>Yuudong2Mod.Rpg.PawnColumnWorker_RpgExp</workerClass>
+    <label>EXP</label>
+  </PawnColumnDef>
+
+  <PawnColumnDef>
+    <defName>Yuudong2_Rpg_NeedExp</defName>
+    <workerClass>Yuudong2Mod.Rpg.PawnColumnWorker_RpgNeedExp</workerClass>
+    <label>need EXP</label>
+  </PawnColumnDef>
+
+  <PawnColumnDef>
+    <defName>Yuudong2_Rpg_Points</defName>
+    <workerClass>Yuudong2Mod.Rpg.PawnColumnWorker_RpgPoints</workerClass>
+    <sortable>true</sortable>
+    <label>points</label>
+  </PawnColumnDef>
+
+  <PawnColumnDef>
+    <defName>Yuudong2_Rpg_STR</defName>
+    <workerClass>Yuudong2Mod.Rpg.PawnColumnWorker_RpgAttribute</workerClass>
+    <sortable>true</sortable>
+    <label>STR</label>
+  </PawnColumnDef>
+
+  <PawnColumnDef>
+    <defName>Yuudong2_Rpg_DEX</defName>
+    <workerClass>Yuudong2Mod.Rpg.PawnColumnWorker_RpgAttribute</workerClass>
+    <sortable>true</sortable>
+    <label>DEX</label>
+  </PawnColumnDef>
+
+  <PawnColumnDef>
+    <defName>Yuudong2_Rpg_AGL</defName>
+    <workerClass>Yuudong2Mod.Rpg.PawnColumnWorker_RpgAttribute</workerClass>
+    <sortable>true</sortable>
+    <label>AGL</label>
+  </PawnColumnDef>
+
+  <PawnColumnDef>
+    <defName>Yuudong2_Rpg_CON</defName>
+    <workerClass>Yuudong2Mod.Rpg.PawnColumnWorker_RpgAttribute</workerClass>
+    <sortable>true</sortable>
+    <label>CON</label>
+  </PawnColumnDef>
+
+  <PawnColumnDef>
+    <defName>Yuudong2_Rpg_INT</defName>
+    <workerClass>Yuudong2Mod.Rpg.PawnColumnWorker_RpgAttribute</workerClass>
+    <sortable>true</sortable>
+    <label>INT</label>
+  </PawnColumnDef>
+
+  <PawnColumnDef>
+    <defName>Yuudong2_Rpg_CHA</defName>
+    <workerClass>Yuudong2Mod.Rpg.PawnColumnWorker_RpgAttribute</workerClass>
+    <sortable>true</sortable>
+    <label>CHA</label>
+  </PawnColumnDef>
+
+  <PawnTableDef>
+    <defName>Yuudong2_RpgLevelTable</defName>
+    <label>colonists</label>
+    <workerClass>PawnTable_PlayerPawns</workerClass>
+    <columns>
+      <li>Yuudong2_Rpg_Label</li>
+      <li>Yuudong2_Rpg_Level</li>
+      <li>Yuudong2_Rpg_Exp</li>
+      <li>Yuudong2_Rpg_NeedExp</li>
+      <li>Yuudong2_Rpg_Points</li>
+      <li>Yuudong2_Rpg_STR</li>
+      <li>Yuudong2_Rpg_DEX</li>
+      <li>Yuudong2_Rpg_AGL</li>
+      <li>Yuudong2_Rpg_CON</li>
+      <li>Yuudong2_Rpg_INT</li>
+      <li>Yuudong2_Rpg_CHA</li>
+    </columns>
+    <minWidth>1032</minWidth>
+  </PawnTableDef>
+
+</Defs>

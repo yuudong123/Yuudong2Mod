@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Patch>
+
+  <!-- 기능이 꺼져 있으면 건축 메뉴에서 지점을 숨긴다. -->
+  <Operation Class="Yuudong2Mod.PatchOperationFeature">
+    <feature>CaravanArrivalSpot</feature>
+    <disabled Class="PatchOperationRemove">
+      <xpath>/Defs/ThingDef[defName="Yuudong2_CaravanArrivalSpot"]/designationCategory</xpath>
+    </disabled>
+  </Operation>
+
+  <Operation Class="Yuudong2Mod.PatchOperationFeature">
+    <feature>TradeShipDropSpot</feature>
+    <disabled Class="PatchOperationRemove">
+      <xpath>/Defs/ThingDef[defName="Yuudong2_TradeShipDropSpot"]/designationCategory</xpath>
+    </disabled>
+  </Operation>
+
+</Patch>

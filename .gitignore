@@ -1,0 +1,27 @@
+Yuudong2Mod/Source/**/bin/
+Yuudong2Mod/Source/**/obj/
+
+# ---- Not published: third-party originals (code and assets taken verbatim from other authors' mods) ----
+# Better Workbench Management (Falconne) - original source
+Yuudong2Mod/Source/Yuudong2Mod/BetterWorkbench/
+Yuudong2Mod/Languages/*/Keyed/BetterWorkbench.xml
+Yuudong2Mod/Languages/*/DefInjected/BillRepeatModeDef/BetterWorkbench_BillRepeatModeDefs.xml
+# DragonianMix (kalospacer) - original source and content
+Yuudong2Mod/Source/Yuudong2Mod/DragonianMix/
+Yuudong2Mod/DragonianMix/
+# Random's Gene Assistant (RandomCoughDrop) - original source (SettingsRef.cs is a rewrite and stays)
+Yuudong2Mod/Source/Yuudong2Mod/GeneAssistant/*
+!Yuudong2Mod/Source/Yuudong2Mod/GeneAssistant/SettingsRef.cs
+# Gloomy Furniture Fix (rabiosus) and MoreGloomyWalls (sunny) - defs, patches, translations
+Yuudong2Mod/Defs/GloomyFurnitureFix/*
+!Yuudong2Mod/Defs/GloomyFurnitureFix/GloomyReinforcedDoors.xml
+!Yuudong2Mod/Defs/GloomyFurnitureFix/GloomyCombinedWalls_Vent.xml
+Yuudong2Mod/Patches/GloomyFurnitureFix.xml
+Yuudong2Mod/Patches/MoreGloomyWalls.xml
+Yuudong2Mod/Languages/*/DefInjected/ThingDef/GloomyFurnitureFix_*.xml
+# Optimization: Meats (seohyeon) - original whitelist
+Yuudong2Mod/Defs/MeatWhiteList.xml
+# Textures taken from the original mods
+Yuudong2Mod/Textures/
+# Built DLL (contains the excluded sources)
+Yuudong2Mod/Assemblies/

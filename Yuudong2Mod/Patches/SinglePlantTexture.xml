@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Patch>
+
+  <!-- Single Plant Texture Patch 포팅: 쌀과 건초 같은 작물을 한 칸에 한 포기만 그린다. -->
+  <Operation Class="Yuudong2Mod.PatchOperationFeature">
+    <feature>SinglePlantTexture</feature>
+    <enabled Class="PatchOperationSequence">
+      <success>Always</success>
+      <operations>
+<li Class="PatchOperationSequence">
+    <success>Always</success>
+    <operations>
+      <li Class="PatchOperationReplace">
+        <xpath>/Defs/ThingDef[defName="Plant_Rice"]/plant/maxMeshCount</xpath>
+        <value>
+          <maxMeshCount>1</maxMeshCount>
+        </value>
+      </li>
+      <li Class="PatchOperationReplace">
+        <xpath>/Defs/ThingDef[defName="Plant_Rice"]/plant/visualSizeRange</xpath>
+        <value>
+          <visualSizeRange>0.2~0.9</visualSizeRange>
+        </value>
+      </li>
+      <li Class="PatchOperationReplace">
+        <xpath>/Defs/ThingDef[defName="Plant_Haygrass"]/plant/maxMeshCount</xpath>
+        <value>
+          <maxMeshCount>1</maxMeshCount>
+        </value>
+      </li>
+      <li Class="PatchOperationReplace">
+        <xpath>/Defs/ThingDef[defName="Plant_Haygrass"]/plant/visualSizeRange</xpath>
+        <value>
+          <visualSizeRange>0.2~0.8</visualSizeRange>
+        </value>
+      </li>
+    </operations>
+  </li>
+      </operations>
+    </enabled>
+  </Operation>
+
+</Patch>

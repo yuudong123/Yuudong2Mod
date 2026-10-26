@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+
+  <Yuudong2_CaravanArrivalSpot.label>상단 도착 지점</Yuudong2_CaravanArrivalSpot.label>
+  <Yuudong2_CaravanArrivalSpot.description>방문 상단이 이 지점과 가장 가까운 맵 가장자리로 들어와서 이 지점 근처에 머물며 거래합니다. 맵마다 하나만 둘 수 있고, 새로 놓으면 기존 지점이 옮겨집니다.</Yuudong2_CaravanArrivalSpot.description>
+  <Yuudong2_TradeShipDropSpot.label>물자 낙하 지점</Yuudong2_TradeShipDropSpot.label>
+  <Yuudong2_TradeShipDropSpot.description>궤도 상선 구매품, 퀘스트 보상, 왕족 지원 물자, 돌아오는 정착민 등 수송 포드로 오는 물자가 이 지점 근처에 떨어집니다. 적 공습은 영향을 받지 않습니다. 지붕이 없는 곳에 두세요. 맵마다 하나만 둘 수 있고, 새로 놓으면 기존 지점이 옮겨집니다.</Yuudong2_TradeShipDropSpot.description>
+
+</LanguageData>

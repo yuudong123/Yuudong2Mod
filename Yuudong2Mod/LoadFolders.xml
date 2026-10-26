@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<loadFolders>
+  <v1.7>
+    <li>/</li>
+    <!-- DragonianMix 포팅: 원본과 같은 폴더 구성을 드래고니안 종족 모드가 있을 때만 읽는다. -->
+    <li IfModActive="RooAndGloomy.DragonianRaceMod">DragonianMix/1.7</li>
+    <li IfModActive="RooAndGloomy.DragonianRaceMod">DragonianMix/Content</li>
+    <li IfModActiveAll="RooAndGloomy.DragonianRaceMod, Ludeon.RimWorld.Anomaly">DragonianMix/Ano1.7</li>
+    <li IfModActiveAll="RooAndGloomy.DragonianRaceMod, Ludeon.RimWorld.Biotech">DragonianMix/Bio1.7</li>
+    <li IfModActiveAll="RooAndGloomy.DragonianRaceMod, Ludeon.RimWorld.Royalty">DragonianMix/Royal1.7</li>
+    <li IfModActiveAll="RooAndGloomy.DragonianRaceMod, hailuan.customquestframework">DragonianMix/CQF1.7</li>
+  </v1.7>
+</loadFolders>
