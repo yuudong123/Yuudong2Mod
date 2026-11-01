@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+
+  <!-- 저장 창 단축키 (SaveHotkey 기능). 옵션 > 조작의 "게임" 항목에서 바꿀 수 있다. -->
+  <KeyBindingDef ParentName="GameKeyBinding">
+    <defName>Yuudong2_OpenSaveDialog</defName>
+    <label>open save window (Yuudong2Mod)</label>
+    <defaultKeyCodeA>F5</defaultKeyCodeA>
+  </KeyBindingDef>
+
+</Defs>

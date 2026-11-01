@@ -30,6 +30,7 @@ namespace Yuudong2Mod
             WhenEnabled(Features.ShelfNoSlowdown, ShelfPathCostUtility.RemoveShelfPathCosts);
             WhenEnabled(Features.EpoeAiCore, EpoeCompatibilityUtility.ApplyDefPatches);
             WhenEnabled(Features.DragonianGenes, DragonianCompatibilityUtility.ApplyDefPatches);
+            WhenEnabled(Features.DragonianMix, DragonianOrbRemoval.RegisterRemovedDefs);
             WhenEnabled(Features.FasterBiosculpter, BiosculpterPodTweaks.ApplyDefPatches);
             WhenEnabled(Features.OrbitalTraderFrequency, TradingStockUtility.ApplyStorytellerPatches);
             WhenEnabled(Features.PowerOnDemand, PowerOnDemandDefs.Initialize);
@@ -40,6 +41,7 @@ namespace Yuudong2Mod
             WhenEnabled(Features.RealisticRooms, RealisticRoomsUtility.Apply);
             WhenEnabled(Features.GloomyFurnitureFix, GloomyWorkbenchSync.Apply);
             WhenEnabled(Features.MapWideTradeBeacon, MapWideTradeBeacon.ApplyDefChanges);
+            WhenEnabled(Features.EquipmentDurability, EquipmentDurabilityUtility.ApplyDefPatches);
 
             if (AppliedFeatures.Contains(Features.BetterWorkbench))
             {

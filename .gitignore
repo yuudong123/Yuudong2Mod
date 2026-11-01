@@ -21,6 +21,8 @@ Yuudong2Mod/Patches/MoreGloomyWalls.xml
 Yuudong2Mod/Languages/*/DefInjected/ThingDef/GloomyFurnitureFix_*.xml
 # Optimization: Meats (seohyeon) - original whitelist
 Yuudong2Mod/Defs/MeatWhiteList.xml
+# Gene Ripper (Defi) - building def copied from the original
+Yuudong2Mod/Defs/GeneRipper.xml
 # Textures taken from the original mods
 Yuudong2Mod/Textures/
 # Built DLL (contains the excluded sources)

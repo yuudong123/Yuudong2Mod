@@ -114,12 +114,6 @@
         <li Class="PatchOperationRemove"><xpath>/Defs/ThingDef[defName="ShieldDragonianOrb_BufferModule"]</xpath></li>
         <li Class="PatchOperationRemove"><xpath>/Defs/ThingDef[defName="ShieldDragonianOrb_Booster"]</xpath></li>
         <li Class="PatchOperationRemove"><xpath>/Defs/ThingDef[defName="ShieldDragonianOrb_AdvancedBooster"]</xpath></li>
-        <li Class="PatchOperationRemove"><xpath>/Defs/RecipeDef[defName="InstallShieldDragonianOrb_Booster"]</xpath></li>
-        <li Class="PatchOperationRemove"><xpath>/Defs/RecipeDef[defName="InstallShieldDragonianOrb_AdvancedBooster"]</xpath></li>
-        <li Class="PatchOperationRemove"><xpath>/Defs/RecipeDef[defName="InstallShieldDragonianOrb_AdaptiveModule"]</xpath></li>
-        <li Class="PatchOperationRemove"><xpath>/Defs/RecipeDef[defName="InstallShieldDragonianOrb_BufferModule"]</xpath></li>
-        <li Class="PatchOperationRemove"><xpath>/Defs/RecipeDef[defName="RemoveShieldDragonianOrb_AdaptiveModule"]</xpath></li>
-        <li Class="PatchOperationRemove"><xpath>/Defs/RecipeDef[defName="RemoveShieldDragonianOrb_BufferModule"]</xpath></li>
         <li Class="PatchOperationRemove"><xpath>/Defs/PawnKindDef[defName="Dragonian_Villager"]</xpath></li>
         <li Class="PatchOperationRemove"><xpath>/Defs/PawnKindDef[defName="Dragonian_Clan_Guard"]</xpath></li>
         <li Class="PatchOperationRemove"><xpath>/Defs/PawnKindDef[defName="Dragonian_Clan_Hunter"]</xpath></li>
@@ -132,12 +126,6 @@
         <li Class="PatchOperationRemove"><xpath>/Defs/PawnKindDef[defName="Dragonian_Royal_Warrier"]</xpath></li>
         <li Class="PatchOperationRemove"><xpath>/Defs/PawnKindDef[defName="Dragonian_Princess"]</xpath></li>
         <li Class="PatchOperationRemove"><xpath>/Defs/RecipeDef[defName="InstallDragonianOrb"]</xpath></li>
-        <li Class="PatchOperationRemove"><xpath>/Defs/RecipeDef[defName="InstallFakeDragonianOrb"]</xpath></li>
-        <li Class="PatchOperationRemove"><xpath>/Defs/RecipeDef[defName="InstallFlareDragonianOrb"]</xpath></li>
-        <li Class="PatchOperationRemove"><xpath>/Defs/RecipeDef[defName="InstallThunderDragonianOrb"]</xpath></li>
-        <li Class="PatchOperationRemove"><xpath>/Defs/RecipeDef[defName="InstallFrozenDragonianOrb"]</xpath></li>
-        <li Class="PatchOperationRemove"><xpath>/Defs/RecipeDef[defName="InstallHyperhealDragonianOrb"]</xpath></li>
-        <li Class="PatchOperationRemove"><xpath>/Defs/RecipeDef[defName="InstallHardenDragonianOrb"]</xpath></li>
         <li Class="PatchOperationRemove"><xpath>/Defs/RecipeDef[defName="InstallDR_BionicTail"]</xpath></li>
         <li Class="PatchOperationRemove"><xpath>/Defs/RecipeDef[defName="InstallDR_FakeTail"]</xpath></li>
         <li Class="PatchOperationRemove"><xpath>/Defs/RecipeDef[defName="InstallDRM_SlashTail"]</xpath></li>
@@ -145,7 +133,6 @@
         <li Class="PatchOperationRemove"><xpath>/Defs/RecipeDef[defName="InstallDRM_CryoSlashTail"]</xpath></li>
         <li Class="PatchOperationRemove"><xpath>/Defs/RecipeDef[defName="InstallDRM_AcidSlashTail"]</xpath></li>
         <li Class="PatchOperationRemove"><xpath>/Defs/RecipeDef[defName="InstallDRM_ExplosiveSlashTail"]</xpath></li>
-        <li Class="PatchOperationRemove"><xpath>/Defs/RecipeDef[defName="InstallShieldDragonianOrb"]</xpath></li>
         <li Class="PatchOperationRemove"><xpath>/Defs/ResearchTabDef[defName="DragonianTech"]</xpath></li>
         <li Class="PatchOperationRemove"><xpath>/Defs/ResearchProjectTagDef[defName="DragonianStart"]</xpath></li>
         <li Class="PatchOperationRemove"><xpath>/Defs/ResearchProjectDef[defName="DragonianMeleeWeapon"]</xpath></li>
@@ -156,7 +143,6 @@
         <li Class="PatchOperationRemove"><xpath>/Defs/ResearchProjectDef[defName="DragonianWandMagic"]</xpath></li>
         <li Class="PatchOperationRemove"><xpath>/Defs/ResearchProjectDef[defName="DragonianClothing"]</xpath></li>
         <li Class="PatchOperationRemove"><xpath>/Defs/ResearchProjectDef[defName="DragonianArmorClothing"]</xpath></li>
-        <li Class="PatchOperationRemove"><xpath>/Defs/ResearchProjectDef[defName="DragonianShieldModule"]</xpath></li>
         <li Class="PatchOperationRemove"><xpath>/Defs/ResearchProjectDef[defName="DragonianBionics"]</xpath></li>
         <li Class="PatchOperationRemove"><xpath>/Defs/ScenarioDef[defName="New_Dragonian_Beginning"]</xpath></li>
         <li Class="PatchOperationRemove"><xpath>/Defs/SoundDef[defName="DRM_ArcShot"]</xpath></li>
@@ -177,7 +163,6 @@
         <li Class="PatchOperationRemove"><xpath>/Defs/ThingDef[defName="DRM_AcidSlashTail"]</xpath></li>
         <li Class="PatchOperationRemove"><xpath>/Defs/ThingDef[defName="DRM_ExplosiveSlashTail"]</xpath></li>
         <li Class="PatchOperationRemove"><xpath>/Defs/ThingDef[defName="DRM_CryoSlashTail"]</xpath></li>
-        <li Class="PatchOperationRemove"><xpath>/Defs/ThingCategoryDef[defName="DROrbs"]</xpath></li>
         <li Class="PatchOperationRemove"><xpath>/Defs/ApparelLayerDef[defName="OuterOrbs"]</xpath></li>
         <li Class="PatchOperationRemove"><xpath>/Defs/ThingDef[defName="FlareDragonianOrb"]</xpath></li>
         <li Class="PatchOperationRemove"><xpath>/Defs/ThingDef[defName="ThunderDragonianOrb"]</xpath></li>
@@ -230,7 +215,6 @@
         <li Class="PatchOperationRemove"><xpath>/Defs/AbilityDef[defName="DRM_Deaddustpop"]</xpath></li>
         <li Class="PatchOperationRemove"><xpath>/Defs/AlienRace.AlienBackstoryDef[defName="Dragonian_Necromancer"]</xpath></li>
         <li Class="PatchOperationRemove"><xpath>/Defs/HediffDef[defName="NecroDragonianOrb"]</xpath></li>
-        <li Class="PatchOperationRemove"><xpath>/Defs/RecipeDef[defName="InstallNecroDragonianOrb"]</xpath></li>
         <li Class="PatchOperationRemove"><xpath>/Defs/ThingDef[defName="NecroDragonianOrb"]</xpath></li>
         <li Class="PatchOperationRemove"><xpath>/Defs/PawnKindDef[defName="Dragonian_Necro_Warrier"]</xpath></li>
         <li Class="PatchOperationRemove"><xpath>/Defs/ThingDef[defName="DR_BattleStaff_Flare"]</xpath></li>
@@ -238,7 +222,6 @@
         <li Class="PatchOperationRemove"><xpath>/Defs/AbilityDef[defName="DRM_AcidSpray"]</xpath></li>
         <li Class="PatchOperationRemove"><xpath>/Defs/ThingDef[defName="DRM_Proj_Acid"]</xpath></li>
         <li Class="PatchOperationRemove"><xpath>/Defs/HediffDef[defName="ToxicDragonianOrb"]</xpath></li>
-        <li Class="PatchOperationRemove"><xpath>/Defs/RecipeDef[defName="InstallToxicDragonianOrb"]</xpath></li>
         <li Class="PatchOperationRemove"><xpath>/Defs/ThingDef[defName="ToxicDragonianOrb"]</xpath></li>
         <li Class="PatchOperationRemove"><xpath>/Defs/ThingDef[defName="DR_BattleStaff_Beam"]</xpath></li>
         <li Class="PatchOperationRemove"><xpath>/Defs/QuestEditor_Library.CustomMapDataDef[defName="DRM_DragonianUn_AxisBase_BaseDef"]</xpath></li>
@@ -251,9 +234,7 @@
         <li Class="PatchOperationRemove"><xpath>/Defs/QuestEditor_Library.SpecialMapGenerationDef[defName="DRM_MapGeneratioin_Dragonian"]</xpath></li>
         <li Class="PatchOperationRemove"><xpath>/Defs/HediffDef[defName="AcidifierDragonianOrb"]</xpath></li>
         <li Class="PatchOperationRemove"><xpath>/Defs/ThingDef[defName="AcidifierDragonianOrb"]</xpath></li>
-        <li Class="PatchOperationRemove"><xpath>/Defs/RecipeDef[defName="InstallAcidifierDragonianOrb"]</xpath></li>
         <li Class="PatchOperationRemove"><xpath>/Defs/HediffDef[defName="EnderDragonianOrb"]</xpath></li>
-        <li Class="PatchOperationRemove"><xpath>/Defs/RecipeDef[defName="InstallEnderDragonianOrb"]</xpath></li>
         <li Class="PatchOperationRemove"><xpath>/Defs/ThingDef[defName="EnderDragonianOrb"]</xpath></li>
         <li Class="PatchOperationRemove"><xpath>/Defs/RoyalTitlePermitDef[defName="DRM_HappyBundleDrop"]</xpath></li>
         <li Class="PatchOperationRemove"><xpath>/Defs/RoyalTitlePermitDef[defName="DRM_MedDrop"]</xpath></li>

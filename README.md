@@ -13,6 +13,7 @@ This project was built with an AI coding agent (Claude Code) working under my ow
 > - Random's Gene Assistant source
 > - Gloomy Furniture Fix and MoreGloomyWalls defs and textures
 > - the meat whitelist
+> - the Gene Ripper building def
 > - all textures
 >
 > Because of that, the published source does not build on its own. The original mods and their authors are credited in the [player documentation](Yuudong2Mod/README.md#포팅한-모드).
@@ -23,11 +24,12 @@ Features are grouped in the settings screen; each one is a toggle.
 
 | Group | Examples |
 | --- | --- |
-| Colony | In-place material replacement without deconstructing (Replace Stuff rewrite). Wall swap that keeps rooms and roofs intact. Power-on-demand workbenches and TVs. Shelves with no slowdown that accept everything a stockpile does. Custom map sizes. Meat consolidation. Room-aware food choice. Realistic room sizes. |
-| Interface | Message placement below the colonist bar. Health tab sorting. Damage numbers. Letter stack cleaner. Smart Speed (speed multipliers, ultrafast button). Drag-select for work priorities and trade counts. TPS display. Techprint ownership highlight in trade. |
-| Pawn | Hair under hats with per-headgear rules. Hidden bionic eyes. Durable clothes. Uncapped skill levels (EndlessGrowth). An RPG-style level-up system with six attributes and tooltips generated from the actual stat effects. |
+| Colony | In-place material replacement without deconstructing (Replace Stuff rewrite). Wall swap that keeps rooms and roofs intact. Power-on-demand workbenches and TVs. Shelves with no slowdown that accept everything a stockpile does. Custom map sizes. Meat consolidation. A gene ripper that extracts one chosen gene. Reinstalling or copying several selected buildings at once in the same layout. Bills restored on auto-rebuilt workbenches. Room-aware food choice. Realistic room sizes. |
+| Interface | Message placement below the colonist bar. Health tab sorting. Damage numbers. Letter stack cleaner. Smart Speed (speed multipliers, ultrafast button). A rebindable save window hotkey. Drag-select for work priorities and trade counts. TPS display. Techprint ownership highlight in trade. |
+| Pawn | Hair under hats with per-headgear rules. Hidden bionic eyes. Gear that only fire can damage. Uncapped skill levels (EndlessGrowth). No random nicknames at growth moments. An RPG-style level-up system with six attributes and tooltips generated from the actual stat effects. |
 | Ideology | Specialists can work. Roles untied to memes. No ideology limits. Auto-cast specialist commands. |
-| Trade | A caravan arrival spot and a supply drop spot. A map-wide trade beacon. Trade stock boost. Faction insult that triggers a raid. Empire goodwill fix. |
+| Trade | A caravan arrival spot and a supply drop spot. A map-wide trade beacon. Per-trader-type stock multipliers. Faction insult that triggers a raid. Empire goodwill fix. |
+| Performance | Lets world pawns with inert implants sleep. At 3x speed and above, slower interval ticks and fewer situational thought checks. Skips idle missing body parts under bionics. Updates plant sway once per frame instead of every tick, and skips Odyssey ice checks on maps without ice. Found with a custom Harmony tick profiler. |
 | Compatibility | Fixes for EPOE AI cores, Dragonian genes and healing, Gloomy furniture recipes and work givers, and a thread-safe draw-scale cache for NewRatkin. |
 
 ## Engineering highlights

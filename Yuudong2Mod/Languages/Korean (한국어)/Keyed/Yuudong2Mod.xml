@@ -8,6 +8,19 @@
   <Yuudong2.Group.Pawn>폰</Yuudong2.Group.Pawn>
   <Yuudong2.Group.Trade>거래와 세력</Yuudong2.Group.Trade>
   <Yuudong2.Group.Compatibility>모드 호환</Yuudong2.Group.Compatibility>
+  <Yuudong2.Group.Performance>성능</Yuudong2.Group.Performance>
+  <Yuudong2.Feature.PlantSwayPerFrame>식물 흔들림을 프레임마다 갱신</Yuudong2.Feature.PlantSwayPerFrame>
+  <Yuudong2.Feature.PlantSwayPerFrame.Desc>바닐라는 바람에 흔들리는 식물 재질 전부를 매 틱 갱신합니다. 화면은 프레임마다 마지막 값만 그리므로 프레임마다 한 번만 갱신합니다. 보이는 결과는 같습니다.</Yuudong2.Feature.PlantSwayPerFrame.Desc>
+  <Yuudong2.Feature.IdleIceChecks>얼음 없는 칸의 얼음 판정 건너뛰기</Yuudong2.Feature.IdleIceChecks>
+  <Yuudong2.Feature.IdleIceChecks.Desc>오디세이는 매 틱 여러 칸의 온도와 방을 조회해 물이 얼지, 얼음이 녹을지 판정합니다. 물이 아니고 맵에 얇은 얼음이 하나도 없으면 아무 일도 일어나지 않으므로 그런 칸은 건너뜁니다.</Yuudong2.Feature.IdleIceChecks.Desc>
+  <Yuudong2.Feature.WorldPawnSleep>맵 밖 폰 재우기</Yuudong2.Feature.WorldPawnSleep>
+  <Yuudong2.Feature.WorldPawnSleep.Desc>사후 처리장치 같은 이식물이나 맵 밖에서 의미 없는 회복 효과 때문에 맵 밖 폰이 잠들지 못하고 매 틱 계산되는 것을 막습니다. 잠든 폰은 맵에 다시 나오면 그대로 깨어납니다.</Yuudong2.Feature.WorldPawnSleep.Desc>
+  <Yuudong2.Feature.FastTickInterval>고속에서 간격 틱 늦추기</Yuudong2.Feature.FastTickInterval>
+  <Yuudong2.Feature.FastTickInterval.Desc>3배속 이상에서는 화면 안에 보이는 폰과 물건도 화면 밖처럼 15틱마다 간격 처리를 합니다. 계산 결과는 같고, 보이는 변화만 덜 매끄러워집니다.</Yuudong2.Feature.FastTickInterval.Desc>
+  <Yuudong2.Feature.FastMoodThoughts>고속에서 상황 생각 판정 줄이기</Yuudong2.Feature.FastMoodThoughts>
+  <Yuudong2.Feature.FastMoodThoughts.Desc>3배속 이상에서는 상황 생각을 150틱이 아니라 300틱마다 다시 판정합니다. 기억 생각과 욕구 변화는 그대로이고, 상황 생각이 붙고 떨어지는 때만 조금 늦어집니다.</Yuudong2.Feature.FastMoodThoughts.Desc>
+  <Yuudong2.Feature.IdleMissingParts>할 일 없는 신체 부위 상실 틱 건너뛰기</Yuudong2.Feature.IdleMissingParts>
+  <Yuudong2.Feature.IdleMissingParts.Desc>생체공학 팔다리 아래의 손가락·발가락처럼 치료할 것이 없는 신체 부위 상실은 매 틱 호출을 건너뜁니다. 결과는 바닐라와 같습니다.</Yuudong2.Feature.IdleMissingParts.Desc>
   <Yuudong2.Feature.AlwaysAcceptProposal>청혼 항상 수락</Yuudong2.Feature.AlwaysAcceptProposal>
   <Yuudong2.Feature.AlwaysAcceptProposal.Desc>청혼이 거절되지 않습니다.</Yuudong2.Feature.AlwaysAcceptProposal.Desc>
   <Yuudong2.Feature.NoBreakup>이별 방지</Yuudong2.Feature.NoBreakup>
@@ -26,20 +39,27 @@
   <Yuudong2.Feature.NoMapEdgeLimit.Desc>맵 가장자리에도 건설하고 구역을 만들 수 있습니다. (Change map edge limit)</Yuudong2.Feature.NoMapEdgeLimit.Desc>
   <Yuudong2.Feature.PowerOnDemand>사용할 때만 전력 소모</Yuudong2.Feature.PowerOnDemand>
   <Yuudong2.Feature.PowerOnDemand.Desc>작업대, TV, 연구대 같은 건물이 쓰는 동안만 정격 전력을 쓰고 쉬는 동안에는 1W만 씁니다. (Turn It On and Off)</Yuudong2.Feature.PowerOnDemand.Desc>
-  <Yuudong2.Feature.DurableClothes>옷 마모 감소</Yuudong2.Feature.DurableClothes>
-  <Yuudong2.Feature.DurableClothes.Desc>입은 옷의 하루 마모량이 바닐라의 5%로 줄어듭니다. (Durable Clothes)</Yuudong2.Feature.DurableClothes.Desc>
-  <Yuudong2.Feature.InfiniteApparelDurability>옷 내구도 유지</Yuudong2.Feature.InfiniteApparelDurability>
-  <Yuudong2.Feature.InfiniteApparelDurability.Desc>플레이어 쪽 폰이 입은 옷의 내구도를 계속 최대로 유지합니다. (Infinite apparel durability)</Yuudong2.Feature.InfiniteApparelDurability.Desc>
+  <Yuudong2.Feature.EquipmentDurability>장비는 불에만 상함</Yuudong2.Feature.EquipmentDurability>
+  <Yuudong2.Feature.EquipmentDurability.Desc>옷·방어구·다용도구·무기는 불에 탈 때만 내구도가 깎입니다. 입고 있든 바닥에 있든 마모·피격·비바람 부패·폭발로는 깎이지 않습니다. 이미 깎인 내구도는 그대로입니다.</Yuudong2.Feature.EquipmentDurability.Desc>
   <Yuudong2.Feature.AllSpecialistsCanWork>역할 작업 제한 제거</Yuudong2.Feature.AllSpecialistsCanWork>
   <Yuudong2.Feature.AllSpecialistsCanWork.Desc>이데올로기 역할을 맡아도 작업 제한과 무기 제한이 생기지 않습니다. (All Specialists Can Work)</Yuudong2.Feature.AllSpecialistsCanWork.Desc>
   <Yuudong2.Feature.FasterBiosculpter>빠른 바이오스컬프터</Yuudong2.Feature.FasterBiosculpter>
   <Yuudong2.Feature.FasterBiosculpter.Desc>바이오스컬프터 포드의 모든 주기가 1일로 줄고 생체조율 유지 기간이 없어집니다. (Faster Biosculpter Pod)</Yuudong2.Feature.FasterBiosculpter.Desc>
   <Yuudong2.Feature.CaravanArrivalSpot>상단 도착 지점</Yuudong2.Feature.CaravanArrivalSpot>
-  <Yuudong2.Feature.CaravanArrivalSpot.Desc>건축 &gt; 기타의 상단 도착 지점을 쓸 수 있습니다. 상단이 가장 가까운 가장자리로 들어와 그 지점에 머뭅니다.</Yuudong2.Feature.CaravanArrivalSpot.Desc>
+  <Yuudong2.Feature.CaravanArrivalSpot.Desc>건축 &gt; 기타의 상단 도착 지점을 쓸 수 있습니다. 상단이 가장 가까운 가장자리로 들어와 그 지점에 머뭅니다. 방문 세력의 짐 동물도 정착지 문을 지나갈 수 있어, 벽 안에 둔 지점까지 들어옵니다.</Yuudong2.Feature.CaravanArrivalSpot.Desc>
+  <Yuudong2.ArrivalSpot.Unreachable>상단이 도착 지점까지 갈 수 없어 정착지 바깥에 머뭅니다: {0}</Yuudong2.ArrivalSpot.Unreachable>
+  <Yuudong2.ArrivalSpot.Reason.Blocked>지점 칸이 막혀 있습니다.</Yuudong2.ArrivalSpot.Reason.Blocked>
+  <Yuudong2.ArrivalSpot.Reason.Fogged>지점이 안개에 가려 있습니다.</Yuudong2.ArrivalSpot.Reason.Fogged>
+  <Yuudong2.ArrivalSpot.Reason.NoPath>상단 일행 중 지점까지 갈 길이 없는 폰이 있습니다. 문이나 통로를 확인하세요.</Yuudong2.ArrivalSpot.Reason.NoPath>
   <Yuudong2.Feature.TradeShipDropSpot>물자 낙하 지점</Yuudong2.Feature.TradeShipDropSpot>
   <Yuudong2.Feature.TradeShipDropSpot.Desc>건축 &gt; 기타의 물자 낙하 지점을 쓸 수 있습니다. 궤도 상선 구매품, 퀘스트 보상, 왕족 지원 물자, 돌아오는 정착민의 수송 포드가 그 근처에 떨어집니다. 적 공습은 영향을 받지 않습니다. (예전 이름: 궤도 상선 낙하 지점)</Yuudong2.Feature.TradeShipDropSpot.Desc>
-  <Yuudong2.Feature.TradeStockBoost>상인 재고 8배</Yuudong2.Feature.TradeStockBoost>
-  <Yuudong2.Feature.TradeStockBoost.Desc>궤도 상선, 정착지, 상단의 재고와 은이 8배가 됩니다. 방문객 상인은 그대로입니다. (Trading Options)</Yuudong2.Feature.TradeStockBoost.Desc>
+  <Yuudong2.Feature.TradeStockBoost>상인 재고 배율</Yuudong2.Feature.TradeStockBoost>
+  <Yuudong2.Feature.TradeStockBoost.Desc>궤도 상선, 상단, 정착지, 방문객 상인의 재고와 은에 각각 배율을 곱합니다. 기본값은 상선·상단·정착지 8배, 방문객 1배입니다. (Trading Options)</Yuudong2.Feature.TradeStockBoost.Desc>
+  <Yuudong2.TradeStock.Note>새로 오는 상인부터 적용됩니다. 이미 와 있는 상인의 재고는 그대로입니다.</Yuudong2.TradeStock.Note>
+  <Yuudong2.TradeStock.Orbital>궤도 상선: {0}배</Yuudong2.TradeStock.Orbital>
+  <Yuudong2.TradeStock.Caravan>상단: {0}배</Yuudong2.TradeStock.Caravan>
+  <Yuudong2.TradeStock.Settlement>정착지: {0}배</Yuudong2.TradeStock.Settlement>
+  <Yuudong2.TradeStock.Visitor>방문객 상인: {0}배</Yuudong2.TradeStock.Visitor>
   <Yuudong2.Feature.OrbitalTraderFrequency>궤도 상선 빈도 4배</Yuudong2.Feature.OrbitalTraderFrequency>
   <Yuudong2.Feature.OrbitalTraderFrequency.Desc>랜디처럼 무작위 사건을 쓰는 스토리텔러에서 궤도 상선이 4배 자주 옵니다. (Trading Options)</Yuudong2.Feature.OrbitalTraderFrequency.Desc>
   <Yuudong2.Feature.InsultFaction>세력 모욕하기</Yuudong2.Feature.InsultFaction>
@@ -92,6 +112,8 @@
   <Yuudong2.Insult.RaidDropPod>{0}({1})이(가) 드롭 포드로 습격을 시작했습니다!</Yuudong2.Insult.RaidDropPod>
   <Yuudong2.Insult.RaidDelayed>{0}({1})이(가) 단단히 화났습니다! {2} 뒤에 습격합니다!</Yuudong2.Insult.RaidDelayed>
   <Yuudong2.Group.Interface>화면과 조작</Yuudong2.Group.Interface>
+  <Yuudong2.Feature.ConsensualIncest>가족 간 연애 허용</Yuudong2.Feature.ConsensualIncest>
+  <Yuudong2.Feature.ConsensualIncest.Desc>근친이라도 다른 폰처럼 연애할 수 있습니다. 혈연 때문에 연애 확률이 깎이지 않고, 가족과 사귀는 폰을 다른 폰이 나쁘게 보지 않습니다. 근친 출산 시 근친 유전자가 붙는 바닐라 규칙은 그대로입니다. (Allow Consensual Incest 포팅)</Yuudong2.Feature.ConsensualIncest.Desc>
   <Yuudong2.Feature.NoRandomRelations>무작위 관계 생성 안 함</Yuudong2.Feature.NoRandomRelations>
   <Yuudong2.Feature.NoRandomRelations.Desc>새로 생성되는 폰에 무작위 가족·연인 관계를 만들지 않습니다. (No Random Relations)</Yuudong2.Feature.NoRandomRelations.Desc>
   <Yuudong2.Feature.RoomFood>식탁 있는 방의 음식 먼저 먹기</Yuudong2.Feature.RoomFood>
@@ -112,6 +134,8 @@
   <Yuudong2.Feature.HiddenBionicEyes.Desc>바이오닉 눈과 아코텍 눈 그림을 얼굴에 그리지 않습니다. (Hidden Eyes)</Yuudong2.Feature.HiddenBionicEyes.Desc>
   <Yuudong2.Feature.EndlessGrowth>기술 레벨 제한 해제</Yuudong2.Feature.EndlessGrowth>
   <Yuudong2.Feature.EndlessGrowth.Desc>기술 레벨 20 제한을 없애고 경험치, 제작 품질, 작업 지시 범위를 그에 맞춥니다. 세부 설정을 바꾸면 재시작해야 합니다. (EndlessGrowth)</Yuudong2.Feature.EndlessGrowth.Desc>
+  <Yuudong2.Feature.NoGrowthNickname>성장의 순간 별명 끄기</Yuudong2.Feature.NoGrowthNickname>
+  <Yuudong2.Feature.NoGrowthNickname.Desc>아이가 성장의 순간에 무작위 별명을 얻지 않습니다. 직접 지어 준 별명은 그대로 둡니다.</Yuudong2.Feature.NoGrowthNickname.Desc>
   <Yuudong2.Feature.RolesUntiedToMemes>전문가 역할 밈 조건 제거</Yuudong2.Feature.RolesUntiedToMemes>
   <Yuudong2.Feature.RolesUntiedToMemes.Desc>사격·근접·연구 같은 전문가 역할을 특정 밈 없이도 만들 수 있습니다. (Roles untied to memes)</Yuudong2.Feature.RolesUntiedToMemes.Desc>
   <Yuudong2.Feature.AutoCastSpecialistCommands>전문가 명령 자동 사용</Yuudong2.Feature.AutoCastSpecialistCommands>
@@ -272,7 +296,7 @@
   <Yuudong2.Feature.GeneAssistant>유전자 도우미</Yuudong2.Feature.GeneAssistant>
   <Yuudong2.Feature.GeneAssistant.Desc>유전자 조립기에서 보유한 유전자를 색으로 표시하고, 유전자 서고·중복 유전자팩 배출·채운 슬롯 표시·정렬 개선을 추가합니다. (Random's Gene Assistant)</Yuudong2.Feature.GeneAssistant.Desc>
   <Yuudong2.Feature.DragonianMix>DragonianMix</Yuudong2.Feature.DragonianMix>
-  <Yuudong2.Feature.DragonianMix.Desc>드래고니안 종족 모드가 있을 때 DragonianMix의 세력, 폰, 능력, 무기, 가스 등을 넣습니다. 끄면 추가 Def를 지우므로 이 내용이 들어간 저장 파일에서는 끄지 마세요. 재시작해야 적용됩니다. (DragonianMix)</Yuudong2.Feature.DragonianMix.Desc>
+  <Yuudong2.Feature.DragonianMix.Desc>드래고니안 종족 모드가 있을 때 DragonianMix의 세력, 폰, 능력, 무기, 가스 등을 넣습니다. 보주는 기본 드라고니안 보주만 남기고 변형 보주와 보호막 모듈은 뺐으며, 기존 저장 파일의 것은 불러올 때 기본 보주로 바뀝니다. 끄면 추가 Def를 지우므로 이 내용이 들어간 저장 파일에서는 끄지 마세요. 재시작해야 적용됩니다. (DragonianMix)</Yuudong2.Feature.DragonianMix.Desc>
   <Yuudong2.Romance.Debug>디버그 로그 출력</Yuudong2.Romance.Debug>
   <Yuudong2.Romance.Chance>연애 시도 배율 (전체)</Yuudong2.Romance.Chance>
   <Yuudong2.Romance.Chance.Desc>모든 연애 시도 확률에 곱합니다.</Yuudong2.Romance.Chance.Desc>
@@ -421,6 +445,33 @@
   <Yuudong2.Feature.RatkinDrawScaleFix.Desc>NewRatkinPlus의 유전자 크기 캐시가 여러 스레드에서 동시에 쓰이다 깨져, 모든 폰이 안 보이게 되는 문제를 막습니다. 같은 계산을 동시 접근에 안전한 캐시로 대신합니다. NewRatkinPlus가 없으면 아무것도 하지 않습니다.</Yuudong2.Feature.RatkinDrawScaleFix.Desc>
   <Yuudong2.Feature.TpsDisplay>TPS 표시</Yuudong2.Feature.TpsDisplay>
   <Yuudong2.Feature.TpsDisplay.Desc>화면 오른쪽 아래 날씨·상태 표시 위에 "TPS : 현재(목표)"를 보여줍니다. 현재 값은 1초마다 갱신되며, 그 1초 동안 실제로 진행된 틱 수, 목표 값은 지금 배속의 초당 틱 수입니다(1배속 60, 정지 0).</Yuudong2.Feature.TpsDisplay.Desc>
+  <Yuudong2.Feature.GeneRipper>유전자 분쇄기</Yuudong2.Feature.GeneRipper>
+  <Yuudong2.Feature.GeneRipper.Desc>건축 > 바이오테크에 유전자 분쇄기를 추가합니다 (유전자 처리기 연구 필요). 정착민·노예·죄수를 넣고 그 폰의 유전자 하나를 고르면 유전자팩으로 뽑아내고, 들어간 폰은 죽습니다. 중간에 멈춰도 죽을 수 있습니다. 끄면 건축 메뉴에서만 숨깁니다. (Gene Ripper)</Yuudong2.Feature.GeneRipper.Desc>
+  <Yuudong2.Feature.MultiReinstall>여러 건물 한 번에 옮기기</Yuudong2.Feature.MultiReinstall>
+  <Yuudong2.Feature.MultiReinstall.Desc>옮길 수 있는 건물을 여러 개 고르면 '모두 옮기기' 버튼이 생깁니다. 배치 모양 그대로 한 번에 옮기고 R/Q로 묶음을 돌립니다. 새 자리가 같이 옮기는 건물의 지금 자리와 겹쳐도 되며, 그 건물은 철거하지 않고 먼저 떼어 냈다가 옮깁니다.</Yuudong2.Feature.MultiReinstall.Desc>
+  <Yuudong2.MultiReinstall.Label>모두 옮기기</Yuudong2.MultiReinstall.Label>
+  <Yuudong2.MultiReinstall.Desc>고른 건물을 지금 배치 모양 그대로 다른 곳에 옮겨 설치합니다. R/Q로 묶음 전체를 돌립니다. 같이 옮기는 건물의 지금 자리와 겹쳐도 됩니다.</Yuudong2.MultiReinstall.Desc>
+  <Yuudong2.Feature.MultiCopy>여러 건물 한 번에 복제</Yuudong2.Feature.MultiCopy>
+  <Yuudong2.Feature.MultiCopy.Desc>지을 수 있는 건물·청사진·건설 중인 틀을 여러 개 고르면 '모두 복제' 버튼이 생깁니다. 같은 재료·양식으로 배치 모양 그대로 한 번에 건설 청사진을 놓고 R/Q로 묶음을 돌립니다. 바닐라 건설처럼 취소할 때까지 여러 번 놓을 수 있습니다.</Yuudong2.Feature.MultiCopy.Desc>
+  <Yuudong2.Feature.RebuildBills>재건한 작업대의 작업 지시서 복구</Yuudong2.Feature.RebuildBills>
+  <Yuudong2.Feature.RebuildBills.Desc>부서진 작업대가 자동 재건 청사진으로 남으면 작업 지시서를 기억해 두었다가, 다시 지었을 때 그대로 되돌립니다. 바닐라는 저장 설정만 넘기고 작업 지시서는 버립니다.</Yuudong2.Feature.RebuildBills.Desc>
+  <Yuudong2.MultiCopy.Label>모두 복제</Yuudong2.MultiCopy.Label>
+  <Yuudong2.MultiCopy.Desc>고른 건물·청사진을 같은 재료·양식으로 지금 배치 모양 그대로 다른 곳에 짓습니다. R/Q로 묶음 전체를 돌리고, 취소할 때까지 여러 번 놓을 수 있습니다.</Yuudong2.MultiCopy.Desc>
+  <Yuudong2.GeneRipper.Child>{PAWN_nameDef}의 유전 물질이 부족합니다.</Yuudong2.GeneRipper.Child>
+  <Yuudong2.GeneRipper.Regrowing>유전자가 아직 재생 중입니다.</Yuudong2.GeneRipper.Regrowing>
+  <Yuudong2.GeneRipper.KillConfirm>{0}에게서 {1} 유전자를 뽑으면 죽습니다. 계속할까요?</Yuudong2.GeneRipper.KillConfirm>
+  <Yuudong2.GeneRipper.Select>선택</Yuudong2.GeneRipper.Select>
+  <Yuudong2.GeneRipper.Target>뽑을 유전자: {0}</Yuudong2.GeneRipper.Target>
+  <Yuudong2.GeneRipper.Paused>전력이 없어 추출이 멈췄습니다.</Yuudong2.GeneRipper.Paused>
+  <Yuudong2.GeneRipper.InsertDesc>넣을 사람과 뽑을 유전자를 고릅니다. 추출이 끝나면 들어간 사람은 죽습니다.</Yuudong2.GeneRipper.InsertDesc>
+  <Yuudong2.GeneRipper.CancelDesc>추출을 멈춥니다. 많이 진행됐을수록 들어간 사람이 죽을 확률이 높습니다. 살아남으면 유전자가 재생될 때까지 기다려야 합니다.</Yuudong2.GeneRipper.CancelDesc>
+  <Yuudong2.GeneRipper.Hours>추출 시간: {0}시간</Yuudong2.GeneRipper.Hours>
+  <Yuudong2.GeneRipper.Hours.Desc>유전자 하나를 뽑는 데 걸리는 게임 시간입니다.</Yuudong2.GeneRipper.Hours.Desc>
+  <Yuudong2.GeneRipper.Blend>분쇄 확률: {0}</Yuudong2.GeneRipper.Blend>
+  <Yuudong2.GeneRipper.Blend.Desc>시체가 남지 않고 고기, 영양죽, 피만 남을 확률입니다. 입고 있던 옷과 무기는 떨어뜨립니다.</Yuudong2.GeneRipper.Blend.Desc>
+  <Yuudong2.Feature.SaveHotkey>저장 창 단축키</Yuudong2.Feature.SaveHotkey>
+  <Yuudong2.Feature.SaveHotkey.Desc>단축키(기본 F5)로 저장 창을 엽니다. 다시 누르면 닫힙니다. 키는 옵션 > 조작의 "게임" 항목에서 바꿀 수 있습니다. 메뉴의 저장과 같은 조건을 따라, 각오 모드이거나 잠시 저장할 수 없을 때는 열리지 않습니다.</Yuudong2.Feature.SaveHotkey.Desc>
+  <Yuudong2.SaveHotkey.Unavailable>지금은 저장할 수 없습니다.</Yuudong2.SaveHotkey.Unavailable>
   <Yuudong2.Feature.BetterWorkbench>작업대 관리 개선</Yuudong2.Feature.BetterWorkbench>
   <Yuudong2.Feature.BetterWorkbench.Desc>작업 목표 개수를 셀 때 품질·내구도·재질·장소 조건, 다른 물건 함께 세기, 자리 비운 정착민 것도 세기를 추가하고, 계획서 복사·붙여넣기·연결, 정착민·작업대 제한 같은 편의 기능을 더합니다. 원본과 달리 퀘스트로 빌려준 정착민 등 월드에 있는 정착민과, 세이브를 불러온 뒤에도 자리 비운 정착민을 셉니다. (Better Workbench Management)</Yuudong2.Feature.BetterWorkbench.Desc>
 

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Patch>
+
+  <!-- 기능이 꺼져 있으면 건축 메뉴에서 유전자 분쇄기를 숨긴다. 이미 지은 것은 그대로 쓸 수 있다. -->
+  <Operation Class="Yuudong2Mod.PatchOperationFeature">
+    <feature>GeneRipper</feature>
+    <disabled Class="PatchOperationRemove">
+      <xpath>/Defs/ThingDef[defName="GeneRipper"]/designationCategory</xpath>
+    </disabled>
+  </Operation>
+
+</Patch>

@@ -76,8 +76,11 @@ namespace Yuudong2Mod
         private static PowerOnDemandComponent instance;
 
         private readonly Dictionary<Map, MapData> mapData = new Dictionary<Map, MapData>();
-        // 폰의 간격 틱(시청 등)은 최대 15틱마다 한 번 돈다. 그보다 조금 길게 사용 중으로 친다.
-        private const int UsedGraceTicks = 20;
+        // 전력 판정은 매 틱이 아니라 10틱마다 한다.
+        private const int UpdatePeriod = 10;
+
+        // 폰의 간격 틱(시청 등)은 최대 15틱마다 한 번 돈다. 판정 간격까지 더해 조금 길게 사용 중으로 친다.
+        private const int UsedGraceTicks = 30;
 
         private readonly Dictionary<Building, int> lastUsedTick = new Dictionary<Building, int>();
 
@@ -134,6 +137,11 @@ namespace Yuudong2Mod
             }
 
             int now = Find.TickManager.TicksGame;
+            if (now % UpdatePeriod != 0)
+            {
+                return;
+            }
+
             if (now % 2500 == 0)
             {
                 lastUsedTick.RemoveAll(kv => now - kv.Value > UsedGraceTicks || kv.Key.Destroyed);
@@ -161,7 +169,7 @@ namespace Yuudong2Mod
                     Scan(map, data);
                 }
 
-                data.ticksToRescan--;
+                data.ticksToRescan -= UpdatePeriod;
                 MarkActiveBuildings(data);
 
                 foreach (Building building in data.controlled)

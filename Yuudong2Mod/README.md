@@ -18,10 +18,10 @@
 - 화면 메시지를 정착민 바 아래로 내립니다. (Better Message Placement 포팅)
 - 드래곤본 유전자가 상처 회복 유전자에 덮여 꺼지는 문제를 불러오기 때 바로잡습니다. (Dragonian to Super Fast Healing Patch 포팅)
 - 이데올로기 역할을 맡아도 작업 제한과 무기 제한이 생기지 않습니다. (All Specialists Can Work 포팅)
-- 옷 마모가 바닐라의 5%로 줄고, 플레이어 쪽 폰이 입은 옷은 내구도가 항상 최대로 유지됩니다. (Durable Clothes, Infinite apparel durability 포팅)
+- 옷·방어구·다용도구·무기는 불에 탈 때만 내구도가 깎입니다.
 - 바이오스컬프터 포드의 모든 주기가 1일로 줄고, 생체조율 유지 기간이 없어집니다. (Faster Biosculpter Pod 포팅)
 - 맵 가장자리 건설·구역 제한과 경계선을 없앱니다. (Change map edge limit 포팅)
-- 궤도 상선·정착지·상단의 재고와 은이 8배가 되고, 랜디 계열 스토리텔러에서 궤도 상선이 4배 자주 옵니다. (Trading Options Continue 포팅)
+- 궤도 상선·상단·정착지·방문객 상인의 재고와 은 배율을 세부 설정에서 따로 정합니다(기본 8배, 방문객 1배). 랜디 계열 스토리텔러에서 궤도 상선이 4배 자주 옵니다. (Trading Options Continue 포팅)
 - 통신기 세력 대화에 "모욕하기"를 추가합니다. 적대 세력을 모욕하면 1~7시간 뒤 습격이 옵니다. (Raids For Me 포팅)
 - 작업대·TV·연구대 같은 전력 건물이 쓰는 동안만 정격 전력을 쓰고 쉬는 동안에는 1W만 씁니다. (Turn It On and Off 포팅)
 - 모자를 써도 머리카락을 숨기지 않고 모자를 머리카락 위에 그립니다. 모드 종족과 모드 모자에도 적용되며, 헬멧·수염·모자 크기·모자별/머리 모양별 예외를 세부 설정에서 고릅니다. (Show Hair With Hats, Dubs Apparel Tweaks 대체)
@@ -38,6 +38,7 @@
 - 작업 우선순위, 복사·붙여넣기, 거래 수량 버튼을 끌어서 한 번에 누릅니다. (DragSelect 포팅)
 - 바이오닉 눈과 아코텍 눈 그림을 얼굴에 그리지 않습니다. (Hidden Eyes 포팅, 텍스처 대신 렌더 노드 제거)
 - 기술 레벨 20 제한을 없애고 경험치, 제작 품질, 작업 지시 범위를 그에 맞춥니다. (EndlessGrowth 포팅)
+- 아이가 성장의 순간에 무작위 별명을 얻지 않습니다. 직접 지어 준 별명은 그대로 둡니다.
 - 전문가 역할을 특정 밈 없이도 만들 수 있습니다. (Roles untied to memes 포팅)
 - 전문가 명령을 해당 작업을 시작할 때 자동으로 씁니다. 명령 버튼 오른쪽 클릭으로 켜고 끕니다. (Auto-Cast Specialist Commands 포팅)
 - 일부 시나리오에서 제국 호감도가 -100으로 시작하는 문제를 막습니다. (Empire -100 goodwill in scenarios Fix 포팅)
@@ -48,14 +49,21 @@
 - GloomyFurniture (Continued)가 있으면 Gloomy 문과 같은 그래픽의 강화 문·강화 항균 문과, 전기로 움직이는 강화 자동문·강화 항균 자동문을 추가합니다.
 - Gloomy 벽을 이미 지은 벽 위에 지으면 해체 없이 그 자리에서 교체합니다 (재질 교체 프레임 사용).
 - 연애 시도·성공·이별 확률에 배율을 곱합니다. 기본값은 바람·다른 세력 연애·이별 0배입니다. (Romance Tweaks 포팅)
+- 가족끼리도 다른 폰처럼 연애할 수 있습니다. (Allow Consensual Incest 포팅)
 - 지하 자원 스캐너와 장거리 광물 스캐너를 지붕 아래에서도 쓸 수 있습니다. (Roofed Scanning 포팅)
 - 폰이 스킬 경험치와 처치로 레벨을 올리고 힘·재주·민첩·체력·지능·매력에 포인트를 나눕니다. 능력치에 마우스를 올리면 어떤 스탯이 얼마나 바뀌는지, 한계가 어디까지인지, 현재 효과가 얼마인지 보여줍니다. (RPG Style Level Up Mod 포팅)
 - 유전자 조립기에 보유 여부 색 표시, 유전자 서고, 중복 유전자팩 배출, 채운 슬롯 표시를 추가합니다. (Random's Gene Assistant 포팅)
 - 드래고니안 종족 모드가 있으면 DragonianMix의 세력, 폰, 능력, 무기, 가스 등을 넣습니다. (DragonianMix 포팅)
 - 방 크기 등급에 필요한 넓이를 낮추고, 실내 흙·모래 오염의 아름다움 감소를 -4로 줄입니다. (Realistic Rooms Rewritten 포팅)
 - 작업 목표 개수 세기 조건(품질·내구도·재질·창고·다른 물건 함께 세기·자리 비운 정착민 것도 세기), 계획서 복사·연결, 정착민·작업대 제한을 추가합니다. (Better Workbench Management 포팅)
+- 건축 > 바이오테크에 유전자 분쇄기를 추가합니다. 폰을 넣고 고른 유전자 하나를 유전자팩으로 뽑으며, 들어간 폰은 죽습니다. (Gene Ripper 포팅)
+- 옮길 수 있는 건물을 여러 개 고르면 배치 모양 그대로 한 번에 옮깁니다. R/Q로 묶음을 돌리고, 같이 옮기는 건물끼리 자리가 겹쳐도 됩니다.
+- 지을 수 있는 건물·청사진·건설 중인 틀을 여러 개 고르면 같은 재료·양식으로 배치 모양 그대로 한 번에 복제합니다. 취소할 때까지 여러 번 놓을 수 있습니다.
+- 부서진 작업대를 자동 재건하면 작업 지시서도 그대로 돌아옵니다.
+- 성능: 맵 밖 폰 재우기, 3배속 이상에서 간격 틱 늦추기·상황 생각 판정 줄이기, 할 일 없는 신체 부위 상실 틱 건너뛰기, 식물 흔들림 프레임마다 갱신, 얼음 없는 칸의 얼음 판정 건너뛰기.
 - 화면 오른쪽 아래 날씨·상태 표시 위에 "TPS : 현재(목표)"를 보여줍니다. 목표 값은 배속에 따라 바뀝니다.
-- 상단 도착 지점은 NewRatkinPlus 유랑단에도 적용됩니다.
+- 단축키(기본 F5)로 저장 창을 열고 닫습니다. 키는 옵션 > 조작의 "게임" 항목에서 바꿀 수 있습니다.
+- 상단 도착 지점은 NewRatkinPlus 유랑단에도 적용됩니다. 방문 세력의 짐 동물(머팔로 등 방목 동물)도 정착지 문을 지나가므로 벽 안에 둔 지점까지 들어옵니다. 그래도 갈 수 없으면 이유를 메시지로 알립니다.
 - 거래창에서 기술 청사진 줄에 이미 적용·보유했는지 색으로 표시합니다 (유전자팩 표시와 같은 색).
 - 궤도 무역 송신기가 하나만 있어도 맵 전체의 정착지 창고 물건으로 궤도 상선과 거래합니다. 반경 표시는 숨기고 건설 비용은 10배입니다.
 
@@ -78,11 +86,9 @@ RimWorld 1.7용으로 다시 작성해 이 모드에 합쳤습니다. 세부 수
 | Better Message Placement (Continued) | Mlie, Dyrewulfe | 2259516339 | 기본값 |
 | Dragonian to Super Fast Healing Patch | asdf | 3503141730 | - |
 | All Specialists Can Work | OPA | 2833543540 | - |
-| Durable Clothes (Continued) | Mlie | 2015395963 | 기본값(마모 5%) |
-| Infinite apparel durability | fxz | 3252574315 | - |
 | Faster Biosculpter Pod | Inglix | 2576257954 | 모든 주기 1일, 생체조율 0일 |
 | Change map edge limit | kapitanoczywisty | 1546494565 | 기본값(0칸) |
-| Trading Options Continue | kearril | 3524414310 | 재고·은 800%, 궤도 상선 빈도 400% |
+| Trading Options Continue | kearril | 3524414310 | 세부 설정 (상선·상단·정착지 재고·은 800%, 방문객 100%), 궤도 상선 빈도 400% |
 | Raids For Me | aRandomKiwi | 1633517937 | 기본값 |
 | Turn It On and Off | ryder | 2007163386 | 기본값 |
 | Replace Stuff | Uuugggg | 1372003680 | 재질 교체 기능만 새로 작성 |
@@ -102,12 +108,14 @@ RimWorld 1.7용으로 다시 작성해 이 모드에 합쳤습니다. 세부 수
 | Gloomy Furniture Fix | rabiosus | 2987876242 | Def·패치·텍스처·한국어 번역 포함 |
 | MoreGloomyWalls 1.6 | sunny | 2569611644 | 1.6 Def·텍스처, 한국어 이름 추가 |
 | Romance Tweaks | BDew | 1575463949 | 세부 설정 (바람·다른 세력·이별 0배) |
+| Allow Consensual Incest | idontcare | 2880505421 | 원본이 워크숍에서 내려가 바닐라 기준으로 다시 작성, 근친 유전자 규칙은 바닐라 유지 |
 | Roofed Scanning | TheElm | 2870663873 | 1.7 `AcceptanceReport`에 맞춰 다시 작성 |
 | RPG Style Level Up Mod | FLASHPOINT55 | 1995668415 | 세부 설정, 툴팁 개선, 저장 데이터 이어받기 |
 | Random's Gene Assistant | RandomCoughDrop | 2882497271 | 세부 설정, UI 한국어화, 1.7 시그니처 수정 |
-| DragonianMix | kalospacer | 2961683592 | 원본 1.7 소스·콘텐츠 그대로, 기능 토글 추가 |
+| DragonianMix | kalospacer | 2961683592 | 원본 1.7 소스·콘텐츠에 기능 토글 추가, 변형 보주·실드 모듈 제거 |
 | Realistic Rooms Rewritten | Lucifer | 2558042766 | 세부 설정 (기본값), 오염 설정을 끄면 원래 값으로 복구 |
 | Better Workbench Management | Falconne | 935982361 | 세부 설정 (기본값), 자리 비운 정착민 세기 수정, 한국어 번역 보충 |
+| Gene Ripper | Defi (1.6 업데이트판) | 3524806362 | 1.7 바닐라 유전자 추출기 기준으로 다시 작성, 세부 설정 (기본값 24시간·50%), 분쇄 시 옷·무기 보존, 기존 세이브 호환 |
 | Better Map Sizes | madarauchiha | 2099101052 | 세부 설정에서 조정 |
 | Ducks' No Limits - Ideology (Continued) | Mlie, Ducks | 2916566114 | 세부 설정에서 조정 |
 | Show Hair With Hats, Dubs Apparel Tweaks | cat2002, Dubwise | 2879080074, 2296697286 | 머리카락 기능만 새로 작성, 세부 설정에서 조정 |
@@ -170,7 +178,9 @@ RimWorld 1.7용으로 다시 작성해 이 모드에 합쳤습니다. 세부 수
 
 - 원본 1.7 소스를 네임스페이스(`DragonianMix`)째로 이 모드 DLL에 넣었습니다. Def XML의 클래스 이름과 저장 데이터가 그대로 맞습니다.
 - 콘텐츠는 `DragonianMix/` 아래에 원본 폴더 구성 그대로 두고, `LoadFolders.xml`에서 드래고니안 종족 모드와 각 DLC가 있을 때만 읽습니다.
-- 기능을 끄면 DragonianMix Def 268개를 지우므로, 이 내용을 쓰는 저장 파일에서는 끄지 않습니다.
+- 기능을 끄면 DragonianMix Def 249개를 지우므로, 이 내용을 쓰는 저장 파일에서는 끄지 않습니다.
+- 보주는 드래고니안 종족 모드의 기본 드라고니안 보주만 남기고 변형 보주 11종(가짜·화염·뇌전·빙결·초재생·경화·보호막·엔더·산화·강령·독소)과 보호막 모듈 4종, 그 이식·제작 레시피와 보호막 모듈 연구를 지웠습니다. 폰 생성 태그와 요새 맵의 보주 아이템도 기본 보주로 바꿨습니다. 변형 보주가 주던 능력이 1.7에서 불러오기에 실패해 그 폰을 고를 때마다 오류가 났습니다.
+- 지운 보주의 ThingDef·HediffDef는 기존 저장 파일을 불러오기 위한 껍데기(`DragonianMix/1.7/Defs/DRM_LegacyOrbs.xml`)로만 남고, 불러온 직후 이식된 것은 타고난 보주로, 물건과 입은 것은 기본 보주 아이템으로 바뀝니다(`DragonianOrbRemoval.cs`).
 - 원본은 계속 업데이트되는 모드라, 이후 원본 업데이트는 직접 다시 가져와야 합니다.
 
 ## Random's Gene Assistant 메모

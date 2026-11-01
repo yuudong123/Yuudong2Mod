@@ -180,4 +180,25 @@ namespace Yuudong2Mod
             listing.End();
         }
     }
+
+    // 성장의 순간에 무작위로 붙는 별명을 막는다. 바닐라는 별명이 없는 아이에게 성장의 순간마다 50% 확률로 별명을 붙인다.
+    // 별명이 붙기 전 이름으로 되돌리면 성장 편지의 "별명이 생겼다" 문구도 나오지 않는다. 직접 지어 준 별명은 그대로 둔다.
+    [HarmonyPatchCategory(Features.NoGrowthNickname)]
+    [HarmonyPatch(typeof(Pawn_AgeTracker), "BirthdayBiological")]
+    internal static class Pawn_AgeTracker_BirthdayBiological_Nickname_Patch
+    {
+        private static void Prefix(Pawn ___pawn, out Name __state)
+        {
+            __state = ___pawn.Name;
+        }
+
+        private static void Postfix(Pawn ___pawn, Name __state)
+        {
+            if (__state is NameTriple { NickSet: false } before && ___pawn.Name is NameTriple after && after != before
+                && after.First == before.First && after.Last == before.Last)
+            {
+                ___pawn.Name = before;
+            }
+        }
+    }
 }

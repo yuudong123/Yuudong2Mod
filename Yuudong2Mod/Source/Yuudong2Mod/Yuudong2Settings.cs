@@ -22,8 +22,7 @@ namespace Yuudong2Mod
         public const string GloomyWallReplace = "GloomyWallReplace";
 
         public const string HairUnderHats = "HairUnderHats";
-        public const string DurableClothes = "DurableClothes";
-        public const string InfiniteApparelDurability = "InfiniteApparelDurability";
+        public const string EquipmentDurability = "EquipmentDurability";
 
         public const string AllSpecialistsCanWork = "AllSpecialistsCanWork";
         public const string NoIdeologyLimits = "NoIdeologyLimits";
@@ -44,19 +43,33 @@ namespace Yuudong2Mod
         public const string LetterStackCleaner = "LetterStackCleaner";
         public const string SmartSpeed = "SmartSpeed";
         public const string TpsDisplay = "TpsDisplay";
+        public const string SaveHotkey = "SaveHotkey";
         public const string TechprintTradeHighlight = "TechprintTradeHighlight";
         public const string DragSelect = "DragSelect";
         public const string HiddenBionicEyes = "HiddenBionicEyes";
         public const string EndlessGrowth = "EndlessGrowth";
+        public const string NoGrowthNickname = "NoGrowthNickname";
         public const string RolesUntiedToMemes = "RolesUntiedToMemes";
         public const string AutoCastSpecialistCommands = "AutoCastSpecialistCommands";
         public const string EmpireGoodwillFix = "EmpireGoodwillFix";
         public const string GloomyFurnitureFix = "GloomyFurnitureFix";
 
         public const string RomanceTweaks = "RomanceTweaks";
+        public const string ConsensualIncest = "ConsensualIncest";
         public const string RoofedScanning = "RoofedScanning";
         public const string RealisticRooms = "RealisticRooms";
         public const string BetterWorkbench = "BetterWorkbench";
+        public const string GeneRipper = "GeneRipper";
+        public const string MultiReinstall = "MultiReinstall";
+        public const string MultiCopy = "MultiCopy";
+        public const string RebuildBills = "RebuildBills";
+
+        public const string WorldPawnSleep = "WorldPawnSleep";
+        public const string FastTickInterval = "FastTickInterval";
+        public const string FastMoodThoughts = "FastMoodThoughts";
+        public const string IdleMissingParts = "IdleMissingParts";
+        public const string PlantSwayPerFrame = "PlantSwayPerFrame";
+        public const string IdleIceChecks = "IdleIceChecks";
         public const string RpgLevelUp = "RpgLevelUp";
         public const string GeneAssistant = "GeneAssistant";
         public const string DragonianMix = "DragonianMix";
@@ -68,12 +81,13 @@ namespace Yuudong2Mod
 
         public static readonly FeatureGroup[] Groups =
         {
-            new FeatureGroup("Romance", AlwaysAcceptProposal, NoBreakup, SameBedLovin, NoRandomRelations, RomanceTweaks),
-            new FeatureGroup("Colony", ShelfNoSlowdown, ShelfAcceptAll, NoMapEdgeLimit, CustomMapSize, PowerOnDemand, ReplaceStuff, GloomyWallReplace, RoomFood, MeatOptimization, SinglePlantTexture, RoofedScanning, RealisticRooms, BetterWorkbench),
-            new FeatureGroup("Interface", MessagePlacement, HealthCardSorting, DamageIndicators, LetterStackCleaner, SmartSpeed, TpsDisplay, DragSelect, GeneAssistant, TechprintTradeHighlight),
-            new FeatureGroup("Pawn", HairUnderHats, HiddenBionicEyes, DurableClothes, InfiniteApparelDurability, EndlessGrowth, RpgLevelUp),
+            new FeatureGroup("Romance", AlwaysAcceptProposal, NoBreakup, SameBedLovin, NoRandomRelations, RomanceTweaks, ConsensualIncest),
+            new FeatureGroup("Colony", ShelfNoSlowdown, ShelfAcceptAll, NoMapEdgeLimit, CustomMapSize, PowerOnDemand, ReplaceStuff, GloomyWallReplace, RoomFood, MeatOptimization, SinglePlantTexture, RoofedScanning, RealisticRooms, BetterWorkbench, GeneRipper, MultiReinstall, MultiCopy, RebuildBills),
+            new FeatureGroup("Interface", MessagePlacement, HealthCardSorting, DamageIndicators, LetterStackCleaner, SmartSpeed, TpsDisplay, SaveHotkey, DragSelect, GeneAssistant, TechprintTradeHighlight),
+            new FeatureGroup("Pawn", HairUnderHats, HiddenBionicEyes, EquipmentDurability, EndlessGrowth, NoGrowthNickname, RpgLevelUp),
             new FeatureGroup("Ideology", AllSpecialistsCanWork, RolesUntiedToMemes, NoIdeologyLimits, AutoCastSpecialistCommands, FasterBiosculpter),
             new FeatureGroup("Trade", CaravanArrivalSpot, TradeShipDropSpot, MapWideTradeBeacon, TradeStockBoost, OrbitalTraderFrequency, InsultFaction, EmpireGoodwillFix),
+            new FeatureGroup("Performance", WorldPawnSleep, FastTickInterval, FastMoodThoughts, IdleMissingParts, PlantSwayPerFrame, IdleIceChecks),
             new FeatureGroup("Compatibility", EpoeAiCore, DragonianGenes, DragonianHealing, DragonianMix, GloomyFurnitureFix, RatkinDrawScaleFix),
         };
 
@@ -81,7 +95,7 @@ namespace Yuudong2Mod
         public static readonly HashSet<string> WithDetails = new HashSet<string>
         {
             HairUnderHats, CustomMapSize, NoIdeologyLimits, RoomFood, MeatOptimization, DamageIndicators, LetterStackCleaner,
-            SmartSpeed, EndlessGrowth, AutoCastSpecialistCommands, RomanceTweaks, RpgLevelUp, GeneAssistant, RealisticRooms, BetterWorkbench,
+            SmartSpeed, EndlessGrowth, AutoCastSpecialistCommands, RomanceTweaks, RpgLevelUp, GeneAssistant, RealisticRooms, BetterWorkbench, GeneRipper, TradeStockBoost,
         };
 
         public static bool Enabled(string feature)
@@ -188,6 +202,16 @@ namespace Yuudong2Mod
         // 방 크기 기준 (Realistic Rooms Rewritten). 빡빡함, 평범, 약간 넓음, 꽤나 넓음, 상당히 넓음, 매우 넓음 순서
         public float[] roomSpaceThresholds = (float[])RealisticRoomsUtility.DefaultThresholds.Clone();
         public bool roomFilthTweak = true;
+
+        // 상인 재고 배율 (Trading Options)
+        public float tradeStockOrbital = 8f;
+        public float tradeStockCaravan = 8f;
+        public float tradeStockSettlement = 8f;
+        public float tradeStockVisitor = 1f;
+
+        // 유전자 분쇄기 (Gene Ripper)
+        public int geneRipperHours = 24;
+        public float geneRipperBlendChance = 0.5f;
 
         // 유전자 도우미 (Random's Gene Assistant)
         public bool geneOverrideSorting = true;
@@ -296,6 +320,13 @@ namespace Yuudong2Mod
             }
 
             Scribe_Values.Look(ref roomFilthTweak, "roomFilthTweak", true);
+            Scribe_Values.Look(ref tradeStockOrbital, "tradeStockOrbital", 8f);
+            Scribe_Values.Look(ref tradeStockCaravan, "tradeStockCaravan", 8f);
+            Scribe_Values.Look(ref tradeStockSettlement, "tradeStockSettlement", 8f);
+            Scribe_Values.Look(ref tradeStockVisitor, "tradeStockVisitor", 1f);
+
+            Scribe_Values.Look(ref geneRipperHours, "geneRipperHours", 24);
+            Scribe_Values.Look(ref geneRipperBlendChance, "geneRipperBlendChance", 0.5f);
 
             BetterWorkbenchUtility.ExposeSettings();
 
@@ -528,6 +559,12 @@ namespace Yuudong2Mod
                     break;
                 case Features.BetterWorkbench:
                     BetterWorkbenchUtility.DrawSettings(body);
+                    break;
+                case Features.GeneRipper:
+                    GeneRipperUtility.DrawSettings(body, settings);
+                    break;
+                case Features.TradeStockBoost:
+                    TradingStockUtility.DrawSettings(body, settings);
                     break;
             }
         }

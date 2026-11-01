@@ -1,58 +1,105 @@
 using System.Collections.Generic;
+using System.Linq;
 using HarmonyLib;
 using RimWorld;
+using UnityEngine;
 using Verse;
 
 namespace Yuudong2Mod
 {
-    // Trading Options Continue 포팅. 기존에 쓰던 설정값만 고정으로 적용한다.
-    // - 궤도 상선·정착지·상단의 재고와 은: 8배
+    // Trading Options Continue 포팅.
+    // - 궤도 상선·상단·정착지·방문객 상인의 재고와 은에 각각 배율을 곱한다. 기본값은 기존에 쓰던 8배(방문객 1배).
     // - 랜디 계열 스토리텔러의 궤도 방문 사건 가중치: 4배
     internal static class TradingStockUtility
     {
-        private const int StockMultiplier = 8;
         private const float OrbitalVisitorWeightFactor = 4f;
+        private const float MaxStockMultiplier = 20f;
 
-        private static readonly Dictionary<TraderKindDef, bool> ScaledTraders = new Dictionary<TraderKindDef, bool>();
+        private enum TraderType
+        {
+            Other,
+            Orbital,
+            Caravan,
+            Settlement,
+            Visitor,
+        }
+
+        private static readonly Dictionary<TraderKindDef, TraderType> TraderTypes = new Dictionary<TraderKindDef, TraderType>();
 
         public static int ScaleCount(TraderKindDef trader, int count)
         {
-            return IsScaledTrader(trader) ? count * StockMultiplier : count;
+            float multiplier = Multiplier(trader);
+            return multiplier == 1f ? count : GenMath.RoundRandom(count * multiplier);
         }
 
-        private static bool IsScaledTrader(TraderKindDef trader)
+        private static float Multiplier(TraderKindDef trader)
+        {
+            Yuudong2Settings s = Yuudong2Settings.Current;
+            switch (TypeOf(trader))
+            {
+                case TraderType.Orbital:
+                    return s.tradeStockOrbital;
+                case TraderType.Caravan:
+                    return s.tradeStockCaravan;
+                case TraderType.Settlement:
+                    return s.tradeStockSettlement;
+                case TraderType.Visitor:
+                    return s.tradeStockVisitor;
+                default:
+                    return 1f;
+            }
+        }
+
+        private static TraderType TypeOf(TraderKindDef trader)
         {
             if (trader == null)
             {
-                return false;
+                return TraderType.Other;
             }
 
-            if (!ScaledTraders.TryGetValue(trader, out bool scaled))
+            if (!TraderTypes.TryGetValue(trader, out TraderType type))
             {
-                scaled = trader.orbital || IsSettlementOrCaravanTrader(trader);
-                ScaledTraders[trader] = scaled;
+                type = trader.orbital ? TraderType.Orbital : FactionTraderType(trader);
+                TraderTypes[trader] = type;
             }
 
-            return scaled;
+            return type;
         }
 
-        // 방문객 상인은 원본 설정에서 배율이 기본값(1배)이었으므로 제외한다.
-        private static bool IsSettlementOrCaravanTrader(TraderKindDef trader)
+        // 여러 목록에 함께 들어 있으면 상단 → 정착지 → 방문객 순으로 본다.
+        private static TraderType FactionTraderType(TraderKindDef trader)
         {
-            foreach (FactionDef faction in DefDatabase<FactionDef>.AllDefsListForReading)
+            List<FactionDef> factions = DefDatabase<FactionDef>.AllDefsListForReading;
+            if (factions.Any(f => f.caravanTraderKinds.Contains(trader)))
             {
-                if (faction.baseTraderKinds.Contains(trader) || faction.caravanTraderKinds.Contains(trader))
-                {
-                    return true;
-                }
-
-                if (faction.visitorTraderKinds.Contains(trader))
-                {
-                    return false;
-                }
+                return TraderType.Caravan;
             }
 
-            return false;
+            if (factions.Any(f => f.baseTraderKinds.Contains(trader)))
+            {
+                return TraderType.Settlement;
+            }
+
+            return factions.Any(f => f.visitorTraderKinds.Contains(trader)) ? TraderType.Visitor : TraderType.Other;
+        }
+
+        public static void DrawSettings(Rect rect, Yuudong2Settings s)
+        {
+            Listing_Standard listing = new Listing_Standard();
+            listing.Begin(rect);
+            listing.Label("Yuudong2.TradeStock.Note".Translate());
+            listing.Gap();
+            MultiplierRow(listing, "Orbital", ref s.tradeStockOrbital);
+            MultiplierRow(listing, "Caravan", ref s.tradeStockCaravan);
+            MultiplierRow(listing, "Settlement", ref s.tradeStockSettlement);
+            MultiplierRow(listing, "Visitor", ref s.tradeStockVisitor);
+            listing.End();
+        }
+
+        private static void MultiplierRow(Listing_Standard listing, string key, ref float value)
+        {
+            listing.Label(("Yuudong2.TradeStock." + key).Translate(value.ToString("0.#")));
+            value = Mathf.Round(listing.Slider(value, 0f, MaxStockMultiplier) * 2f) / 2f;
         }
 
         public static void ApplyStorytellerPatches()

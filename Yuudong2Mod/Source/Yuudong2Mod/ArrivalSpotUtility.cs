@@ -95,9 +95,21 @@ namespace Yuudong2Mod
                         return true;
                     }
                 }
+
+                // 지점에 갈 수 없으면 바닐라 위치로 가되, 조용히 넘어가지 않고 이유를 알린다.
+                string reason = !spot.Standable(map) ? "Yuudong2.ArrivalSpot.Reason.Blocked"
+                    : spot.Fogged(map) ? "Yuudong2.ArrivalSpot.Reason.Fogged"
+                    : "Yuudong2.ArrivalSpot.Reason.NoPath";
+                Messages.Message("Yuudong2.ArrivalSpot.Unreachable".Translate(reason.Translate()), new TargetInfo(spot, map), MessageTypeDefOf.CautionInput, false);
             }
 
             return RCellFinder.TryFindRandomSpotJustOutsideColony(root, map, searcher, out result, extraValidator);
+        }
+
+        // 정착지에 온 다른 세력(적대 아님)의 동물. 상단 짐 동물처럼 방목 동물이어도 정착지 문을 지나가게 한다.
+        public static bool IsVisitorAnimal(Pawn p)
+        {
+            return p.RaceProps.Animal && p.Faction != null && !p.Faction.IsPlayer && !p.Faction.HostileTo(Faction.OfPlayer);
         }
 
         // 0보다 크면 물자 낙하 지점을 쓰지 않는다 (적 중앙 낙하 공습 등).

@@ -79,6 +79,37 @@ namespace Yuudong2Mod
         }
     }
 
+    // 바닐라는 머팔로 같은 방목 동물이 일반 문을 못 지나가게 한다. 상단 대기 위치는 일행 전원이 갈 수 있어야 해서
+    // 짐 동물 하나 때문에 벽 안의 도착 지점이 탈락하고 정착지 바깥으로 간다. 방문 세력의 동물은 플레이어 문을 지나가게 한다.
+    // 길찾기·도달 판정·문 열기가 모두 이 메서드를 거친다. 울타리는 그대로 막는다.
+    [HarmonyPatchCategory(Features.CaravanArrivalSpot)]
+    [HarmonyPatch(typeof(Building_Door), nameof(Building_Door.PawnCanOpen))]
+    internal static class Building_Door_PawnCanOpen_VisitorAnimal_Patch
+    {
+        private static void Postfix(Building_Door __instance, Pawn p, ref bool __result)
+        {
+            if (!__result && p.FenceBlocked && !__instance.def.building.roamerCanOpen && __instance.Faction == Faction.OfPlayer
+                && p.CanOpenDoors && ArrivalSpotUtility.IsVisitorAnimal(p))
+            {
+                __result = true;
+            }
+        }
+    }
+
+    // 산 동물이 플레이어 것이 되면 문을 못 지나가게 바뀌므로 도달 캐시를 비운다.
+    [HarmonyPatchCategory(Features.CaravanArrivalSpot)]
+    [HarmonyPatch(typeof(Pawn), nameof(Pawn.SetFaction))]
+    internal static class Pawn_SetFaction_VisitorAnimal_Patch
+    {
+        private static void Postfix(Pawn __instance)
+        {
+            if (__instance.RaceProps.Animal && __instance.Spawned)
+            {
+                ReachabilityUtility.ClearCacheFor(__instance);
+            }
+        }
+    }
+
     // 물자 낙하 지점: 궤도 상선 구매품, 퀘스트 보상, 왕족 지원 물자, 귀환하는 정착민 등
     // 바닐라가 "교역 낙하 지점"(DropCellFinder.TradeDropSpot)을 쓰는 모든 낙하를 이 지점 근처로 보낸다.
     [HarmonyPatchCategory(Features.TradeShipDropSpot)]

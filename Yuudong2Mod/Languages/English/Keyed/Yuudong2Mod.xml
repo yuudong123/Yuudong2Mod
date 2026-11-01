@@ -7,6 +7,19 @@
   <Yuudong2.Group.Colony>Colony</Yuudong2.Group.Colony>
   <Yuudong2.Group.Pawn>Pawns</Yuudong2.Group.Pawn>
   <Yuudong2.Group.Trade>Trade and factions</Yuudong2.Group.Trade>
+  <Yuudong2.Group.Performance>Performance</Yuudong2.Group.Performance>
+  <Yuudong2.Feature.PlantSwayPerFrame>Update plant sway once per frame</Yuudong2.Feature.PlantSwayPerFrame>
+  <Yuudong2.Feature.PlantSwayPerFrame.Desc>Vanilla updates every wind-swayed plant material on every tick. The screen only draws the last value of each frame, so it is updated once per frame instead. Looks the same.</Yuudong2.Feature.PlantSwayPerFrame.Desc>
+  <Yuudong2.Feature.IdleIceChecks>Skip ice checks where there is no ice</Yuudong2.Feature.IdleIceChecks>
+  <Yuudong2.Feature.IdleIceChecks.Desc>Odyssey checks the temperature and room of several cells every tick to freeze water and melt ice. Cells that are not water are skipped while the map has no thin ice, since nothing can happen there.</Yuudong2.Feature.IdleIceChecks.Desc>
+  <Yuudong2.Feature.WorldPawnSleep>Let world pawns sleep</Yuudong2.Feature.WorldPawnSleep>
+  <Yuudong2.Feature.WorldPawnSleep.Desc>Implants such as the death acidifier and regeneration effects that do nothing off-map no longer keep world pawns awake and ticking every tick. Sleeping pawns wake up as usual when they return to a map.</Yuudong2.Feature.WorldPawnSleep.Desc>
+  <Yuudong2.Feature.FastTickInterval>Slower interval ticks at high speed</Yuudong2.Feature.FastTickInterval>
+  <Yuudong2.Feature.FastTickInterval.Desc>At 3x speed and above, pawns and things on screen run their interval updates every 15 ticks, the same as off-screen ones. Results are the same; only on-screen changes look less smooth.</Yuudong2.Feature.FastTickInterval.Desc>
+  <Yuudong2.Feature.FastMoodThoughts>Fewer situational thought checks at high speed</Yuudong2.Feature.FastMoodThoughts>
+  <Yuudong2.Feature.FastMoodThoughts.Desc>At 3x speed and above, situational thoughts are re-evaluated every 300 ticks instead of 150. Memories and need changes are unchanged; situational thoughts only appear and disappear a little later.</Yuudong2.Feature.FastMoodThoughts.Desc>
+  <Yuudong2.Feature.IdleMissingParts>Skip idle missing body parts</Yuudong2.Feature.IdleMissingParts>
+  <Yuudong2.Feature.IdleMissingParts.Desc>Missing body parts with nothing to treat, such as fingers and toes under a bionic limb, skip their per-tick calls. Results match vanilla.</Yuudong2.Feature.IdleMissingParts.Desc>
   <Yuudong2.Group.Compatibility>Mod compatibility</Yuudong2.Group.Compatibility>
   <Yuudong2.Feature.AlwaysAcceptProposal>Proposals always accepted</Yuudong2.Feature.AlwaysAcceptProposal>
   <Yuudong2.Feature.AlwaysAcceptProposal.Desc>Marriage proposals are never rejected.</Yuudong2.Feature.AlwaysAcceptProposal.Desc>
@@ -26,20 +39,27 @@
   <Yuudong2.Feature.NoMapEdgeLimit.Desc>Allows building and zoning at the map edge. (Change map edge limit)</Yuudong2.Feature.NoMapEdgeLimit.Desc>
   <Yuudong2.Feature.PowerOnDemand>Power on demand</Yuudong2.Feature.PowerOnDemand>
   <Yuudong2.Feature.PowerOnDemand.Desc>Workbenches, TVs, research benches and similar buildings draw full power only while in use and 1 W while idle. (Turn It On and Off)</Yuudong2.Feature.PowerOnDemand.Desc>
-  <Yuudong2.Feature.DurableClothes>Durable clothes</Yuudong2.Feature.DurableClothes>
-  <Yuudong2.Feature.DurableClothes.Desc>Daily wear on worn apparel drops to 5% of vanilla. (Durable Clothes)</Yuudong2.Feature.DurableClothes.Desc>
-  <Yuudong2.Feature.InfiniteApparelDurability>Infinite apparel durability</Yuudong2.Feature.InfiniteApparelDurability>
-  <Yuudong2.Feature.InfiniteApparelDurability.Desc>Keeps apparel worn by player pawns at full hit points. (Infinite apparel durability)</Yuudong2.Feature.InfiniteApparelDurability.Desc>
+  <Yuudong2.Feature.EquipmentDurability>Gear only damaged by fire</Yuudong2.Feature.EquipmentDurability>
+  <Yuudong2.Feature.EquipmentDurability.Desc>Apparel, armor, utility items and weapons lose hit points only when burning. Worn or lying on the ground, they take no wear, hit, weather deterioration or explosion damage. Hit points already lost stay lost.</Yuudong2.Feature.EquipmentDurability.Desc>
   <Yuudong2.Feature.AllSpecialistsCanWork>Specialists can work</Yuudong2.Feature.AllSpecialistsCanWork>
   <Yuudong2.Feature.AllSpecialistsCanWork.Desc>Ideoligion roles no longer disable work types or weapons. (All Specialists Can Work)</Yuudong2.Feature.AllSpecialistsCanWork.Desc>
   <Yuudong2.Feature.FasterBiosculpter>Faster biosculpter</Yuudong2.Feature.FasterBiosculpter>
   <Yuudong2.Feature.FasterBiosculpter.Desc>All biosculpter pod cycles take 1 day and biotuning does not persist. (Faster Biosculpter Pod)</Yuudong2.Feature.FasterBiosculpter.Desc>
   <Yuudong2.Feature.CaravanArrivalSpot>Caravan arrival spot</Yuudong2.Feature.CaravanArrivalSpot>
-  <Yuudong2.Feature.CaravanArrivalSpot.Desc>Enables the caravan arrival spot in Architect &gt; Misc. Trader caravans enter from the nearest map edge and wait at the spot.</Yuudong2.Feature.CaravanArrivalSpot.Desc>
+  <Yuudong2.Feature.CaravanArrivalSpot.Desc>Enables the caravan arrival spot in Architect &gt; Misc. Trader caravans enter from the nearest map edge and wait at the spot. Visitors' pack animals can pass through colony doors, so a spot inside walls works.</Yuudong2.Feature.CaravanArrivalSpot.Desc>
+  <Yuudong2.ArrivalSpot.Unreachable>The caravan can't reach the arrival spot and will wait outside the colony: {0}</Yuudong2.ArrivalSpot.Unreachable>
+  <Yuudong2.ArrivalSpot.Reason.Blocked>the spot is blocked.</Yuudong2.ArrivalSpot.Reason.Blocked>
+  <Yuudong2.ArrivalSpot.Reason.Fogged>the spot is fogged.</Yuudong2.ArrivalSpot.Reason.Fogged>
+  <Yuudong2.ArrivalSpot.Reason.NoPath>someone in the caravan has no path to the spot. Check doors and passages.</Yuudong2.ArrivalSpot.Reason.NoPath>
   <Yuudong2.Feature.TradeShipDropSpot>Supply drop spot</Yuudong2.Feature.TradeShipDropSpot>
   <Yuudong2.Feature.TradeShipDropSpot.Desc>Enables the supply drop spot in Architect &gt; Misc. Drop pods with orbital trade goods, quest rewards, royal aid and returning colonists land near it. Enemy raids are not affected. (Formerly the trade ship drop spot)</Yuudong2.Feature.TradeShipDropSpot.Desc>
-  <Yuudong2.Feature.TradeStockBoost>8x trader stock</Yuudong2.Feature.TradeStockBoost>
-  <Yuudong2.Feature.TradeStockBoost.Desc>Orbital, settlement and caravan traders get 8x stock and silver. Visitor traders are unchanged. (Trading Options)</Yuudong2.Feature.TradeStockBoost.Desc>
+  <Yuudong2.TradeStock.Note>Applies to traders that arrive from now on. Traders already here keep their stock.</Yuudong2.TradeStock.Note>
+  <Yuudong2.TradeStock.Orbital>Orbital traders: x{0}</Yuudong2.TradeStock.Orbital>
+  <Yuudong2.TradeStock.Caravan>Trade caravans: x{0}</Yuudong2.TradeStock.Caravan>
+  <Yuudong2.TradeStock.Settlement>Settlements: x{0}</Yuudong2.TradeStock.Settlement>
+  <Yuudong2.TradeStock.Visitor>Visiting traders: x{0}</Yuudong2.TradeStock.Visitor>
+  <Yuudong2.Feature.TradeStockBoost>Trader stock multiplier</Yuudong2.Feature.TradeStockBoost>
+  <Yuudong2.Feature.TradeStockBoost.Desc>Multiplies the stock and silver of orbital traders, trade caravans, settlements and visiting traders, each with its own setting. Defaults are 8x for orbital, caravan and settlement traders and 1x for visitors. (Trading Options)</Yuudong2.Feature.TradeStockBoost.Desc>
   <Yuudong2.Feature.OrbitalTraderFrequency>4x orbital trader frequency</Yuudong2.Feature.OrbitalTraderFrequency>
   <Yuudong2.Feature.OrbitalTraderFrequency.Desc>Orbital traders come 4x as often under storytellers that use random incidents, such as Randy. (Trading Options)</Yuudong2.Feature.OrbitalTraderFrequency.Desc>
   <Yuudong2.Feature.InsultFaction>Insult factions</Yuudong2.Feature.InsultFaction>
@@ -92,6 +112,8 @@
   <Yuudong2.Insult.RaidDropPod>{0} ({1}) started a drop pod raid on you!</Yuudong2.Insult.RaidDropPod>
   <Yuudong2.Insult.RaidDelayed>{0} ({1}) is furious! You will be raided in {2}!</Yuudong2.Insult.RaidDelayed>
   <Yuudong2.Group.Interface>Interface</Yuudong2.Group.Interface>
+  <Yuudong2.Feature.ConsensualIncest>Allow romance between relatives</Yuudong2.Feature.ConsensualIncest>
+  <Yuudong2.Feature.ConsensualIncest.Desc>Relatives can romance each other like any other pawns. Blood relations no longer lower the romance chance, and other pawns do not think less of someone dating a relative. The vanilla inbred gene on children of relatives is unchanged. (Allow Consensual Incest port)</Yuudong2.Feature.ConsensualIncest.Desc>
   <Yuudong2.Feature.NoRandomRelations>No random relations</Yuudong2.Feature.NoRandomRelations>
   <Yuudong2.Feature.NoRandomRelations.Desc>Newly generated pawns get no random family or romantic relations. (No Random Relations)</Yuudong2.Feature.NoRandomRelations.Desc>
   <Yuudong2.Feature.RoomFood>Room food</Yuudong2.Feature.RoomFood>
@@ -112,6 +134,8 @@
   <Yuudong2.Feature.HiddenBionicEyes.Desc>Hides bionic and archotech eye graphics on faces. (Hidden Eyes)</Yuudong2.Feature.HiddenBionicEyes.Desc>
   <Yuudong2.Feature.EndlessGrowth>Endless growth</Yuudong2.Feature.EndlessGrowth>
   <Yuudong2.Feature.EndlessGrowth.Desc>Removes the skill level 20 cap and adjusts XP, crafting quality and bill ranges. Detail changes need a restart. (EndlessGrowth)</Yuudong2.Feature.EndlessGrowth.Desc>
+  <Yuudong2.Feature.NoGrowthNickname>No growth moment nicknames</Yuudong2.Feature.NoGrowthNickname>
+  <Yuudong2.Feature.NoGrowthNickname.Desc>Children no longer get a random nickname at growth moments. Nicknames you set yourself are kept.</Yuudong2.Feature.NoGrowthNickname.Desc>
   <Yuudong2.Feature.RolesUntiedToMemes>Roles untied to memes</Yuudong2.Feature.RolesUntiedToMemes>
   <Yuudong2.Feature.RolesUntiedToMemes.Desc>Specialist roles no longer require specific memes. (Roles untied to memes)</Yuudong2.Feature.RolesUntiedToMemes.Desc>
   <Yuudong2.Feature.AutoCastSpecialistCommands>Auto-cast specialist commands</Yuudong2.Feature.AutoCastSpecialistCommands>
@@ -272,7 +296,7 @@
   <Yuudong2.Feature.GeneAssistant>Gene assistant</Yuudong2.Feature.GeneAssistant>
   <Yuudong2.Feature.GeneAssistant.Desc>Colors genes by ownership in the gene assembler and adds a gene library, duplicate genepack ejection, filled slot display and better sorting. (Random's Gene Assistant)</Yuudong2.Feature.GeneAssistant.Desc>
   <Yuudong2.Feature.DragonianMix>DragonianMix</Yuudong2.Feature.DragonianMix>
-  <Yuudong2.Feature.DragonianMix.Desc>With the Dragonian race mod, adds DragonianMix factions, pawns, abilities, weapons and gases. Turning it off removes its defs, so do not disable it in saves that use them. Needs a restart. (DragonianMix)</Yuudong2.Feature.DragonianMix.Desc>
+  <Yuudong2.Feature.DragonianMix.Desc>With the Dragonian race mod, adds DragonianMix factions, pawns, abilities, weapons and gases. Only the basic dragonian orb is kept: the orb variants and shield modules are removed, and those in existing saves become dragonian orbs on load. Turning it off removes its defs, so do not disable it in saves that use them. Needs a restart. (DragonianMix)</Yuudong2.Feature.DragonianMix.Desc>
   <Yuudong2.Romance.Debug>Debug logging</Yuudong2.Romance.Debug>
   <Yuudong2.Romance.Chance>Romance chance (general)</Yuudong2.Romance.Chance>
   <Yuudong2.Romance.Chance.Desc>Multiplier for all romance attempts.</Yuudong2.Romance.Chance.Desc>
@@ -421,6 +445,33 @@
   <Yuudong2.Feature.RatkinDrawScaleFix.Desc>Prevents NewRatkinPlus's gene draw-scale cache from being corrupted by concurrent render threads, which made every pawn invisible. Uses a thread-safe cache for the same calculation. Does nothing without NewRatkinPlus.</Yuudong2.Feature.RatkinDrawScaleFix.Desc>
   <Yuudong2.Feature.TpsDisplay>TPS display</Yuudong2.Feature.TpsDisplay>
   <Yuudong2.Feature.TpsDisplay.Desc>Shows "TPS : current(target)" above the weather and condition readouts at the bottom right. Current updates once per second and is the ticks actually run in that second; target is the ticks per second for the current speed (60 at normal speed, 0 when paused).</Yuudong2.Feature.TpsDisplay.Desc>
+  <Yuudong2.Feature.GeneRipper>Gene ripper</Yuudong2.Feature.GeneRipper>
+  <Yuudong2.Feature.GeneRipper.Desc>Adds the gene ripper to Architect > Biotech (needs gene processor research). Insert a colonist, slave or prisoner and choose one of their genes: it is extracted as a genepack and the person dies. Cancelling midway may also kill them. Turning this off only hides it from the Architect menu. (Gene Ripper)</Yuudong2.Feature.GeneRipper.Desc>
+  <Yuudong2.Feature.MultiReinstall>Reinstall several buildings at once</Yuudong2.Feature.MultiReinstall>
+  <Yuudong2.Feature.MultiReinstall.Desc>Selecting several reinstallable buildings adds a 'Reinstall all' button. They move together in the same layout and R/Q rotates the group. New spots may overlap where other buildings in the group stand now; those are uninstalled first instead of deconstructed.</Yuudong2.Feature.MultiReinstall.Desc>
+  <Yuudong2.MultiReinstall.Label>Reinstall all</Yuudong2.MultiReinstall.Label>
+  <Yuudong2.MultiReinstall.Desc>Reinstall the selected buildings elsewhere in their current layout. R/Q rotates the whole group. New spots may overlap buildings of the group.</Yuudong2.MultiReinstall.Desc>
+  <Yuudong2.Feature.MultiCopy>Copy several buildings at once</Yuudong2.Feature.MultiCopy>
+  <Yuudong2.Feature.MultiCopy.Desc>Selecting several buildable buildings, blueprints or frames adds a 'Copy all' button. It places build blueprints with the same stuff and style in the same layout, and R/Q rotates the group. Like vanilla building, it can be placed repeatedly until cancelled.</Yuudong2.Feature.MultiCopy.Desc>
+  <Yuudong2.Feature.RebuildBills>Keep bills on rebuilt workbenches</Yuudong2.Feature.RebuildBills>
+  <Yuudong2.Feature.RebuildBills.Desc>When a destroyed workbench leaves an auto-rebuild blueprint, its bills are remembered and restored once it is built again. Vanilla only carries over storage settings and drops the bills.</Yuudong2.Feature.RebuildBills.Desc>
+  <Yuudong2.MultiCopy.Label>Copy all</Yuudong2.MultiCopy.Label>
+  <Yuudong2.MultiCopy.Desc>Build copies of the selected buildings and blueprints elsewhere with the same stuff and style, in their current layout. R/Q rotates the whole group. Place it as many times as you like until cancelled.</Yuudong2.MultiCopy.Desc>
+  <Yuudong2.GeneRipper.Child>{PAWN_nameDef} doesn't have enough genetic material.</Yuudong2.GeneRipper.Child>
+  <Yuudong2.GeneRipper.Regrowing>Genes are still regrowing.</Yuudong2.GeneRipper.Regrowing>
+  <Yuudong2.GeneRipper.KillConfirm>Extracting {1} from {0} will kill them. Continue?</Yuudong2.GeneRipper.KillConfirm>
+  <Yuudong2.GeneRipper.Select>Select</Yuudong2.GeneRipper.Select>
+  <Yuudong2.GeneRipper.Target>Gene to extract: {0}</Yuudong2.GeneRipper.Target>
+  <Yuudong2.GeneRipper.Paused>Extraction paused: no power.</Yuudong2.GeneRipper.Paused>
+  <Yuudong2.GeneRipper.InsertDesc>Choose a person and the gene to extract. The person dies when the extraction finishes.</Yuudong2.GeneRipper.InsertDesc>
+  <Yuudong2.GeneRipper.CancelDesc>Stop the extraction. The further along it is, the more likely the person dies. If they survive, their genes need time to regrow.</Yuudong2.GeneRipper.CancelDesc>
+  <Yuudong2.GeneRipper.Hours>Extraction time: {0} h</Yuudong2.GeneRipper.Hours>
+  <Yuudong2.GeneRipper.Hours.Desc>How long the gene ripper takes to extract a gene, in game hours.</Yuudong2.GeneRipper.Hours.Desc>
+  <Yuudong2.GeneRipper.Blend>Blending chance: {0}</Yuudong2.GeneRipper.Blend>
+  <Yuudong2.GeneRipper.Blend.Desc>Chance that no corpse is left, only meat, nutrient paste and blood. Clothes and weapons are dropped.</Yuudong2.GeneRipper.Blend.Desc>
+  <Yuudong2.Feature.SaveHotkey>Save window hotkey</Yuudong2.Feature.SaveHotkey>
+  <Yuudong2.Feature.SaveHotkey.Desc>Opens the save window with a hotkey (F5 by default). Press it again to close the window. The key can be changed in Options > Controls, under "Game". Follows the same rules as Save in the menu: not available in commitment mode or while saving is temporarily disabled.</Yuudong2.Feature.SaveHotkey.Desc>
+  <Yuudong2.SaveHotkey.Unavailable>You can't save right now.</Yuudong2.SaveHotkey.Unavailable>
   <Yuudong2.Feature.BetterWorkbench>Better workbench management</Yuudong2.Feature.BetterWorkbench>
   <Yuudong2.Feature.BetterWorkbench.Desc>Adds quality, hit point, material and stockpile limits for counted items, extra counted products, counting items on away colonists, bill copy/paste/linking and pawn/workbench restrictions. Unlike the original, away colonists are still counted after loading a save and when they are off-map, such as colonists lent to a quest. (Better Workbench Management)</Yuudong2.Feature.BetterWorkbench.Desc>
 
