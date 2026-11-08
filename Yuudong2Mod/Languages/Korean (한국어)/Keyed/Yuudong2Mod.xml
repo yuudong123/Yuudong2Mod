@@ -13,6 +13,8 @@
   <Yuudong2.Feature.PlantSwayPerFrame.Desc>바닐라는 바람에 흔들리는 식물 재질 전부를 매 틱 갱신합니다. 화면은 프레임마다 마지막 값만 그리므로 프레임마다 한 번만 갱신합니다. 보이는 결과는 같습니다.</Yuudong2.Feature.PlantSwayPerFrame.Desc>
   <Yuudong2.Feature.IdleIceChecks>얼음 없는 칸의 얼음 판정 건너뛰기</Yuudong2.Feature.IdleIceChecks>
   <Yuudong2.Feature.IdleIceChecks.Desc>오디세이는 매 틱 여러 칸의 온도와 방을 조회해 물이 얼지, 얼음이 녹을지 판정합니다. 물이 아니고 맵에 얇은 얼음이 하나도 없으면 아무 일도 일어나지 않으므로 그런 칸은 건너뜁니다.</Yuudong2.Feature.IdleIceChecks.Desc>
+  <Yuudong2.Feature.DoorReachabilityCache>문을 지날 때 도달 캐시 일부만 비우기</Yuudong2.Feature.DoorReachabilityCache>
+  <Yuudong2.Feature.DoorReachabilityCache.Desc>바닐라는 누가 문을 지나 문이 열리고 닫힐 때마다 맵 전체의 '갈 수 있는지' 캐시를 비워서, 작업을 찾을 때 매번 지역을 다시 훑습니다. 그 문을 열 수 없는 폰과 닫힌 문을 못 지나는 검사의 결과만 지웁니다. 문을 열 수 있는 정착민의 결과는 문 상태와 상관없으므로 남겨 둡니다.</Yuudong2.Feature.DoorReachabilityCache.Desc>
   <Yuudong2.Feature.WorldPawnSleep>맵 밖 폰 재우기</Yuudong2.Feature.WorldPawnSleep>
   <Yuudong2.Feature.WorldPawnSleep.Desc>사후 처리장치 같은 이식물이나 맵 밖에서 의미 없는 회복 효과 때문에 맵 밖 폰이 잠들지 못하고 매 틱 계산되는 것을 막습니다. 잠든 폰은 맵에 다시 나오면 그대로 깨어납니다.</Yuudong2.Feature.WorldPawnSleep.Desc>
   <Yuudong2.Feature.FastTickInterval>고속에서 간격 틱 늦추기</Yuudong2.Feature.FastTickInterval>

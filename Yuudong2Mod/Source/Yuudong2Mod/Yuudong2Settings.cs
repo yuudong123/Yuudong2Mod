@@ -72,6 +72,7 @@ namespace Yuudong2Mod
         public const string IdleMissingParts = "IdleMissingParts";
         public const string PlantSwayPerFrame = "PlantSwayPerFrame";
         public const string IdleIceChecks = "IdleIceChecks";
+        public const string DoorReachabilityCache = "DoorReachabilityCache";
         public const string RpgLevelUp = "RpgLevelUp";
         public const string BirthAgeByLifespan = "BirthAgeByLifespan";
         public const string CalmMoveSpeed = "CalmMoveSpeed";
@@ -91,7 +92,7 @@ namespace Yuudong2Mod
             new FeatureGroup("Pawn", HairUnderHats, HiddenBionicEyes, EquipmentDurability, EndlessGrowth, NoGrowthNickname, RpgLevelUp, BirthAgeByLifespan, CalmMoveSpeed),
             new FeatureGroup("Ideology", AllSpecialistsCanWork, RolesUntiedToMemes, NoIdeologyLimits, AutoCastSpecialistCommands, FasterBiosculpter),
             new FeatureGroup("Trade", CaravanArrivalSpot, TradeShipDropSpot, MapWideTradeBeacon, TradeStockBoost, OrbitalTraderFrequency, InsultFaction, EmpireGoodwillFix),
-            new FeatureGroup("Performance", WorldPawnSleep, FastTickInterval, FastMoodThoughts, IdleMissingParts, PlantSwayPerFrame, IdleIceChecks),
+            new FeatureGroup("Performance", WorldPawnSleep, FastTickInterval, FastMoodThoughts, IdleMissingParts, PlantSwayPerFrame, IdleIceChecks, DoorReachabilityCache),
             new FeatureGroup("Compatibility", EpoeAiCore, DragonianGenes, DragonianHealing, DragonianMix, GloomyFurnitureFix, RatkinDrawScaleFix),
         };
 

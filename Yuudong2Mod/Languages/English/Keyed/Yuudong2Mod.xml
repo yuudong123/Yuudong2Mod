@@ -12,6 +12,8 @@
   <Yuudong2.Feature.PlantSwayPerFrame.Desc>Vanilla updates every wind-swayed plant material on every tick. The screen only draws the last value of each frame, so it is updated once per frame instead. Looks the same.</Yuudong2.Feature.PlantSwayPerFrame.Desc>
   <Yuudong2.Feature.IdleIceChecks>Skip ice checks where there is no ice</Yuudong2.Feature.IdleIceChecks>
   <Yuudong2.Feature.IdleIceChecks.Desc>Odyssey checks the temperature and room of several cells every tick to freeze water and melt ice. Cells that are not water are skipped while the map has no thin ice, since nothing can happen there.</Yuudong2.Feature.IdleIceChecks.Desc>
+  <Yuudong2.Feature.DoorReachabilityCache>Keep reachability cache when doors open and close</Yuudong2.Feature.DoorReachabilityCache>
+  <Yuudong2.Feature.DoorReachabilityCache.Desc>Vanilla clears the whole map's reachability cache every time a door opens or closes for a passing pawn, so job searches keep re-scanning regions. Only results that depend on the door being open are removed: pawns that cannot open that door, checks without a pawn, and modes that cannot pass closed doors. Results for colonists who can open the door stay cached.</Yuudong2.Feature.DoorReachabilityCache.Desc>
   <Yuudong2.Feature.WorldPawnSleep>Let world pawns sleep</Yuudong2.Feature.WorldPawnSleep>
   <Yuudong2.Feature.WorldPawnSleep.Desc>Implants such as the death acidifier and regeneration effects that do nothing off-map no longer keep world pawns awake and ticking every tick. Sleeping pawns wake up as usual when they return to a map.</Yuudong2.Feature.WorldPawnSleep.Desc>
   <Yuudong2.Feature.FastTickInterval>Slower interval ticks at high speed</Yuudong2.Feature.FastTickInterval>
