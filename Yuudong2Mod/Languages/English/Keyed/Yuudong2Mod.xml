@@ -455,6 +455,8 @@
   <Yuudong2.Feature.MultiCopy.Desc>Selecting several buildable buildings, blueprints or frames adds a 'Copy all' button. It places build blueprints with the same stuff and style in the same layout, and R/Q rotates the group. Like vanilla building, it can be placed repeatedly until cancelled.</Yuudong2.Feature.MultiCopy.Desc>
   <Yuudong2.Feature.RebuildBills>Keep bills on rebuilt workbenches</Yuudong2.Feature.RebuildBills>
   <Yuudong2.Feature.RebuildBills.Desc>When a destroyed workbench leaves an auto-rebuild blueprint, its bills are remembered and restored once it is built again. Vanilla only carries over storage settings and drops the bills.</Yuudong2.Feature.RebuildBills.Desc>
+  <Yuudong2.Feature.InstalledPartsCount>Count installed body parts</Yuudong2.Feature.InstalledPartsCount>
+  <Yuudong2.Feature.InstalledPartsCount.Desc>Bills that make body parts such as bionic arms or artificial hearts also get "Count equipped". When it is on, the same parts installed in colonists are counted too. Like apparel, colonists away from the map are counted only when "count away" is also on.</Yuudong2.Feature.InstalledPartsCount.Desc>
   <Yuudong2.MultiCopy.Label>Copy all</Yuudong2.MultiCopy.Label>
   <Yuudong2.MultiCopy.Desc>Build copies of the selected buildings and blueprints elsewhere with the same stuff and style, in their current layout. R/Q rotates the whole group. Place it as many times as you like until cancelled.</Yuudong2.MultiCopy.Desc>
   <Yuudong2.GeneRipper.Child>{PAWN_nameDef} doesn't have enough genetic material.</Yuudong2.GeneRipper.Child>
