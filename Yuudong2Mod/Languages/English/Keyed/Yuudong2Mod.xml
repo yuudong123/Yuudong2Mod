@@ -32,7 +32,7 @@
   <Yuudong2.Feature.ShelfAcceptAll>Shelves accept everything</Yuudong2.Feature.ShelfAcceptAll>
   <Yuudong2.Feature.ShelfAcceptAll.Desc>Shelves and small shelves can hold everything a stockpile can (including chunks, plants, packaged furniture, wastepacks and large corpses). Pick what they take in the shelf's storage settings.</Yuudong2.Feature.ShelfAcceptAll.Desc>
   <Yuudong2.Feature.HealthCardSorting>Health tab sorting</Yuudong2.Feature.HealthCardSorting>
-  <Yuudong2.Feature.HealthCardSorting.Desc>Within each body part, lists non-injury entries first and injuries after, both sorted by name.</Yuudong2.Feature.HealthCardSorting.Desc>
+  <Yuudong2.Feature.HealthCardSorting.Desc>Body parts appear in the same order for every pawn: parts that vanilla ranks equally (by height and size) follow the body structure instead of surgery order. Within each body part, lists non-injury entries first and injuries after, both sorted by name.</Yuudong2.Feature.HealthCardSorting.Desc>
   <Yuudong2.Feature.MessagePlacement>Message placement</Yuudong2.Feature.MessagePlacement>
   <Yuudong2.Feature.MessagePlacement.Desc>Moves on-screen messages below the colonist bar. (Better Message Placement)</Yuudong2.Feature.MessagePlacement.Desc>
   <Yuudong2.Feature.NoMapEdgeLimit>No map edge limit</Yuudong2.Feature.NoMapEdgeLimit>
