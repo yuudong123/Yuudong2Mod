@@ -475,6 +475,49 @@
   <Yuudong2.Feature.InstalledPartsCount.Desc>Bills that make body parts such as bionic arms or artificial hearts also get "Count equipped". When it is on, the same parts installed in colonists are counted too. Like apparel, colonists away from the map are counted only when "count away" is also on.</Yuudong2.Feature.InstalledPartsCount.Desc>
   <Yuudong2.Feature.WorkRouteOrder>Shorter cleaning, harvesting and painting routes</Yuudong2.Feature.WorkRouteOrder>
   <Yuudong2.Feature.WorkRouteOrder.Desc>Vanilla groups nearby filth, crops or paint spots and sorts them once by distance from the starting point, so pawns zigzag between targets on both sides. A nearest-first route is refined and used only when it is shorter. In straight-line distance it is never longer than vanilla.</Yuudong2.Feature.WorkRouteOrder.Desc>
+  <Yuudong2.Feature.SurgeryManager>Surgery manager tab</Yuudong2.Feature.SurgeryManager>
+  <Yuudong2.Feature.SurgeryManager.Desc>Adds a "surgery" button at the bottom right. It shows each colonist's artificial parts and implants per body part, compares them with an implant plan (preset) by color, and queues the missing surgeries in one click. It also shows the materials needed and optimization nanobot progress.</Yuudong2.Feature.SurgeryManager.Desc>
+  <Yuudong2.Surgery.DefaultPresetName>Default plan</Yuudong2.Surgery.DefaultPresetName>
+  <Yuudong2.Surgery.Presets>Plans</Yuudong2.Surgery.Presets>
+  <Yuudong2.Surgery.QueueAll>Queue all</Yuudong2.Surgery.QueueAll>
+  <Yuudong2.Surgery.Queue>Queue</Yuudong2.Surgery.Queue>
+  <Yuudong2.Surgery.SortName>Sort: name</Yuudong2.Surgery.SortName>
+  <Yuudong2.Surgery.SortProgress>Sort: progress</Yuudong2.Surgery.SortProgress>
+  <Yuudong2.Surgery.OnlyIncomplete>Incomplete only</Yuudong2.Surgery.OnlyIncomplete>
+  <Yuudong2.Surgery.OnlyIncomplete.Desc>Hide colonists whose plan is complete.</Yuudong2.Surgery.OnlyIncomplete.Desc>
+  <Yuudong2.Surgery.OnlyWithMaterials>Only with materials</Yuudong2.Surgery.OnlyWithMaterials>
+  <Yuudong2.Surgery.OnlyWithMaterials.Desc>Only queue surgeries whose materials (parts, medicine) are on the map. When queueing for several colonists, materials taken by earlier ones are subtracted.</Yuudong2.Surgery.OnlyWithMaterials.Desc>
+  <Yuudong2.Surgery.NanobotsOneAtATime>Optimizations one at a time</Yuudong2.Surgery.NanobotsOneAtATime>
+  <Yuudong2.Surgery.NanobotsOneAtATime.Desc>Implants that lower consciousness for days, such as optimization nanobots, are queued one at a time per colonist. While one is in progress or queued, the next waits.</Yuudong2.Surgery.NanobotsOneAtATime.Desc>
+  <Yuudong2.Surgery.NoPlan>No plan</Yuudong2.Surgery.NoPlan>
+  <Yuudong2.Surgery.Colonist>Colonist</Yuudong2.Surgery.Colonist>
+  <Yuudong2.Surgery.Plan>Plan</Yuudong2.Surgery.Plan>
+  <Yuudong2.Surgery.Progress>Done</Yuudong2.Surgery.Progress>
+  <Yuudong2.Surgery.Materials>Materials</Yuudong2.Surgery.Materials>
+  <Yuudong2.Surgery.MaterialTip>{0}: {1} on the map, {2} needed for the plans. Click to go to a workbench that makes it.</Yuudong2.Surgery.MaterialTip>
+  <Yuudong2.Surgery.NoBench>No workbench on this map makes {0}.</Yuudong2.Surgery.NoBench>
+  <Yuudong2.Surgery.Installed>Installed</Yuudong2.Surgery.Installed>
+  <Yuudong2.Surgery.State.Done>done</Yuudong2.Surgery.State.Done>
+  <Yuudong2.Surgery.State.InProgress>in progress ({0} days left)</Yuudong2.Surgery.State.InProgress>
+  <Yuudong2.Surgery.State.Queued>queued</Yuudong2.Surgery.State.Queued>
+  <Yuudong2.Surgery.State.Missing>missing</Yuudong2.Surgery.State.Missing>
+  <Yuudong2.Surgery.State.Blocked>not possible: {0}</Yuudong2.Surgery.State.Blocked>
+  <Yuudong2.Surgery.Reason.Race>this race cannot have this surgery</Yuudong2.Surgery.Reason.Race>
+  <Yuudong2.Surgery.Reason.Research>needs research ({0})</Yuudong2.Surgery.Reason.Research>
+  <Yuudong2.Surgery.Reason.NotNow>not possible now (conflicts with another part or implant, or needs a natural part)</Yuudong2.Surgery.Reason.NotNow>
+  <Yuudong2.Surgery.NothingToQueue>Nothing to queue.</Yuudong2.Surgery.NothingToQueue>
+  <Yuudong2.Surgery.QueuedMessage>Queued {0} surgeries.</Yuudong2.Surgery.QueuedMessage>
+  <Yuudong2.Surgery.SkippedMaterials>{0} skipped for lack of materials.</Yuudong2.Surgery.SkippedMaterials>
+  <Yuudong2.Surgery.Editor.Title>Implant plans</Yuudong2.Surgery.Editor.Title>
+  <Yuudong2.Surgery.Editor.New>New plan</Yuudong2.Surgery.Editor.New>
+  <Yuudong2.Surgery.Editor.NewName>New plan {0}</Yuudong2.Surgery.Editor.NewName>
+  <Yuudong2.Surgery.Editor.Copy>Copy</Yuudong2.Surgery.Editor.Copy>
+  <Yuudong2.Surgery.Editor.Delete>Delete</Yuudong2.Surgery.Editor.Delete>
+  <Yuudong2.Surgery.Editor.AddDefault>Add default plan</Yuudong2.Surgery.Editor.AddDefault>
+  <Yuudong2.Surgery.Editor.Name>Name</Yuudong2.Surgery.Editor.Name>
+  <Yuudong2.Surgery.Editor.AddEntry>Add entry</Yuudong2.Surgery.Editor.AddEntry>
+  <Yuudong2.Surgery.Editor.Empty>No entries.</Yuudong2.Surgery.Editor.Empty>
+  <Yuudong2.Surgery.Editor.Incompatible>{0} cannot be installed together with {1} on the same part.</Yuudong2.Surgery.Editor.Incompatible>
   <Yuudong2.MultiCopy.Label>Copy all</Yuudong2.MultiCopy.Label>
   <Yuudong2.MultiCopy.Desc>Build copies of the selected buildings and blueprints elsewhere with the same stuff and style, in their current layout. R/Q rotates the whole group. Place it as many times as you like until cancelled.</Yuudong2.MultiCopy.Desc>
   <Yuudong2.GeneRipper.Child>{PAWN_nameDef} doesn't have enough genetic material.</Yuudong2.GeneRipper.Child>

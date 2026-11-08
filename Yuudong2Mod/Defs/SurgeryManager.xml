@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+
+  <!-- 수술 관리 탭: 우하단 아이콘 버튼. 기능이 꺼져 있으면 MainButtonWorker_SurgeryManager가 숨긴다. -->
+  <MainButtonDef>
+    <defName>Yuudong2_SurgeryManager</defName>
+    <label>surgery</label>
+    <description>See which implants and artificial parts each colonist has, compare them with an implant plan, and queue the missing surgeries.</description>
+    <tabWindowClass>Yuudong2Mod.SurgeryManager.MainTabWindow_SurgeryManager</tabWindowClass>
+    <workerClass>Yuudong2Mod.SurgeryManager.MainButtonWorker_SurgeryManager</workerClass>
+    <order>75</order>
+    <minimized>True</minimized>
+    <iconPath>Yuudong2/SurgeryManager</iconPath>
+  </MainButtonDef>
+
+</Defs>

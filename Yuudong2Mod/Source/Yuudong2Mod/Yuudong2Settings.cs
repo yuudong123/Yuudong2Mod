@@ -65,6 +65,7 @@ namespace Yuudong2Mod
         public const string RebuildBills = "RebuildBills";
         public const string InstalledPartsCount = "InstalledPartsCount";
         public const string WorkRouteOrder = "WorkRouteOrder";
+        public const string SurgeryManager = "SurgeryManager";
 
         public const string WorldPawnSleep = "WorldPawnSleep";
         public const string FastTickInterval = "FastTickInterval";
@@ -90,7 +91,7 @@ namespace Yuudong2Mod
         public static readonly FeatureGroup[] Groups =
         {
             new FeatureGroup("Romance", AlwaysAcceptProposal, NoBreakup, SameBedLovin, NoRandomRelations, RomanceTweaks, ConsensualIncest),
-            new FeatureGroup("Colony", ShelfNoSlowdown, ShelfAcceptAll, NoMapEdgeLimit, CustomMapSize, PowerOnDemand, ReplaceStuff, GloomyWallReplace, RoomFood, MeatOptimization, SinglePlantTexture, RoofedScanning, RealisticRooms, BetterWorkbench, GeneRipper, MultiReinstall, MultiCopy, RebuildBills, InstalledPartsCount, WorkRouteOrder),
+            new FeatureGroup("Colony", ShelfNoSlowdown, ShelfAcceptAll, NoMapEdgeLimit, CustomMapSize, PowerOnDemand, ReplaceStuff, GloomyWallReplace, RoomFood, MeatOptimization, SinglePlantTexture, RoofedScanning, RealisticRooms, BetterWorkbench, GeneRipper, MultiReinstall, MultiCopy, RebuildBills, InstalledPartsCount, WorkRouteOrder, SurgeryManager),
             new FeatureGroup("Interface", MessagePlacement, HealthCardSorting, DamageIndicators, LetterStackCleaner, SmartSpeed, TpsDisplay, SaveHotkey, DragSelect, GeneAssistant, TechprintTradeHighlight),
             new FeatureGroup("Pawn", HairUnderHats, HiddenBionicEyes, EquipmentDurability, EndlessGrowth, NoGrowthNickname, RpgLevelUp, BirthAgeByLifespan, CalmMoveSpeed, BetterHearing, SleepLimits, ImplantsOnAddedParts),
             new FeatureGroup("Ideology", AllSpecialistsCanWork, RolesUntiedToMemes, NoIdeologyLimits, AutoCastSpecialistCommands, FasterBiosculpter),

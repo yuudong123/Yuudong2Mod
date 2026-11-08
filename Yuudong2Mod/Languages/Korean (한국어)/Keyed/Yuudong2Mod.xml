@@ -475,6 +475,49 @@
   <Yuudong2.Feature.InstalledPartsCount.Desc>생체공학 팔·인공 심장 같은 신체 부위를 만드는 작업 지시서에도 "장착 중인 것 포함"이 나옵니다. 켜면 정착민 몸에 이식된 같은 부품도 개수에 넣습니다. 맵을 떠난 정착민은 옷처럼 "자리 비운 정착민 것도 세기"를 같이 켰을 때만 셉니다.</Yuudong2.Feature.InstalledPartsCount.Desc>
   <Yuudong2.Feature.WorkRouteOrder>청소·수확·칠하기 동선 정리</Yuudong2.Feature.WorkRouteOrder>
   <Yuudong2.Feature.WorkRouteOrder.Desc>바닐라는 주변 오물·작물·칠할 곳을 묶은 뒤 출발점에서 가까운 순서로 한 번만 정렬해서, 거리가 비슷한 양쪽을 지그재그로 오갑니다. 가까운 것부터 잇는 순서를 다듬어 이동 거리가 더 짧을 때만 순서를 바꿉니다. 직선 거리로는 바닐라보다 길어지지 않습니다.</Yuudong2.Feature.WorkRouteOrder.Desc>
+  <Yuudong2.Feature.SurgeryManager>수술 관리 탭</Yuudong2.Feature.SurgeryManager>
+  <Yuudong2.Feature.SurgeryManager.Desc>우하단에 "수술 관리" 버튼을 추가합니다. 정착민마다 부위별로 달린 부품·임플란트를 이식 계획(프리셋)과 비교해 색으로 보여 주고, 부족한 수술을 버튼 하나로 예약합니다. 필요한 재료와 최적화 나노봇 진행 상태도 보여 줍니다.</Yuudong2.Feature.SurgeryManager.Desc>
+  <Yuudong2.Surgery.DefaultPresetName>기본 계획</Yuudong2.Surgery.DefaultPresetName>
+  <Yuudong2.Surgery.Presets>계획 관리</Yuudong2.Surgery.Presets>
+  <Yuudong2.Surgery.QueueAll>모두 예약</Yuudong2.Surgery.QueueAll>
+  <Yuudong2.Surgery.Queue>예약</Yuudong2.Surgery.Queue>
+  <Yuudong2.Surgery.SortName>정렬: 이름</Yuudong2.Surgery.SortName>
+  <Yuudong2.Surgery.SortProgress>정렬: 완성도</Yuudong2.Surgery.SortProgress>
+  <Yuudong2.Surgery.OnlyIncomplete>미완성만</Yuudong2.Surgery.OnlyIncomplete>
+  <Yuudong2.Surgery.OnlyIncomplete.Desc>계획을 다 채운 정착민은 숨깁니다.</Yuudong2.Surgery.OnlyIncomplete.Desc>
+  <Yuudong2.Surgery.OnlyWithMaterials>재료 있는 것만 예약</Yuudong2.Surgery.OnlyWithMaterials>
+  <Yuudong2.Surgery.OnlyWithMaterials.Desc>맵에 재료(부품·약)가 있는 수술만 예약합니다. 여러 명을 한 번에 예약할 때는 앞사람이 쓸 재료를 빼고 셉니다.</Yuudong2.Surgery.OnlyWithMaterials.Desc>
+  <Yuudong2.Surgery.NanobotsOneAtATime>최적화는 하나씩</Yuudong2.Surgery.NanobotsOneAtATime>
+  <Yuudong2.Surgery.NanobotsOneAtATime.Desc>최적화 나노봇처럼 며칠 동안 의식이 떨어지는 임플란트는 한 정착민에게 한 번에 하나만 예약합니다. 진행 중이거나 예약된 것이 있으면 다음 것은 그것이 끝난 뒤에 예약됩니다.</Yuudong2.Surgery.NanobotsOneAtATime.Desc>
+  <Yuudong2.Surgery.NoPlan>계획 없음</Yuudong2.Surgery.NoPlan>
+  <Yuudong2.Surgery.Colonist>정착민</Yuudong2.Surgery.Colonist>
+  <Yuudong2.Surgery.Plan>계획</Yuudong2.Surgery.Plan>
+  <Yuudong2.Surgery.Progress>완성</Yuudong2.Surgery.Progress>
+  <Yuudong2.Surgery.Materials>재료</Yuudong2.Surgery.Materials>
+  <Yuudong2.Surgery.MaterialTip>{0}: 맵에 {1}개, 계획을 채우려면 {2}개 필요. 누르면 만드는 작업대로 이동합니다.</Yuudong2.Surgery.MaterialTip>
+  <Yuudong2.Surgery.NoBench>{0}을(를) 만드는 작업대가 맵에 없습니다.</Yuudong2.Surgery.NoBench>
+  <Yuudong2.Surgery.Installed>달려 있는 것</Yuudong2.Surgery.Installed>
+  <Yuudong2.Surgery.State.Done>완료</Yuudong2.Surgery.State.Done>
+  <Yuudong2.Surgery.State.InProgress>진행 중 ({0}일 남음)</Yuudong2.Surgery.State.InProgress>
+  <Yuudong2.Surgery.State.Queued>예약됨</Yuudong2.Surgery.State.Queued>
+  <Yuudong2.Surgery.State.Missing>미완료</Yuudong2.Surgery.State.Missing>
+  <Yuudong2.Surgery.State.Blocked>불가: {0}</Yuudong2.Surgery.State.Blocked>
+  <Yuudong2.Surgery.Reason.Race>이 종족은 이 수술을 받을 수 없음</Yuudong2.Surgery.Reason.Race>
+  <Yuudong2.Surgery.Reason.Research>연구 필요({0})</Yuudong2.Surgery.Reason.Research>
+  <Yuudong2.Surgery.Reason.NotNow>지금은 할 수 없음(다른 부품·임플란트와 충돌하거나 진짜 부위가 필요)</Yuudong2.Surgery.Reason.NotNow>
+  <Yuudong2.Surgery.NothingToQueue>예약할 수술이 없습니다.</Yuudong2.Surgery.NothingToQueue>
+  <Yuudong2.Surgery.QueuedMessage>수술 {0}개를 예약했습니다.</Yuudong2.Surgery.QueuedMessage>
+  <Yuudong2.Surgery.SkippedMaterials>재료가 없어 {0}개는 예약하지 않았습니다.</Yuudong2.Surgery.SkippedMaterials>
+  <Yuudong2.Surgery.Editor.Title>이식 계획</Yuudong2.Surgery.Editor.Title>
+  <Yuudong2.Surgery.Editor.New>새 계획</Yuudong2.Surgery.Editor.New>
+  <Yuudong2.Surgery.Editor.NewName>새 계획 {0}</Yuudong2.Surgery.Editor.NewName>
+  <Yuudong2.Surgery.Editor.Copy>복사</Yuudong2.Surgery.Editor.Copy>
+  <Yuudong2.Surgery.Editor.Delete>삭제</Yuudong2.Surgery.Editor.Delete>
+  <Yuudong2.Surgery.Editor.AddDefault>기본 계획 추가</Yuudong2.Surgery.Editor.AddDefault>
+  <Yuudong2.Surgery.Editor.Name>이름</Yuudong2.Surgery.Editor.Name>
+  <Yuudong2.Surgery.Editor.AddEntry>항목 추가</Yuudong2.Surgery.Editor.AddEntry>
+  <Yuudong2.Surgery.Editor.Empty>항목이 없습니다.</Yuudong2.Surgery.Editor.Empty>
+  <Yuudong2.Surgery.Editor.Incompatible>{0}은(는) 같은 부위의 {1}와(과) 같이 달 수 없습니다.</Yuudong2.Surgery.Editor.Incompatible>
   <Yuudong2.MultiCopy.Label>모두 복제</Yuudong2.MultiCopy.Label>
   <Yuudong2.MultiCopy.Desc>고른 건물·청사진을 같은 재료·양식으로 지금 배치 모양 그대로 다른 곳에 짓습니다. R/Q로 묶음 전체를 돌리고, 취소할 때까지 여러 번 놓을 수 있습니다.</Yuudong2.MultiCopy.Desc>
   <Yuudong2.GeneRipper.Child>{PAWN_nameDef}의 유전 물질이 부족합니다.</Yuudong2.GeneRipper.Child>
