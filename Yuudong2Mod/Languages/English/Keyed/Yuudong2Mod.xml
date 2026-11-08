@@ -293,6 +293,8 @@
   <Yuudong2.Feature.RoofedScanning.Desc>Ground-penetrating and long-range mineral scanners can be built and used under roofs. (Roofed Scanning)</Yuudong2.Feature.RoofedScanning.Desc>
   <Yuudong2.Feature.RpgLevelUp>RPG level up</Yuudong2.Feature.RpgLevelUp>
   <Yuudong2.Feature.RpgLevelUp.Desc>Pawns level up from skill XP and kills and spend points on six attributes that boost many stats. Manage them in the Level tab; hover an attribute to see its effects and limits. Existing save data carries over. (RPG Style Level Up Mod)</Yuudong2.Feature.RpgLevelUp.Desc>
+  <Yuudong2.Feature.BirthAgeByLifespan>Scale mother's age at birth by lifespan</Yuudong2.Feature.BirthAgeByLifespan>
+  <Yuudong2.Feature.BirthAgeByLifespan.Desc>The childbirth quality bonus for the mother's age uses real years, so long-lived races lose it after 65 and are more likely to die giving birth. Age past 20 is scaled by the race's lifespan relative to humans. A Dragonian (lifespan 850) keeps the full bonus until 126. Humans are unchanged.</Yuudong2.Feature.BirthAgeByLifespan.Desc>
   <Yuudong2.Feature.GeneAssistant>Gene assistant</Yuudong2.Feature.GeneAssistant>
   <Yuudong2.Feature.GeneAssistant.Desc>Colors genes by ownership in the gene assembler and adds a gene library, duplicate genepack ejection, filled slot display and better sorting. (Random's Gene Assistant)</Yuudong2.Feature.GeneAssistant.Desc>
   <Yuudong2.Feature.DragonianMix>DragonianMix</Yuudong2.Feature.DragonianMix>

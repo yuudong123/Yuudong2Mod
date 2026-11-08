@@ -293,6 +293,8 @@
   <Yuudong2.Feature.RoofedScanning.Desc>지하 자원 스캐너와 장거리 광물 스캐너를 지붕 아래에 짓고 쓸 수 있습니다. (Roofed Scanning)</Yuudong2.Feature.RoofedScanning.Desc>
   <Yuudong2.Feature.RpgLevelUp>RPG 레벨업</Yuudong2.Feature.RpgLevelUp>
   <Yuudong2.Feature.RpgLevelUp.Desc>폰이 스킬 경험치와 적 처치로 레벨을 올리고, 레벨업 포인트를 힘·재주·민첩·체력·지능·매력에 나눠 여러 스탯을 올립니다. 화면 위 '레벨' 탭과 폰 정보의 '레벨' 탭에서 관리하며, 각 능력치에 마우스를 올리면 효과와 한계가 나옵니다. 기존 저장 파일의 레벨은 그대로 이어집니다. (RPG Style Level Up Mod)</Yuudong2.Feature.RpgLevelUp.Desc>
+  <Yuudong2.Feature.BirthAgeByLifespan>출산 산모 나이를 수명에 맞추기</Yuudong2.Feature.BirthAgeByLifespan>
+  <Yuudong2.Feature.BirthAgeByLifespan.Desc>출산 품질의 산모 나이 보너스는 실제 나이 기준이라, 수명이 긴 종족도 65살이 넘으면 보너스가 사라지고 출산 중 사망 확률이 오릅니다. 20살 이후의 나이를 인간 수명 대비 비율로 줄여서 계산합니다. 수명 850살인 드라고니안은 126살까지 최대 보너스를 받습니다. 인간은 그대로입니다.</Yuudong2.Feature.BirthAgeByLifespan.Desc>
   <Yuudong2.Feature.GeneAssistant>유전자 도우미</Yuudong2.Feature.GeneAssistant>
   <Yuudong2.Feature.GeneAssistant.Desc>유전자 조립기에서 보유한 유전자를 색으로 표시하고, 유전자 서고·중복 유전자팩 배출·채운 슬롯 표시·정렬 개선을 추가합니다. (Random's Gene Assistant)</Yuudong2.Feature.GeneAssistant.Desc>
   <Yuudong2.Feature.DragonianMix>DragonianMix</Yuudong2.Feature.DragonianMix>
