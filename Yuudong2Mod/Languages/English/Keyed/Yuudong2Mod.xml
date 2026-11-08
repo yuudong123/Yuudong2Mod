@@ -461,6 +461,8 @@
   <Yuudong2.Feature.RebuildBills.Desc>When a destroyed workbench leaves an auto-rebuild blueprint, its bills are remembered and restored once it is built again. Vanilla only carries over storage settings and drops the bills.</Yuudong2.Feature.RebuildBills.Desc>
   <Yuudong2.Feature.InstalledPartsCount>Count installed body parts</Yuudong2.Feature.InstalledPartsCount>
   <Yuudong2.Feature.InstalledPartsCount.Desc>Bills that make body parts such as bionic arms or artificial hearts also get "Count equipped". When it is on, the same parts installed in colonists are counted too. Like apparel, colonists away from the map are counted only when "count away" is also on.</Yuudong2.Feature.InstalledPartsCount.Desc>
+  <Yuudong2.Feature.WorkRouteOrder>Shorter cleaning, harvesting and painting routes</Yuudong2.Feature.WorkRouteOrder>
+  <Yuudong2.Feature.WorkRouteOrder.Desc>Vanilla groups nearby filth, crops or paint spots and sorts them once by distance from the starting point, so pawns zigzag between targets on both sides. A nearest-first route is refined and used only when it is shorter. In straight-line distance it is never longer than vanilla.</Yuudong2.Feature.WorkRouteOrder.Desc>
   <Yuudong2.MultiCopy.Label>Copy all</Yuudong2.MultiCopy.Label>
   <Yuudong2.MultiCopy.Desc>Build copies of the selected buildings and blueprints elsewhere with the same stuff and style, in their current layout. R/Q rotates the whole group. Place it as many times as you like until cancelled.</Yuudong2.MultiCopy.Desc>
   <Yuudong2.GeneRipper.Child>{PAWN_nameDef} doesn't have enough genetic material.</Yuudong2.GeneRipper.Child>
