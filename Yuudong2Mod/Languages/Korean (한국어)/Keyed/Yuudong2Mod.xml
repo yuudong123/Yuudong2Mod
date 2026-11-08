@@ -301,6 +301,8 @@
   <Yuudong2.Feature.BirthAgeByLifespan.Desc>출산 품질의 산모 나이 보너스는 실제 나이 기준이라, 수명이 긴 종족도 65살이 넘으면 보너스가 사라지고 출산 중 사망 확률이 오릅니다. 20살 이후의 나이를 인간 수명 대비 비율로 줄여서 계산합니다. 수명 850살인 드라고니안은 126살까지 최대 보너스를 받습니다. 인간은 그대로입니다.</Yuudong2.Feature.BirthAgeByLifespan.Desc>
   <Yuudong2.Feature.CalmMoveSpeed>급하지 않으면 천천히 걷기</Yuudong2.Feature.CalmMoveSpeed>
   <Yuudong2.Feature.CalmMoveSpeed.Desc>급할 것 없는 사람 폰은 이동 속도가 종족 기본 속도의 120%를 넘지 않습니다. 소집 중이거나, 최근 공격했거나 다쳤거나, 전투·사냥·도망·광폭 상태이거나, 구조·불 끄기·출혈 환자 치료처럼 급한 일, 우클릭으로 직접 시킨 일, Allow Tool의 긴급 운반·마무리를 할 때는 원래 속도로 달립니다. 적대 세력과 동물은 그대로입니다.</Yuudong2.Feature.CalmMoveSpeed.Desc>
+  <Yuudong2.Feature.BetterHearing>좋은 청력의 쓸모</Yuudong2.Feature.BetterHearing>
+  <Yuudong2.Feature.BetterHearing.Desc>청력이 1을 넘어도 쓸 데가 없어서 생체공학 귀가 의미가 없었습니다. 소리로 공격을 알아채 근접 회피가 청력 0.1당 0.6점 오르고(청력 1.35까지), 협상·거래 가격·개종·길들이기·훈련에 반영되는 청력 상한이 1에서 1.1로 오릅니다. 게임을 다시 시작해야 적용됩니다.</Yuudong2.Feature.BetterHearing.Desc>
   <Yuudong2.Feature.GeneAssistant>유전자 도우미</Yuudong2.Feature.GeneAssistant>
   <Yuudong2.Feature.GeneAssistant.Desc>유전자 조립기에서 보유한 유전자를 색으로 표시하고, 유전자 서고·중복 유전자팩 배출·채운 슬롯 표시·정렬 개선을 추가합니다. (Random's Gene Assistant)</Yuudong2.Feature.GeneAssistant.Desc>
   <Yuudong2.Feature.DragonianMix>DragonianMix</Yuudong2.Feature.DragonianMix>

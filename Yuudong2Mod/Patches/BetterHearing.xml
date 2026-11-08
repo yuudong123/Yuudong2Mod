@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Patch>
+
+  <!-- 청력이 1을 넘어도 쓸 데가 없어서 생체공학 귀가 의미가 없었다. 두 가지 쓰임을 준다.
+       1. 소리로 공격을 알아채고 피한다: 근접 회피에 청력 보정(0.1당 +0.6점, 청력 1.35까지).
+       2. 더 잘 듣는 사람이 협상·설득도 잘한다: 청력이 반영되는 협상·거래·개종·길들이기·훈련의 청력 상한을 1에서 1.1로. -->
+  <Operation Class="Yuudong2Mod.PatchOperationFeature">
+    <feature>BetterHearing</feature>
+    <enabled Class="PatchOperationSequence">
+      <operations>
+        <li Class="PatchOperationAdd">
+          <xpath>/Defs/StatDef[defName="MeleeDodgeChance"]/capacityOffsets</xpath>
+          <value>
+            <li>
+              <capacity>Hearing</capacity>
+              <scale>6</scale>
+              <max>1.35</max>
+            </li>
+          </value>
+        </li>
+        <li Class="PatchOperationReplace">
+          <xpath>/Defs/StatDef[defName="NegotiationAbility" or defName="TradePriceImprovement" or defName="ConversionPower" or defName="TameAnimalChance" or defName="TrainAnimalChance"]/capacityFactors/li[capacity="Hearing"]/max</xpath>
+          <value>
+            <max>1.1</max>
+          </value>
+        </li>
+      </operations>
+    </enabled>
+  </Operation>
+
+</Patch>
