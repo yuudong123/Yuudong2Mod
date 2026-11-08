@@ -49,7 +49,7 @@
 - 화면 메시지를 정착민 바 아래로 내립니다. (Better Message Placement 포팅)
 - 드래곤본 유전자가 상처 회복 유전자에 덮여 꺼지는 문제를 불러오기 때 바로잡습니다. (Dragonian to Super Fast Healing Patch 포팅)
 - 이데올로기 역할을 맡아도 작업 제한과 무기 제한이 생기지 않습니다. (All Specialists Can Work 포팅)
-- 옷·방어구·다용도구·무기는 불에 탈 때만 내구도가 깎입니다.
+- 무기는 불에 탈 때만 내구도가 깎입니다.
 - 바이오스컬프터 포드의 모든 주기가 1일로 줄고, 생체조율 유지 기간이 없어집니다. (Faster Biosculpter Pod 포팅)
 - 맵 가장자리 건설·구역 제한과 경계선을 없앱니다. (Change map edge limit 포팅)
 - 궤도 상선·상단·정착지·방문객 상인의 재고와 은 배율을 세부 설정에서 따로 정합니다(기본 8배, 방문객 1배). 랜디 계열 스토리텔러에서 궤도 상선이 4배 자주 옵니다. (Trading Options Continue 포팅)

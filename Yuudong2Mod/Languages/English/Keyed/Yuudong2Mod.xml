@@ -39,8 +39,8 @@
   <Yuudong2.Feature.NoMapEdgeLimit.Desc>Allows building and zoning at the map edge. (Change map edge limit)</Yuudong2.Feature.NoMapEdgeLimit.Desc>
   <Yuudong2.Feature.PowerOnDemand>Power on demand</Yuudong2.Feature.PowerOnDemand>
   <Yuudong2.Feature.PowerOnDemand.Desc>Workbenches, TVs, research benches and similar buildings draw full power only while in use and 1 W while idle. (Turn It On and Off)</Yuudong2.Feature.PowerOnDemand.Desc>
-  <Yuudong2.Feature.EquipmentDurability>Gear only damaged by fire</Yuudong2.Feature.EquipmentDurability>
-  <Yuudong2.Feature.EquipmentDurability.Desc>Apparel, armor, utility items and weapons lose hit points only when burning. Worn or lying on the ground, they take no wear, hit, weather deterioration or explosion damage. Hit points already lost stay lost.</Yuudong2.Feature.EquipmentDurability.Desc>
+  <Yuudong2.Feature.EquipmentDurability>Weapons only damaged by fire</Yuudong2.Feature.EquipmentDurability>
+  <Yuudong2.Feature.EquipmentDurability.Desc>Weapons lose hit points only when burning. Equipped or lying on the ground, they take no wear, hit, weather deterioration or explosion damage. Apparel and armor wear out as in vanilla. Hit points already lost stay lost.</Yuudong2.Feature.EquipmentDurability.Desc>
   <Yuudong2.Feature.AllSpecialistsCanWork>Specialists can work</Yuudong2.Feature.AllSpecialistsCanWork>
   <Yuudong2.Feature.AllSpecialistsCanWork.Desc>Ideoligion roles no longer disable work types or weapons. (All Specialists Can Work)</Yuudong2.Feature.AllSpecialistsCanWork.Desc>
   <Yuudong2.Feature.FasterBiosculpter>Faster biosculpter</Yuudong2.Feature.FasterBiosculpter>

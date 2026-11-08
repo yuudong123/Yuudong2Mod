@@ -4,8 +4,8 @@ using Verse;
 
 namespace Yuudong2Mod
 {
-    // 옷·방어구·다용도구·무기는 불에 탈 때만 내구도가 깎인다. 입고 있든 바닥에 있든 같다.
-    // 마모·피격·비바람 부패·폭발 등 다른 피해는 모두 막는다.
+    // 무기는 불에 탈 때만 내구도가 깎인다. 들고 있든 바닥에 있든 같다.
+    // 마모·피격·비바람 부패·폭발 등 다른 피해는 모두 막는다. 옷·방어구는 바닐라대로 둔다.
     internal static class EquipmentDurabilityUtility
     {
         private static bool[] protectedDefs = new bool[0];
@@ -14,7 +14,7 @@ namespace Yuudong2Mod
         private static bool IsEquipment(ThingDef def)
         {
             return def.category == ThingCategory.Item && def.useHitPoints && def.stackLimit == 1
-                && (def.IsApparel || def.equipmentType == EquipmentType.Primary);
+                && def.equipmentType == EquipmentType.Primary && !def.IsApparel;
         }
 
         public static void ApplyDefPatches()
