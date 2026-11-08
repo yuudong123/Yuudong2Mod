@@ -341,27 +341,15 @@ namespace Yuudong2Mod.Rpg
         public static readonly RpgAttribute[] Attributes = (RpgAttribute[])Enum.GetValues(typeof(RpgAttribute));
 
         // 1.7 바닐라에서 원본 XML 패치가 실제로 적용하던 가중치.
+        // 작업 속도를 직접 올리는 효과(채굴·건설·연구 속도 등)는 콘텐츠 소모가 너무 빨라져서 뺐다.
         public static readonly List<RpgEffect> All = new List<RpgEffect>
         {
-            new RpgEffect(RpgAttribute.STR, "MiningSpeed", RpgEffectMode.Multiply, 0.5f),
-            new RpgEffect(RpgAttribute.STR, "SmoothingSpeed", RpgEffectMode.Multiply, 0.5f),
-            new RpgEffect(RpgAttribute.STR, "ConstructionSpeed", RpgEffectMode.Multiply, 0.5f),
-            new RpgEffect(RpgAttribute.STR, "PlantWorkSpeed", RpgEffectMode.Multiply, 0.5f),
             new RpgEffect(RpgAttribute.STR, "CarryingCapacity", RpgEffectMode.Multiply, 0.5f),
             new RpgEffect(RpgAttribute.STR, "CarryWeight", RpgEffectMode.Multiply, 1f),
 
             new RpgEffect(RpgAttribute.DEX, "MeleeHitChance", RpgEffectMode.Multiply, 0.2f),
             new RpgEffect(RpgAttribute.DEX, "ShootingAccuracyPawn", RpgEffectMode.Multiply, 0.2f),
-            new RpgEffect(RpgAttribute.DEX, "CookSpeed", RpgEffectMode.Multiply, 0.5f),
-            new RpgEffect(RpgAttribute.DEX, "ButcheryFleshSpeed", RpgEffectMode.Multiply, 0.5f),
-            new RpgEffect(RpgAttribute.DEX, "ButcheryMechanoidSpeed", RpgEffectMode.Multiply, 0.5f),
-            new RpgEffect(RpgAttribute.DEX, "DrugCookingSpeed", RpgEffectMode.Multiply, 0.5f),
             new RpgEffect(RpgAttribute.DEX, "ForagedNutritionPerDay", RpgEffectMode.Multiply, 0.5f),
-            new RpgEffect(RpgAttribute.DEX, "GeneralLaborSpeed", RpgEffectMode.Multiply, 0.5f),
-            new RpgEffect(RpgAttribute.DEX, "MechFormingSpeed", RpgEffectMode.Multiply, 0.5f),
-            new RpgEffect(RpgAttribute.DEX, "MechRepairSpeed", RpgEffectMode.Multiply, 0.5f),
-            new RpgEffect(RpgAttribute.DEX, "SubcoreEncodingSpeed", RpgEffectMode.Multiply, 0.5f),
-            new RpgEffect(RpgAttribute.DEX, "FishingSpeed", RpgEffectMode.Multiply, 0.5f),
             new RpgEffect(RpgAttribute.DEX, "FishingYield", RpgEffectMode.Multiply, 0.5f),
             new RpgEffect(RpgAttribute.DEX, "PilotingAbility", RpgEffectMode.Multiply, 0.5f),
 
@@ -370,45 +358,34 @@ namespace Yuudong2Mod.Rpg
             new RpgEffect(RpgAttribute.AGL, "HuntingStealth", RpgEffectMode.Multiply, 0.5f),
             new RpgEffect(RpgAttribute.AGL, "MoveSpeed", RpgEffectMode.Multiply, 0.5f),
 
-            new RpgEffect(RpgAttribute.CON, "UnskilledLaborSpeed", RpgEffectMode.Multiply, 0.5f),
             new RpgEffect(RpgAttribute.CON, "ImmunityGainSpeed", RpgEffectMode.Multiply, 0.2f),
             new RpgEffect(RpgAttribute.CON, "RestRateMultiplier", RpgEffectMode.Multiply, 0.1f),
             new RpgEffect(RpgAttribute.CON, "ComfyTemperatureMin", RpgEffectMode.ComfyMin),
             new RpgEffect(RpgAttribute.CON, "ComfyTemperatureMax", RpgEffectMode.ComfyMax),
             new RpgEffect(RpgAttribute.CON, "IncomingDamageFactor", RpgEffectMode.ReduceToHalf),
             new RpgEffect(RpgAttribute.CON, "VacuumResistance", RpgEffectMode.VacuumResistance),
-            new RpgEffect(RpgAttribute.CON, "StonecuttingSpeed", RpgEffectMode.Multiply, 0.5f),
 
-            new RpgEffect(RpgAttribute.INT, "MedicalTendSpeed", RpgEffectMode.Multiply, 0.5f),
             new RpgEffect(RpgAttribute.INT, "MedicalTendQuality", RpgEffectMode.Multiply, 0.1f),
-            new RpgEffect(RpgAttribute.INT, "MedicalOperationSpeed", RpgEffectMode.Multiply, 0.5f),
             new RpgEffect(RpgAttribute.INT, "MedicalSurgerySuccessChance", RpgEffectMode.Multiply, 0.1f),
-            new RpgEffect(RpgAttribute.INT, "DrugSynthesisSpeed", RpgEffectMode.Multiply, 0.5f),
-            new RpgEffect(RpgAttribute.INT, "ResearchSpeed", RpgEffectMode.Multiply, 0.2f),
             new RpgEffect(RpgAttribute.INT, "PlantHarvestYield", RpgEffectMode.YieldBonus),
             new RpgEffect(RpgAttribute.INT, "ButcheryFleshEfficiency", RpgEffectMode.YieldBonus),
             new RpgEffect(RpgAttribute.INT, "ButcheryMechanoidEfficiency", RpgEffectMode.YieldBonus),
             new RpgEffect(RpgAttribute.INT, "MechBandwidth", RpgEffectMode.BandwidthBonus),
             new RpgEffect(RpgAttribute.INT, "MechRemoteRepairDistance", RpgEffectMode.Multiply, 0.5f),
             new RpgEffect(RpgAttribute.INT, "MechRemoteShieldDistance", RpgEffectMode.Multiply, 0.5f),
-            new RpgEffect(RpgAttribute.INT, "WorkSpeedGlobalOffsetMech", RpgEffectMode.Multiply, 0.5f),
             new RpgEffect(RpgAttribute.INT, "MeditationPlantGrowthOffset", RpgEffectMode.Multiply, 0.1f),
             new RpgEffect(RpgAttribute.INT, "PsychicEntropyGain", RpgEffectMode.ReduceToHalf),
             new RpgEffect(RpgAttribute.INT, "MeditationFocusGain", RpgEffectMode.Multiply, 0.5f),
             new RpgEffect(RpgAttribute.INT, "PsychicEntropyMax", RpgEffectMode.Multiply, 0.5f),
-            new RpgEffect(RpgAttribute.INT, "ReadingSpeed", RpgEffectMode.Multiply, 0.5f),
-            new RpgEffect(RpgAttribute.INT, "HackingSpeed", RpgEffectMode.Multiply, 0.5f),
             new RpgEffect(RpgAttribute.INT, "HackingStealth", RpgEffectMode.Multiply, 0.5f),
 
             new RpgEffect(RpgAttribute.CHA, "NegotiationAbility", RpgEffectMode.Multiply, 0.5f),
             new RpgEffect(RpgAttribute.CHA, "TameAnimalChance", RpgEffectMode.Multiply, 0.5f),
             new RpgEffect(RpgAttribute.CHA, "TrainAnimalChance", RpgEffectMode.Multiply, 0.5f),
-            new RpgEffect(RpgAttribute.CHA, "AnimalGatherSpeed", RpgEffectMode.Multiply, 0.5f),
             new RpgEffect(RpgAttribute.CHA, "AnimalGatherYield", RpgEffectMode.Multiply, 0.8f),
             new RpgEffect(RpgAttribute.CHA, "ArrestSuccessChance", RpgEffectMode.Multiply, 0.1f),
             new RpgEffect(RpgAttribute.CHA, "ConversionPower", RpgEffectMode.Multiply, 0.2f),
             new RpgEffect(RpgAttribute.CHA, "SuppressionPower", RpgEffectMode.Multiply, 0.1f),
-            new RpgEffect(RpgAttribute.CHA, "PruningSpeed", RpgEffectMode.Multiply, 0.1f),
         };
 
         public static readonly byte[] PiDigits = BuildPiDigits();

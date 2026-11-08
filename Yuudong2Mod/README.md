@@ -52,7 +52,7 @@
 - 연애 시도·성공·이별 확률에 배율을 곱합니다. 기본값은 바람·다른 세력 연애·이별 0배입니다. (Romance Tweaks 포팅)
 - 가족끼리도 다른 폰처럼 연애할 수 있습니다. (Allow Consensual Incest 포팅)
 - 지하 자원 스캐너와 장거리 광물 스캐너를 지붕 아래에서도 쓸 수 있습니다. (Roofed Scanning 포팅)
-- 폰이 스킬 경험치와 처치로 레벨을 올리고 힘·재주·민첩·체력·지능·매력에 포인트를 나눕니다. 능력치에 마우스를 올리면 어떤 스탯이 얼마나 바뀌는지, 한계가 어디까지인지, 현재 효과가 얼마인지 보여줍니다. (RPG Style Level Up Mod 포팅)
+- 폰이 스킬 경험치와 처치로 레벨을 올리고 힘·재주·민첩·체력·지능·매력에 포인트를 나눕니다. 능력치에 마우스를 올리면 어떤 스탯이 얼마나 바뀌는지, 한계가 어디까지인지, 현재 효과가 얼마인지 보여줍니다. 작업 속도를 직접 올리는 효과는 뺐습니다. (RPG Style Level Up Mod 포팅)
 - 유전자 조립기에 보유 여부 색 표시, 유전자 서고, 중복 유전자팩 배출, 채운 슬롯 표시를 추가합니다. (Random's Gene Assistant 포팅)
 - 드래고니안 종족 모드가 있으면 DragonianMix의 세력, 폰, 능력, 무기, 가스 등을 넣습니다. (DragonianMix 포팅)
 - 방 크기 등급에 필요한 넓이를 낮추고, 실내 흙·모래 오염의 아름다움 감소를 -4로 줄입니다. (Realistic Rooms Rewritten 포팅)
@@ -112,7 +112,7 @@ RimWorld 1.7용으로 다시 작성해 이 모드에 합쳤습니다. 세부 수
 | Romance Tweaks | BDew | 1575463949 | 세부 설정 (바람·다른 세력·이별 0배) |
 | Allow Consensual Incest | idontcare | 2880505421 | 원본이 워크숍에서 내려가 바닐라 기준으로 다시 작성, 근친 유전자 규칙은 바닐라 유지 |
 | Roofed Scanning | TheElm | 2870663873 | 1.7 `AcceptanceReport`에 맞춰 다시 작성 |
-| RPG Style Level Up Mod | FLASHPOINT55 | 1995668415 | 세부 설정, 툴팁 개선, 저장 데이터 이어받기 |
+| RPG Style Level Up Mod | FLASHPOINT55 | 1995668415 | 세부 설정, 툴팁 개선, 저장 데이터 이어받기, 작업 속도 효과 제거 |
 | Random's Gene Assistant | RandomCoughDrop | 2882497271 | 세부 설정, UI 한국어화, 1.7 시그니처 수정 |
 | DragonianMix | kalospacer | 2961683592 | 원본 1.7 소스·콘텐츠에 기능 토글 추가, 변형 보주·실드 모듈 제거 |
 | Realistic Rooms Rewritten | Lucifer | 2558042766 | 세부 설정 (기본값), 오염 설정을 끄면 원래 값으로 복구 |
