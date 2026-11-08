@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using HarmonyLib;
 using RimWorld;
@@ -16,6 +17,9 @@ namespace Yuudong2Mod
 
         private static HashSet<JobDef> urgentJobs;
 
+        // 종족 기본 이동 속도는 바뀌지 않으므로 종족별로 한 번만 계산한다(GetStatValueAbstract는 캐시되지 않는다).
+        private static float[] speedLimitByRace = new float[0];
+
         public static float SlowdownFactor(Pawn pawn)
         {
             if (!pawn.RaceProps.Humanlike || pawn.Drafted || pawn.Downed || !pawn.Spawned || pawn.HostileTo(Faction.OfPlayer))
@@ -24,13 +28,37 @@ namespace Yuudong2Mod
             }
 
             float speed = pawn.GetStatValue(StatDefOf.MoveSpeed);
-            float limit = pawn.def.GetStatValueAbstract(StatDefOf.MoveSpeed) * SpeedLimitFactor;
+            float limit = SpeedLimitFor(pawn.def);
             if (limit <= 0f || speed <= limit || IsUrgent(pawn))
             {
                 return 1f;
             }
 
             return speed / limit;
+        }
+
+        private static float SpeedLimitFor(ThingDef race)
+        {
+            if (speedLimitByRace.Length <= race.index)
+            {
+                float[] grown = new float[DefDatabase<ThingDef>.DefCount];
+                Array.Copy(speedLimitByRace, grown, speedLimitByRace.Length);
+                for (int i = speedLimitByRace.Length; i < grown.Length; i++)
+                {
+                    grown[i] = -1f;
+                }
+
+                speedLimitByRace = grown;
+            }
+
+            float limit = speedLimitByRace[race.index];
+            if (limit < 0f)
+            {
+                limit = race.GetStatValueAbstract(StatDefOf.MoveSpeed) * SpeedLimitFactor;
+                speedLimitByRace[race.index] = limit;
+            }
+
+            return limit;
         }
 
         private static bool IsUrgent(Pawn pawn)
