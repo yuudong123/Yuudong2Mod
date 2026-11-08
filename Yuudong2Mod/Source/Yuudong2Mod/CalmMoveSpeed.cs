@@ -7,7 +7,7 @@ using Verse.AI;
 namespace Yuudong2Mod
 {
     // 급할 것 없는 사람 폰은 이동 속도가 종족 기본 속도의 120%를 넘지 않는다. 생체공학 다리·조깅 특성·민첩 등으로 빨라져도 평소엔 이 속도로 걷는다.
-    // 소집 중, 본인이 전투 중(최근 공격했거나 다침, 전투·사냥 작업), 도망·광폭, 구조·불 끄기·출혈 환자 치료처럼 급한 일에는 원래 속도를 쓴다.
+    // 소집 중, 본인이 전투 중(최근 공격했거나 다침, 전투·사냥 작업), 도망·광폭, 구조·불 끄기·출혈 환자 치료, 플레이어가 직접 시킨 일처럼 급한 일에는 원래 속도를 쓴다.
     // 적대 세력 폰과 동물은 건드리지 않는다. 스탯 창의 이동 속도는 원래 값 그대로 보인다.
     internal static class CalmMoveSpeedUtility
     {
@@ -54,7 +54,8 @@ namespace Yuudong2Mod
                 return false;
             }
 
-            if (job.locomotionUrgency == LocomotionUrgency.Sprint || UrgentJobs.Contains(job.def))
+            // 플레이어가 우클릭 메뉴로 직접 시킨 일(거래, 대화, 우선 작업 등)도 급한 일로 본다.
+            if (job.playerForced || job.locomotionUrgency == LocomotionUrgency.Sprint || UrgentJobs.Contains(job.def))
             {
                 return true;
             }
