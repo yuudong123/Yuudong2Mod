@@ -308,7 +308,7 @@
   <Yuudong2.SleepLimit.Max>Sleep limit (race, genes): max {0}</Yuudong2.SleepLimit.Max>
   <Yuudong2.SleepLimit.Min>Sleep limit (race, genes, circadian implants): min {0}</Yuudong2.SleepLimit.Min>
   <Yuudong2.Feature.ImplantsOnAddedParts>Implants on artificial parts</Yuudong2.Feature.ImplantsOnAddedParts>
-  <Yuudong2.Feature.ImplantsOnAddedParts.Desc>Vanilla does not allow implants on a body part that has an artificial part. This allows it, for example a tactical cornea implant on an archotech eye. Installing the same implant twice or incompatible implants together is still blocked.</Yuudong2.Feature.ImplantsOnAddedParts.Desc>
+  <Yuudong2.Feature.ImplantsOnAddedParts.Desc>Vanilla does not allow implants on a body part that has an artificial part. This allows it, for example a tactical cornea implant on an archotech eye. Installing the same implant twice or incompatible implants together is still blocked. EPOE organic optimization, which only raises efficiency, still needs a natural part.</Yuudong2.Feature.ImplantsOnAddedParts.Desc>
   <Yuudong2.Feature.GeneAssistant>Gene assistant</Yuudong2.Feature.GeneAssistant>
   <Yuudong2.Feature.GeneAssistant.Desc>Colors genes by ownership in the gene assembler and adds a gene library, duplicate genepack ejection, filled slot display and better sorting. (Random's Gene Assistant)</Yuudong2.Feature.GeneAssistant.Desc>
   <Yuudong2.Feature.DragonianMix>DragonianMix</Yuudong2.Feature.DragonianMix>
