@@ -303,6 +303,10 @@
   <Yuudong2.Feature.CalmMoveSpeed.Desc>급할 것 없는 사람 폰은 이동 속도가 종족 기본 속도의 120%를 넘지 않습니다. 소집 중이거나, 최근 공격했거나 다쳤거나, 전투·사냥·도망·광폭 상태이거나, 구조·불 끄기·출혈 환자 치료처럼 급한 일, 우클릭으로 직접 시킨 일, Allow Tool의 긴급 운반·마무리를 할 때는 원래 속도로 달립니다. 적대 세력과 동물은 그대로입니다.</Yuudong2.Feature.CalmMoveSpeed.Desc>
   <Yuudong2.Feature.BetterHearing>좋은 청력의 쓸모</Yuudong2.Feature.BetterHearing>
   <Yuudong2.Feature.BetterHearing.Desc>청력이 1을 넘어도 쓸 데가 없어서 생체공학 귀가 의미가 없었습니다. 소리로 공격을 알아채 근접 회피가 청력 0.1당 0.6점 오르고(청력 1.35까지), 협상·거래 가격·개종·길들이기·훈련에 반영되는 청력 상한이 1에서 1.1로 오릅니다. 게임을 다시 시작해야 적용됩니다.</Yuudong2.Feature.BetterHearing.Desc>
+  <Yuudong2.Feature.SleepLimits>잠 줄이는 효과에 한도</Yuudong2.Feature.SleepLimits>
+  <Yuudong2.Feature.SleepLimits.Desc>잠이 짧아지면 함께 잘 때 사랑을 나눌 기회가 줄어 기분이 떨어집니다. 수면 효율은 종족 기본값과 유전자를 넘지 못하고, 피로 누적 속도는 종족 기본값·유전자·생체리듬 이식물보다 느려지지 않으며, 침대 휴식 효율은 100%를 넘지 못합니다. 잠을 늘리는 페널티(질병, 금단, 낮은 침대 등)는 그대로입니다. 게임을 다시 시작해야 적용됩니다.</Yuudong2.Feature.SleepLimits.Desc>
+  <Yuudong2.SleepLimit.Max>수면 한도(종족·유전자): 최대 {0}</Yuudong2.SleepLimit.Max>
+  <Yuudong2.SleepLimit.Min>수면 한도(종족·유전자·생체리듬 이식물): 최소 {0}</Yuudong2.SleepLimit.Min>
   <Yuudong2.Feature.GeneAssistant>유전자 도우미</Yuudong2.Feature.GeneAssistant>
   <Yuudong2.Feature.GeneAssistant.Desc>유전자 조립기에서 보유한 유전자를 색으로 표시하고, 유전자 서고·중복 유전자팩 배출·채운 슬롯 표시·정렬 개선을 추가합니다. (Random's Gene Assistant)</Yuudong2.Feature.GeneAssistant.Desc>
   <Yuudong2.Feature.DragonianMix>DragonianMix</Yuudong2.Feature.DragonianMix>

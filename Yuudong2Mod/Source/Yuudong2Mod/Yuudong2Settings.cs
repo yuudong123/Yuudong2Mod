@@ -77,6 +77,7 @@ namespace Yuudong2Mod
         public const string BirthAgeByLifespan = "BirthAgeByLifespan";
         public const string CalmMoveSpeed = "CalmMoveSpeed";
         public const string BetterHearing = "BetterHearing";
+        public const string SleepLimits = "SleepLimits";
         public const string GeneAssistant = "GeneAssistant";
         public const string DragonianMix = "DragonianMix";
 
@@ -90,7 +91,7 @@ namespace Yuudong2Mod
             new FeatureGroup("Romance", AlwaysAcceptProposal, NoBreakup, SameBedLovin, NoRandomRelations, RomanceTweaks, ConsensualIncest),
             new FeatureGroup("Colony", ShelfNoSlowdown, ShelfAcceptAll, NoMapEdgeLimit, CustomMapSize, PowerOnDemand, ReplaceStuff, GloomyWallReplace, RoomFood, MeatOptimization, SinglePlantTexture, RoofedScanning, RealisticRooms, BetterWorkbench, GeneRipper, MultiReinstall, MultiCopy, RebuildBills, InstalledPartsCount, WorkRouteOrder),
             new FeatureGroup("Interface", MessagePlacement, HealthCardSorting, DamageIndicators, LetterStackCleaner, SmartSpeed, TpsDisplay, SaveHotkey, DragSelect, GeneAssistant, TechprintTradeHighlight),
-            new FeatureGroup("Pawn", HairUnderHats, HiddenBionicEyes, EquipmentDurability, EndlessGrowth, NoGrowthNickname, RpgLevelUp, BirthAgeByLifespan, CalmMoveSpeed, BetterHearing),
+            new FeatureGroup("Pawn", HairUnderHats, HiddenBionicEyes, EquipmentDurability, EndlessGrowth, NoGrowthNickname, RpgLevelUp, BirthAgeByLifespan, CalmMoveSpeed, BetterHearing, SleepLimits),
             new FeatureGroup("Ideology", AllSpecialistsCanWork, RolesUntiedToMemes, NoIdeologyLimits, AutoCastSpecialistCommands, FasterBiosculpter),
             new FeatureGroup("Trade", CaravanArrivalSpot, TradeShipDropSpot, MapWideTradeBeacon, TradeStockBoost, OrbitalTraderFrequency, InsultFaction, EmpireGoodwillFix),
             new FeatureGroup("Performance", WorldPawnSleep, FastTickInterval, FastMoodThoughts, IdleMissingParts, PlantSwayPerFrame, IdleIceChecks, DoorReachabilityCache),

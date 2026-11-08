@@ -303,6 +303,10 @@
   <Yuudong2.Feature.CalmMoveSpeed.Desc>Humanlike pawns with nothing urgent to do move at no more than 120% of their race's base speed. They run at full speed when drafted, recently attacking or hurt, fighting, hunting, fleeing or berserk, or doing urgent work such as rescuing, firefighting or tending a bleeding patient, a job you ordered directly, or Allow Tool urgent hauling and finishing off. Hostile pawns and animals are unaffected.</Yuudong2.Feature.CalmMoveSpeed.Desc>
   <Yuudong2.Feature.BetterHearing>Better hearing matters</Yuudong2.Feature.BetterHearing>
   <Yuudong2.Feature.BetterHearing.Desc>Hearing above 100% did nothing, so bionic ears were pointless. Hearing now adds 0.6 melee dodge per 10% (up to 135% hearing), and the hearing cap for negotiation, trade price, conversion, taming and training rises from 100% to 110%. Needs a restart.</Yuudong2.Feature.BetterHearing.Desc>
+  <Yuudong2.Feature.SleepLimits>Limit sleep-reducing effects</Yuudong2.Feature.SleepLimits>
+  <Yuudong2.Feature.SleepLimits.Desc>Shorter sleep means fewer chances for lovin' in a shared bed, which drags mood down. Rest rate cannot exceed the race base plus genes, rest fall rate cannot drop below the race base plus genes and circadian implants, and bed rest effectiveness cannot exceed 100%. Penalties that make pawns sleep longer (illness, withdrawal, poor beds) stay. Needs a restart.</Yuudong2.Feature.SleepLimits.Desc>
+  <Yuudong2.SleepLimit.Max>Sleep limit (race, genes): max {0}</Yuudong2.SleepLimit.Max>
+  <Yuudong2.SleepLimit.Min>Sleep limit (race, genes, circadian implants): min {0}</Yuudong2.SleepLimit.Min>
   <Yuudong2.Feature.GeneAssistant>Gene assistant</Yuudong2.Feature.GeneAssistant>
   <Yuudong2.Feature.GeneAssistant.Desc>Colors genes by ownership in the gene assembler and adds a gene library, duplicate genepack ejection, filled slot display and better sorting. (Random's Gene Assistant)</Yuudong2.Feature.GeneAssistant.Desc>
   <Yuudong2.Feature.DragonianMix>DragonianMix</Yuudong2.Feature.DragonianMix>

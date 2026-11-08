@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Patch>
+
+  <!-- 수면 한도: 수면 효율은 종족 기본값 + 유전자를 넘지 못하고, 피로 누적 속도는 종족 기본값 + 유전자 + 생체리듬 이식물 밑으로 내려가지 않는다.
+       침대 휴식 효율은 1을 넘지 못한다(고급 침대, 품질 보너스, 수면 가속기). 낮은 쪽 페널티는 그대로다. -->
+  <Operation Class="Yuudong2Mod.PatchOperationFeature">
+    <feature>SleepLimits</feature>
+    <enabled Class="PatchOperationSequence">
+      <operations>
+        <li Class="PatchOperationConditional">
+          <xpath>/Defs/StatDef[defName="RestRateMultiplier"]/parts</xpath>
+          <nomatch Class="PatchOperationAdd">
+            <xpath>/Defs/StatDef[defName="RestRateMultiplier"]</xpath>
+            <value>
+              <parts />
+            </value>
+          </nomatch>
+        </li>
+        <li Class="PatchOperationAdd">
+          <xpath>/Defs/StatDef[defName="RestRateMultiplier"]/parts</xpath>
+          <value>
+            <li Class="Yuudong2Mod.StatPart_SleepLimit">
+              <priority>-1000</priority>
+              <floor>false</floor>
+            </li>
+          </value>
+        </li>
+        <li Class="PatchOperationConditional">
+          <xpath>/Defs/StatDef[defName="RestFallRateFactor"]/parts</xpath>
+          <nomatch Class="PatchOperationAdd">
+            <xpath>/Defs/StatDef[defName="RestFallRateFactor"]</xpath>
+            <value>
+              <parts />
+            </value>
+          </nomatch>
+        </li>
+        <li Class="PatchOperationAdd">
+          <xpath>/Defs/StatDef[defName="RestFallRateFactor"]/parts</xpath>
+          <value>
+            <li Class="Yuudong2Mod.StatPart_SleepLimit">
+              <priority>-1000</priority>
+              <floor>true</floor>
+            </li>
+          </value>
+        </li>
+        <li Class="PatchOperationConditional">
+          <xpath>/Defs/StatDef[defName="BedRestEffectiveness"]/maxValue</xpath>
+          <match Class="PatchOperationReplace">
+            <xpath>/Defs/StatDef[defName="BedRestEffectiveness"]/maxValue</xpath>
+            <value>
+              <maxValue>1</maxValue>
+            </value>
+          </match>
+          <nomatch Class="PatchOperationAdd">
+            <xpath>/Defs/StatDef[defName="BedRestEffectiveness"]</xpath>
+            <value>
+              <maxValue>1</maxValue>
+            </value>
+          </nomatch>
+        </li>
+      </operations>
+    </enabled>
+  </Operation>
+
+</Patch>
