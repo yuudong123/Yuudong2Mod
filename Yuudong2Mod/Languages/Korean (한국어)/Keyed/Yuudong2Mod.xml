@@ -307,6 +307,8 @@
   <Yuudong2.Feature.SleepLimits.Desc>잠이 짧아지면 함께 잘 때 사랑을 나눌 기회가 줄어 기분이 떨어집니다. 수면 효율은 종족 기본값과 유전자를 넘지 못하고, 피로 누적 속도는 종족 기본값·유전자·생체리듬 이식물보다 느려지지 않으며, 침대 휴식 효율은 100%를 넘지 못합니다. 잠을 늘리는 페널티(질병, 금단, 낮은 침대 등)는 그대로입니다. 게임을 다시 시작해야 적용됩니다.</Yuudong2.Feature.SleepLimits.Desc>
   <Yuudong2.SleepLimit.Max>수면 한도(종족·유전자): 최대 {0}</Yuudong2.SleepLimit.Max>
   <Yuudong2.SleepLimit.Min>수면 한도(종족·유전자·생체리듬 이식물): 최소 {0}</Yuudong2.SleepLimit.Min>
+  <Yuudong2.Feature.ImplantsOnAddedParts>인공 부품에도 임플란트 달기</Yuudong2.Feature.ImplantsOnAddedParts>
+  <Yuudong2.Feature.ImplantsOnAddedParts.Desc>바닐라는 인공 부품을 단 부위에는 임플란트를 달 수 없습니다. 초월공학 눈에 전술 각막을 다는 식으로 인공 부품 위에도 임플란트를 달 수 있게 합니다. 같은 임플란트를 두 번 달거나 서로 막는 임플란트를 같이 다는 것은 그대로 막습니다.</Yuudong2.Feature.ImplantsOnAddedParts.Desc>
   <Yuudong2.Feature.GeneAssistant>유전자 도우미</Yuudong2.Feature.GeneAssistant>
   <Yuudong2.Feature.GeneAssistant.Desc>유전자 조립기에서 보유한 유전자를 색으로 표시하고, 유전자 서고·중복 유전자팩 배출·채운 슬롯 표시·정렬 개선을 추가합니다. (Random's Gene Assistant)</Yuudong2.Feature.GeneAssistant.Desc>
   <Yuudong2.Feature.DragonianMix>DragonianMix</Yuudong2.Feature.DragonianMix>
