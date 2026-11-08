@@ -207,6 +207,8 @@
   <Yuudong2.Endless.UnlimitedPrice>판매가가 구매가보다 높아질 수 있게 허용</Yuudong2.Endless.UnlimitedPrice>
   <Yuudong2.Endless.BillGap>작업 지시의 기술 범위 최대치를 가장 높은 정착민 레벨보다 얼마나 크게 둘지 (기존 작업 지시는 다시 맞춰야 할 수 있음)</Yuudong2.Endless.BillGap>
   <Yuudong2.Endless.CraftNotifications>걸작·전설 제작 알림 표시</Yuudong2.Endless.CraftNotifications>
+  <Yuudong2.Endless.SpeedCap>작업 속도는 레벨 20까지만 오름</Yuudong2.Endless.SpeedCap>
+  <Yuudong2.Endless.SpeedCap.Desc>채굴·건설·연구 속도처럼 이름이 "속도"인 작업 스탯은 기술 레벨이 20을 넘어도 20일 때 값에서 멈춥니다. 명중·거래·수확량 같은 다른 스탯은 계속 오릅니다. 재시작 없이 바로 적용됩니다.</Yuudong2.Endless.SpeedCap.Desc>
   <Skill21>초월</Skill21>
   <Skill22>초월</Skill22>
   <Skill23>초월</Skill23>

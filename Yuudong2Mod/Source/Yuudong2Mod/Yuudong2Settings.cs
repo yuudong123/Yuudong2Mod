@@ -181,6 +181,7 @@ namespace Yuudong2Mod
         public bool endlessUnlimitedPrice;
         public int endlessBillGap = 20;
         public bool endlessCraftNotifications;
+        public bool endlessSpeedCap = true;
 
         // 연애 확률 조절 (Romance Tweaks)
         public float romanceChanceMult = 1f;
@@ -296,6 +297,7 @@ namespace Yuudong2Mod
             Scribe_Values.Look(ref endlessUnlimitedPrice, "endlessUnlimitedPrice", false);
             Scribe_Values.Look(ref endlessBillGap, "endlessBillGap", 20);
             Scribe_Values.Look(ref endlessCraftNotifications, "endlessCraftNotifications", false);
+            Scribe_Values.Look(ref endlessSpeedCap, "endlessSpeedCap", true);
 
             Scribe_Values.Look(ref romanceChanceMult, "romanceChanceMult", 1f);
             Scribe_Values.Look(ref romanceSingleMult, "romanceSingleMult", 1f);

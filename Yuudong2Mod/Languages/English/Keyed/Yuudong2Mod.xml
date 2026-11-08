@@ -207,6 +207,8 @@
   <Yuudong2.Endless.UnlimitedPrice>Allow sell price above buy price</Yuudong2.Endless.UnlimitedPrice>
   <Yuudong2.Endless.BillGap>Gap between your highest skill level and the max in bills (existing bills may need adjusting)</Yuudong2.Endless.BillGap>
   <Yuudong2.Endless.CraftNotifications>Show masterwork/legendary craft notifications</Yuudong2.Endless.CraftNotifications>
+  <Yuudong2.Endless.SpeedCap>Work speeds stop at level 20</Yuudong2.Endless.SpeedCap>
+  <Yuudong2.Endless.SpeedCap.Desc>Work speed stats such as mining, construction and research speed stay at their level 20 value above level 20. Other stats such as accuracy, trade and yield keep rising. Applies without a restart.</Yuudong2.Endless.SpeedCap.Desc>
   <Skill21>Transcended</Skill21>
   <Skill22>Transcended</Skill22>
   <Skill23>Transcended</Skill23>

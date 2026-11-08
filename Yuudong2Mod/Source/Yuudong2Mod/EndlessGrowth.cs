@@ -129,6 +129,8 @@ namespace Yuudong2Mod
             listing.TextFieldNumericLabeled("", ref s.endlessBillGap, ref billGapBuffer, 20f, 1E+09f);
             listing.Gap();
             listing.CheckboxLabeled("Yuudong2.Endless.CraftNotifications".Translate(), ref s.endlessCraftNotifications);
+            listing.Gap();
+            listing.CheckboxLabeled("Yuudong2.Endless.SpeedCap".Translate(), ref s.endlessSpeedCap, "Yuudong2.Endless.SpeedCap.Desc".Translate());
             listing.End();
         }
 
@@ -409,6 +411,75 @@ namespace Yuudong2Mod
             }
 
             return matcher.InstructionEnumeration();
+        }
+    }
+
+    // 이름이 Speed로 끝나는 스탯(채굴·건설·연구 속도 등)은 기술 레벨이 20을 넘어도 20일 때 값에서 멈춘다.
+    // 레벨당 보너스가 끝없이 붙으면 콘텐츠 소모가 너무 빨라진다. 이 설정은 재시작 없이 바로 적용된다.
+    [HarmonyPatchCategory(Features.EndlessGrowth)]
+    [HarmonyPatch(typeof(SkillNeed_BaseBonus), nameof(SkillNeed_BaseBonus.ValueFor))]
+    internal static class SkillNeed_BaseBonus_ValueFor_EndlessGrowth_Patch
+    {
+        private const int SpeedLevelCap = 20;
+
+        private static HashSet<SkillNeed> speedNeeds;
+
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+        {
+            System.Reflection.MethodInfo levelGetter = AccessTools.PropertyGetter(typeof(SkillRecord), nameof(SkillRecord.Level));
+            int replaced = 0;
+            foreach (CodeInstruction instruction in instructions)
+            {
+                if (instruction.Calls(levelGetter))
+                {
+                    yield return new CodeInstruction(OpCodes.Ldarg_0).MoveLabelsFrom(instruction).MoveBlocksFrom(instruction);
+                    yield return new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(SkillNeed_BaseBonus_ValueFor_EndlessGrowth_Patch), nameof(LevelFor)));
+                    replaced++;
+                    continue;
+                }
+
+                yield return instruction;
+            }
+
+            if (replaced != 1)
+            {
+                throw new InvalidOperationException("SkillRecord.Level call not found in SkillNeed_BaseBonus.ValueFor");
+            }
+        }
+
+        private static int LevelFor(SkillRecord record, SkillNeed need)
+        {
+            int level = record.Level;
+            if (level <= SpeedLevelCap || !Yuudong2Settings.Current.endlessSpeedCap)
+            {
+                return level;
+            }
+
+            if (speedNeeds == null)
+            {
+                speedNeeds = new HashSet<SkillNeed>();
+                foreach (StatDef stat in DefDatabase<StatDef>.AllDefsListForReading)
+                {
+                    if (stat.defName.EndsWith("Speed"))
+                    {
+                        AddAll(stat.skillNeedFactors);
+                        AddAll(stat.skillNeedOffsets);
+                    }
+                }
+            }
+
+            return speedNeeds.Contains(need) ? SpeedLevelCap : level;
+        }
+
+        private static void AddAll(List<SkillNeed> needs)
+        {
+            if (needs != null)
+            {
+                foreach (SkillNeed need in needs)
+                {
+                    speedNeeds.Add(need);
+                }
+            }
         }
     }
 }
