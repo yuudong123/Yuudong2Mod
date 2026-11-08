@@ -144,6 +144,22 @@ namespace Yuudong2Mod.SurgeryManager
             return result;
         }
 
+        private static readonly Dictionary<HediffDef, ThingDef> IconCache = new Dictionary<HediffDef, ThingDef>();
+
+        // 상태 이상을 보여 줄 아이템. 떼어 내면 나오는 아이템이 없으면(메크링크, 사이링크처럼 아이템을 써서 다는 것) 그 아이템이나 수술 재료를 쓴다.
+        public static ThingDef IconFor(HediffDef hediff)
+        {
+            if (!IconCache.TryGetValue(hediff, out ThingDef item))
+            {
+                item = hediff.spawnThingOnRemoved
+                    ?? DefDatabase<ThingDef>.AllDefsListForReading.FirstOrDefault(t => t.comps != null && t.comps.Any(c => c is CompProperties_UseEffectInstallImplant u && u.hediffDef == hediff))
+                    ?? InstallRecipes.Where(r => r.addsHediff == hediff).Select(MainItem).FirstOrDefault(t => t != null);
+                IconCache[hediff] = item;
+            }
+
+            return item;
+        }
+
         // 수술의 주재료(부품·임플란트 아이템). 약처럼 여러 종류를 받는 재료는 뺀다.
         public static ThingDef MainItem(RecipeDef recipe)
         {

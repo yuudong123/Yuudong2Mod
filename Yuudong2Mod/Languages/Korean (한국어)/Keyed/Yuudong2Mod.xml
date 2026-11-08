@@ -481,6 +481,8 @@
   <Yuudong2.Surgery.Presets>계획 관리</Yuudong2.Surgery.Presets>
   <Yuudong2.Surgery.QueueAll>모두 예약</Yuudong2.Surgery.QueueAll>
   <Yuudong2.Surgery.Queue>예약</Yuudong2.Surgery.Queue>
+  <Yuudong2.Surgery.SortDefault>정렬: 기본 순서</Yuudong2.Surgery.SortDefault>
+  <Yuudong2.Surgery.SortDefault.Desc>누를 때마다 기본 순서 → 이름 → 완성도로 바뀝니다. 기본 순서는 정착민 막대·작업 탭과 같은 순서이고, 이름 칸을 끌어서 바꿀 수 있습니다. 바꾼 순서는 정착민 막대에도 반영됩니다.</Yuudong2.Surgery.SortDefault.Desc>
   <Yuudong2.Surgery.SortName>정렬: 이름</Yuudong2.Surgery.SortName>
   <Yuudong2.Surgery.SortProgress>정렬: 완성도</Yuudong2.Surgery.SortProgress>
   <Yuudong2.Surgery.OnlyIncomplete>미완성만</Yuudong2.Surgery.OnlyIncomplete>

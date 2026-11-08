@@ -61,7 +61,9 @@ namespace Yuudong2Mod.SurgeryManager
         public bool onlyIncomplete;
         public bool onlyWithMaterials = true;
         public bool nanobotsOneAtATime = true;
-        public bool sortByProgress;
+
+        // 0: 기본 순서(정착민 막대·작업 탭과 같은 순서, 끌어서 바꿀 수 있음), 1: 이름, 2: 완성도
+        public int sortMode;
 
         private Dictionary<Pawn, int> assignments = new Dictionary<Pawn, int>();
         private int nextId = 1;
@@ -90,7 +92,7 @@ namespace Yuudong2Mod.SurgeryManager
             Scribe_Values.Look(ref onlyIncomplete, "onlyIncomplete");
             Scribe_Values.Look(ref onlyWithMaterials, "onlyWithMaterials", true);
             Scribe_Values.Look(ref nanobotsOneAtATime, "nanobotsOneAtATime", true);
-            Scribe_Values.Look(ref sortByProgress, "sortByProgress");
+            Scribe_Values.Look(ref sortMode, "sortMode");
             if (Scribe.mode == LoadSaveMode.PostLoadInit)
             {
                 presets = presets ?? new List<SurgeryPreset>();

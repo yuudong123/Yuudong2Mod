@@ -481,6 +481,8 @@
   <Yuudong2.Surgery.Presets>Plans</Yuudong2.Surgery.Presets>
   <Yuudong2.Surgery.QueueAll>Queue all</Yuudong2.Surgery.QueueAll>
   <Yuudong2.Surgery.Queue>Queue</Yuudong2.Surgery.Queue>
+  <Yuudong2.Surgery.SortDefault>Sort: default order</Yuudong2.Surgery.SortDefault>
+  <Yuudong2.Surgery.SortDefault.Desc>Cycles default order, name and progress. The default order matches the colonist bar and work tab; drag the name column to change it. The new order also applies to the colonist bar.</Yuudong2.Surgery.SortDefault.Desc>
   <Yuudong2.Surgery.SortName>Sort: name</Yuudong2.Surgery.SortName>
   <Yuudong2.Surgery.SortProgress>Sort: progress</Yuudong2.Surgery.SortProgress>
   <Yuudong2.Surgery.OnlyIncomplete>Incomplete only</Yuudong2.Surgery.OnlyIncomplete>

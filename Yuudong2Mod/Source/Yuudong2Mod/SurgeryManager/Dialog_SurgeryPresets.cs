@@ -136,7 +136,7 @@ namespace Yuudong2Mod.SurgeryManager
                     Widgets.DrawLightHighlight(row);
                 }
 
-                ThingDef item = entry.hediff.spawnThingOnRemoved;
+                ThingDef item = SurgeryPlanner.IconFor(entry.hediff);
                 if (item != null)
                 {
                     Widgets.ThingIcon(new Rect(row.x + 2f, row.y + 1f, 24f, 24f), item);
@@ -181,7 +181,7 @@ namespace Yuudong2Mod.SurgeryManager
                 }
 
                 HediffDef chosen = hediff;
-                ThingDef item = hediff.spawnThingOnRemoved;
+                ThingDef item = SurgeryPlanner.IconFor(hediff);
                 options.Add(new FloatMenuOption(hediff.LabelCap, () => AddEntry(chosen, part), item, (ThingStyleDef)null));
             }
 

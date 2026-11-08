@@ -131,9 +131,18 @@ namespace Yuudong2Mod.SurgeryManager
                 pawns = pawns.Where(p => StatusFor(p).Any(s => s.state != PlanState.Done)).ToList();
             }
 
-            pawns = Plans.sortByProgress
-                ? pawns.OrderBy(p => Progress(StatusFor(p))).ThenBy(p => p.LabelShort).ToList()
-                : pawns.OrderBy(p => p.LabelShort).ToList();
+            switch (Plans.sortMode)
+            {
+                case 1:
+                    pawns = pawns.OrderBy(p => p.LabelShort).ToList();
+                    break;
+                case 2:
+                    pawns = pawns.OrderBy(p => Progress(StatusFor(p))).ThenBy(p => p.LabelShort).ToList();
+                    break;
+                default:
+                    PlayerPawnsDisplayOrderUtility.Sort(pawns);
+                    break;
+            }
 
             float fixedWidth = NameWidth + PresetWidth + ProgressWidth + QueueWidth;
             float slotWidth = Mathf.Max(MinSlotWidth, (inRect.width - 16f - fixedWidth) / Slots.Count);
@@ -149,12 +158,25 @@ namespace Yuudong2Mod.SurgeryManager
             GUI.EndGroup();
 
             Widgets.BeginScrollView(outRect, ref scroll, viewRect);
+            // 기본 순서일 때는 이름 칸을 끌어서 순서를 바꾼다. 정착민 막대·작업 탭과 같은 순서라 거기에도 반영된다.
+            int reorderGroup = -1;
+            if (Plans.sortMode == 0)
+            {
+                List<Pawn> shown = pawns;
+                reorderGroup = ReorderableWidget.NewGroup((from, to) => Reorder(shown, from, to), ReorderableDirection.Vertical, viewRect);
+            }
+
             for (int i = 0; i < pawns.Count; i++)
             {
                 Rect row = new Rect(0f, i * RowHeight, tableWidth, RowHeight);
                 if (i % 2 == 1)
                 {
                     Widgets.DrawLightHighlight(row);
+                }
+
+                if (reorderGroup >= 0)
+                {
+                    ReorderableWidget.Reorderable(reorderGroup, new Rect(row.x, row.y, NameWidth, row.height));
                 }
 
                 DoRow(row, pawns[i], slotWidth);
@@ -178,11 +200,14 @@ namespace Yuudong2Mod.SurgeryManager
             }
 
             x += 136f;
-            string sortLabel = (Plans.sortByProgress ? "Yuudong2.Surgery.SortProgress" : "Yuudong2.Surgery.SortName").Translate();
-            if (Widgets.ButtonText(new Rect(x, rect.y, 140f, rect.height), sortLabel))
+            string sortKey = Plans.sortMode == 1 ? "Yuudong2.Surgery.SortName" : Plans.sortMode == 2 ? "Yuudong2.Surgery.SortProgress" : "Yuudong2.Surgery.SortDefault";
+            Rect sortRect = new Rect(x, rect.y, 140f, rect.height);
+            if (Widgets.ButtonText(sortRect, sortKey.Translate()))
             {
-                Plans.sortByProgress = !Plans.sortByProgress;
+                Plans.sortMode = (Plans.sortMode + 1) % 3;
             }
+
+            TooltipHandler.TipRegion(sortRect, "Yuudong2.Surgery.SortDefault.Desc".Translate());
 
             x += 156f;
             x = Checkbox(x, rect, "Yuudong2.Surgery.OnlyIncomplete", ref Plans.onlyIncomplete);
@@ -434,7 +459,7 @@ namespace Yuudong2Mod.SurgeryManager
                 int countInRow = Mathf.Min(perRow, hediffs.Count - r * perRow);
                 float left = rect.x + (rect.width - countInRow * size) / 2f;
                 Rect icon = new Rect(left + c * size, top + r * size, size, size);
-                ThingDef item = hediffs[i].def.spawnThingOnRemoved;
+                ThingDef item = SurgeryPlanner.IconFor(hediffs[i].def);
                 if (item != null)
                 {
                     Widgets.ThingIcon(icon, item);
@@ -491,6 +516,37 @@ namespace Yuudong2Mod.SurgeryManager
                 default:
                     return "Yuudong2.Surgery.State.Blocked".Translate(status.reason);
             }
+        }
+
+        // 보이는 정착민끼리 순서를 바꾼다. 원래 가지고 있던 표시 순서 값들을 새 순서대로 다시 나눠 줘서, 안 보이는 정착민의 자리는 그대로 둔다.
+        private void Reorder(List<Pawn> shown, int from, int to)
+        {
+            if (from == to || from < 0 || from >= shown.Count)
+            {
+                return;
+            }
+
+            List<Pawn> order = new List<Pawn>(shown);
+            List<int> values = order.Select(p => p.playerSettings?.displayOrder ?? 0).OrderBy(v => v).ToList();
+            if (values.Distinct().Count() != values.Count)
+            {
+                int start = values[0];
+                values = Enumerable.Range(start, order.Count).ToList();
+            }
+
+            Pawn moved = order[from];
+            order.RemoveAt(from);
+            order.Insert(to > from ? to - 1 : to, moved);
+            for (int i = 0; i < order.Count; i++)
+            {
+                if (order[i].playerSettings != null)
+                {
+                    order[i].playerSettings.displayOrder = values[i];
+                }
+            }
+
+            Find.ColonistBar.MarkColonistsDirty();
+            MainTabWindowUtility.NotifyAllPawnTables_PawnsChanged();
         }
 
         private void QueueFor(List<Pawn> pawns)
