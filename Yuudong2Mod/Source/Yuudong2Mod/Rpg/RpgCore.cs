@@ -473,7 +473,11 @@ namespace Yuudong2Mod.Rpg
                     stat.parts = new List<StatPart>();
                 }
 
-                stat.parts.Add(new StatPart_Rpg { effect = effect, parentStat = stat });
+                // 게임은 로딩 때 부품을 우선순위가 높은 것부터 정렬하고 그 순서로 적용한다. 그 뒤에 넣는 이 부품도
+                // 같은 순서를 지켜야, 맨 마지막에 걸리는 상한(수면 한도, 우선순위 -1000)보다 먼저 적용된다.
+                StatPart_Rpg part = new StatPart_Rpg { effect = effect, parentStat = stat };
+                int index = stat.parts.FindIndex(p => p.priority < part.priority);
+                stat.parts.Insert(index < 0 ? stat.parts.Count : index, part);
             }
         }
 
