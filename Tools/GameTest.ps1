@@ -30,8 +30,10 @@ Copy-Item (Join-Path $userData "Config\*.xml") (Join-Path $data "Config") -Force
 $prefsPath = Join-Path $data "Config\Prefs.xml"
 $prefs = [IO.File]::ReadAllText($prefsPath)
 $prefs = $prefs -replace '<resetModsConfigOnCrash>True', '<resetModsConfigOnCrash>False'
-$prefs = $prefs -replace '<devMode>\w+</devMode>', ("<devMode>" + ($(if ($Mode -eq "save") { "True" } else { "False" })) + "</devMode>")
+# Dev mode on in both modes: the game runs def config error checks only in dev mode, and it loads Saves/autostart.rws.
+$prefs = $prefs -replace '<devMode>\w+</devMode>', '<devMode>True</devMode>'
 [IO.File]::WriteAllText($prefsPath, $prefs)
+Get-ChildItem (Join-Path $data "Saves") -Filter *.rws | Remove-Item
 
 $modsPath = Join-Path $data "Config\ModsConfig.xml"
 if ($Mode -eq "save") {
@@ -49,7 +51,6 @@ if ($Mode -eq "save") {
     Copy-Item (Join-Path $testSrc "Assemblies\Yuudong2Test.dll") (Join-Path $testDst "Assemblies") -Force
 
     # Save: newest real save unless named. Loaded through the vanilla dev-mode "autostart" save.
-    Get-ChildItem (Join-Path $data "Saves") -Filter *.rws | Remove-Item
     $source = if ($Save) { Get-Item (Join-Path $userData "Saves\$Save.rws") } else { Get-ChildItem (Join-Path $userData "Saves") -Filter *.rws | Sort-Object LastWriteTime -Descending | Select-Object -First 1 }
     Copy-Item $source.FullName (Join-Path $data "Saves\autostart.rws")
     Write-Output "save: $($source.Name)"
