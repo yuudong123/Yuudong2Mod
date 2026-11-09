@@ -27,3 +27,9 @@ Yuudong2Mod/Defs/GeneRipper.xml
 Yuudong2Mod/Textures/
 # Built DLL (contains the excluded sources)
 Yuudong2Mod/Assemblies/
+
+# Local game test data (copied configs, saves, logs)
+.gametest/
+Tools/Yuudong2Test/Assemblies/
+Tools/Yuudong2Test/Source/**/bin/
+Tools/Yuudong2Test/Source/**/obj/
