@@ -471,8 +471,8 @@
   <Yuudong2.Feature.MultiCopy.Desc>지을 수 있는 건물·청사진·건설 중인 틀을 여러 개 고르면 '모두 복제' 버튼이 생깁니다. 같은 재료·양식으로 배치 모양 그대로 한 번에 건설 청사진을 놓고 R/Q로 묶음을 돌립니다. 바닐라 건설처럼 취소할 때까지 여러 번 놓을 수 있습니다.</Yuudong2.Feature.MultiCopy.Desc>
   <Yuudong2.Feature.RebuildBills>재건한 작업대의 작업 지시서 복구</Yuudong2.Feature.RebuildBills>
   <Yuudong2.Feature.RebuildBills.Desc>부서진 작업대가 자동 재건 청사진으로 남으면 작업 지시서를 기억해 두었다가, 다시 지었을 때 그대로 되돌립니다. 바닐라는 저장 설정만 넘기고 작업 지시서는 버립니다.</Yuudong2.Feature.RebuildBills.Desc>
-  <Yuudong2.Feature.InstalledPartsCount>이식된 신체 부위도 세기</Yuudong2.Feature.InstalledPartsCount>
-  <Yuudong2.Feature.InstalledPartsCount.Desc>생체공학 팔·인공 심장 같은 신체 부위를 만드는 작업 지시서에도 "장착 중인 것 포함"이 나옵니다. 켜면 정착민 몸에 이식된 같은 부품도 개수에 넣습니다. 맵을 떠난 정착민은 옷처럼 "자리 비운 정착민 것도 세기"를 같이 켰을 때만 셉니다.</Yuudong2.Feature.InstalledPartsCount.Desc>
+  <Yuudong2.Feature.InstalledPartsCount>장착품·이식 부위를 모든 정착민에게서 세기</Yuudong2.Feature.InstalledPartsCount>
+  <Yuudong2.Feature.InstalledPartsCount.Desc>생체공학 팔·인공 심장 같은 신체 부위를 만드는 작업 지시서에도 "장착 중인 것 포함"이 나옵니다. 켜면 정착민 몸에 이식된 같은 부품도 개수에 넣습니다. 무기·옷·신체 부위 모두, 다른 맵·캐러밴·중력부양선에 가 있는 정착민 것까지 늘 셉니다.</Yuudong2.Feature.InstalledPartsCount.Desc>
   <Yuudong2.Feature.WorkRouteOrder>청소·수확·칠하기 동선 정리</Yuudong2.Feature.WorkRouteOrder>
   <Yuudong2.Feature.WorkRouteOrder.Desc>바닐라는 주변 오물·작물·칠할 곳을 묶은 뒤 출발점에서 가까운 순서로 한 번만 정렬해서, 거리가 비슷한 양쪽을 지그재그로 오갑니다. 가까운 것부터 잇는 순서를 다듬어 이동 거리가 더 짧을 때만 순서를 바꿉니다. 직선 거리로는 바닐라보다 길어지지 않습니다.</Yuudong2.Feature.WorkRouteOrder.Desc>
   <Yuudong2.Feature.SurgeryManager>수술 관리 탭</Yuudong2.Feature.SurgeryManager>

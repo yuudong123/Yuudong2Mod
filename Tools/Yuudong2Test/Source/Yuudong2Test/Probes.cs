@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using HarmonyLib;
 using RimWorld;
+using RimWorld.Planet;
 using Verse;
 using Yuudong2Mod;
 using Yuudong2Mod.SurgeryManager;
@@ -18,7 +19,45 @@ namespace Yuudong2Test
             ("features", Features_),
             ("surgery manager", Surgery),
             ("sleep limits", Sleep),
+            ("installed parts count", InstalledParts),
         };
+
+        // "장착 중인 것 포함" 지시서는 어느 맵·캐러밴·중력부양선에 있든 모든 정착민의 무기·옷·소지품과 몸의 부품을 세야 한다.
+        private static void InstalledParts(StringBuilder sb)
+        {
+            List<Pawn> colonists = PawnsFinder.AllMapsCaravansAndTravellingTransporters_Alive_FreeColonists;
+            sb.AppendLine("colonists: " + string.Join(", ", colonists.GroupBy(p => p.MapHeld?.ToString() ?? (p.IsCaravanMember() ? "caravan" : "other")).Select(g => $"{g.Key}={g.Count()}")));
+            int bad = 0;
+            foreach (Map map in Find.Maps)
+            {
+                foreach (Bill_Production bill in map.listerThings.ThingsInGroup(ThingRequestGroup.PotentialBillGiver).OfType<IBillGiver>()
+                    .SelectMany(g => g.BillStack.Bills).OfType<Bill_Production>())
+                {
+                    ThingDef product = bill.recipe.products.NullOrEmpty() ? null : bill.recipe.products[0].thingDef;
+                    if (!bill.includeEquipped || bill.repeatMode != BillRepeatModeDefOf.TargetCount || product == null)
+                    {
+                        continue;
+                    }
+
+                    RecipeWorkerCounter counter = bill.recipe.WorkerCounter;
+                    int installed = colonists.Sum(p => p.health.hediffSet.hediffs.Count(h => h.def.spawnThingOnRemoved == product));
+                    int carriedElsewhere = colonists.Where(p => !(p.Spawned && p.Map == map))
+                        .SelectMany(p => p.equipment.AllEquipmentListForReading.Cast<Thing>().Concat(p.apparel.WornApparel).Concat(p.inventory.innerContainer))
+                        .Where(t => counter.CountValidThing(t, bill, product)).Sum(t => t.stackCount);
+                    if (installed == 0 && carriedElsewhere == 0)
+                    {
+                        continue;
+                    }
+
+                    int counted = counter.CountProducts(bill);
+                    bool ok = counted >= installed + carriedElsewhere;
+                    bad += ok ? 0 : 1;
+                    sb.AppendLine($"{(ok ? "ok  " : "FAIL")} {map} {product.defName}: counted {counted}, installed on all colonists {installed}, carried by colonists elsewhere {carriedElsewhere}");
+                }
+            }
+
+            sb.AppendLine(bad == 0 ? "PASS" : $"FAIL: {bad} bills undercount installed parts");
+        }
 
         private static IEnumerable<Pawn> Colonists => PawnsFinder.AllMaps_FreeColonists.OrderBy(p => p.LabelShort);
 
