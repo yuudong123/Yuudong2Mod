@@ -20,7 +20,51 @@ namespace Yuudong2Test
             ("surgery manager", Surgery),
             ("sleep limits", Sleep),
             ("installed parts count", InstalledParts),
+            ("roofed scanning", RoofedScanning),
         };
+
+        // 스캐너 세 종류는 지붕 아래에 지을 수 있고(설치 제한 없음) 지붕 경고 대상이 아니어야 한다. 지붕 아래 있는 스캐너는 쓸 수 있어야 한다.
+        private static void RoofedScanning(StringBuilder sb)
+        {
+            if (!Yuudong2Mod.Yuudong2Mod.AppliedFeatures.Contains(Features.RoofedScanning))
+            {
+                sb.AppendLine("skipped: feature not applied");
+                return;
+            }
+
+            int bad = 0;
+            foreach (string defName in new[] { "GroundPenetratingScanner", "LongRangeMineralScanner", "OrbitalScanner" })
+            {
+                ThingDef def = DefDatabase<ThingDef>.GetNamedSilentFail(defName);
+                if (def == null)
+                {
+                    sb.AppendLine($"--   {defName}: not loaded");
+                    continue;
+                }
+
+                bool placeBlocked = def.placeWorkers?.Contains(typeof(PlaceWorker_NotUnderRoof)) == true;
+                bool ok = def.canBeUsedUnderRoof && !placeBlocked;
+                bad += ok ? 0 : 1;
+                sb.AppendLine($"{(ok ? "ok  " : "FAIL")} {defName}: canBeUsedUnderRoof={def.canBeUsedUnderRoof} NotUnderRoof placeWorker={placeBlocked} placeWorkers=[{string.Join(", ", def.placeWorkers?.Select(t => t.Name) ?? Enumerable.Empty<string>())}]");
+            }
+
+            foreach (Map map in Find.Maps)
+            {
+                foreach (ThingWithComps thing in map.listerThings.AllThings.OfType<ThingWithComps>().Where(t => t.Faction == Faction.OfPlayer && RoofUtility.IsAnyCellUnderRoof(t)))
+                {
+                    CompScanner scanner = thing.GetComp<CompScanner>();
+                    if (scanner != null)
+                    {
+                        AcceptanceReport report = scanner.CanUseNow;
+                        bool ok = report.Accepted || report.Reason.NullOrEmpty();
+                        bad += ok ? 0 : 1;
+                        sb.AppendLine($"{(ok ? "ok  " : "FAIL")} roofed {thing.def.defName} on {map}: CanUseNow={report.Accepted} {report.Reason}");
+                    }
+                }
+            }
+
+            sb.AppendLine(bad == 0 ? "PASS" : $"FAIL: {bad}");
+        }
 
         // "장착 중인 것 포함" 지시서는 어느 맵·캐러밴·중력부양선에 있든 모든 정착민의 무기·옷·소지품과 몸의 부품을 세야 한다.
         private static void InstalledParts(StringBuilder sb)

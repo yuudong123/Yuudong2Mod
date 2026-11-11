@@ -294,7 +294,7 @@
   <Yuudong2.Feature.RomanceTweaks>연애 확률 조절</Yuudong2.Feature.RomanceTweaks>
   <Yuudong2.Feature.RomanceTweaks.Desc>연애 시도·성공·이별 확률에 배율을 곱합니다. 기본값은 바람 피우기·다른 세력과의 연애·이별을 0배로 막습니다. (Romance Tweaks)</Yuudong2.Feature.RomanceTweaks.Desc>
   <Yuudong2.Feature.RoofedScanning>지붕 아래 스캐너 사용</Yuudong2.Feature.RoofedScanning>
-  <Yuudong2.Feature.RoofedScanning.Desc>지하 자원 스캐너와 장거리 광물 스캐너를 지붕 아래에 짓고 쓸 수 있습니다. (Roofed Scanning)</Yuudong2.Feature.RoofedScanning.Desc>
+  <Yuudong2.Feature.RoofedScanning.Desc>지하 자원 스캐너, 장거리 광물 스캐너, Odyssey 궤도 탐지기를 지붕 아래에 짓고 쓸 수 있습니다. (Roofed Scanning)</Yuudong2.Feature.RoofedScanning.Desc>
   <Yuudong2.Feature.RpgLevelUp>RPG 레벨업</Yuudong2.Feature.RpgLevelUp>
   <Yuudong2.Feature.RpgLevelUp.Desc>폰이 스킬 경험치와 적 처치로 레벨을 올리고, 레벨업 포인트를 힘·재주·민첩·체력·지능·매력에 나눠 여러 스탯을 올립니다. 화면 위 '레벨' 탭과 폰 정보의 '레벨' 탭에서 관리하며, 각 능력치에 마우스를 올리면 효과와 한계가 나옵니다. 기존 저장 파일의 레벨은 그대로 이어집니다. (RPG Style Level Up Mod)</Yuudong2.Feature.RpgLevelUp.Desc>
   <Yuudong2.Feature.BirthAgeByLifespan>출산 산모 나이를 수명에 맞추기</Yuudong2.Feature.BirthAgeByLifespan>
