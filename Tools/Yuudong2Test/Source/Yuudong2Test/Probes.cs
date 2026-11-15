@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using HarmonyLib;
 using RimWorld;
@@ -21,7 +22,119 @@ namespace Yuudong2Test
             ("sleep limits", Sleep),
             ("installed parts count", InstalledParts),
             ("roofed scanning", RoofedScanning),
+            // 맵을 바꾸므로 항상 마지막에 둔다.
+            ("gravship replace stuff", GravshipReplace),
         };
+
+        // 교체 프레임이 지워지면 누가 지웠는지 남긴다.
+        private static readonly List<string> frameDestroyStacks = new List<string>();
+
+        private static void OnFrameDestroy(Frame __instance, DestroyMode mode)
+        {
+            if (__instance is ReplaceFrame && frameDestroyStacks.Count < 2)
+            {
+                frameDestroyStacks.Add($"{__instance} mode={mode}" + Environment.NewLine + string.Join(Environment.NewLine, Environment.StackTrace.Split('\n').Skip(2).Take(6)));
+            }
+        }
+
+        // 중력부양선 위 건물에 재질 교체를 예약하고 이륙·착륙(같은 자리)을 두 번 한 뒤 프레임과 원래 건물이 그대로 있는지 본다.
+        // 착륙 때는 프레임과 건물 중 먼저 놓인 쪽을 나중 것이 지우면 안 된다(SpawningWipes가 양쪽 모두 false여야 한다).
+        private static void GravshipReplace(StringBuilder sb)
+        {
+            Map map = Find.Maps.FirstOrDefault(m => GravshipUtility.GetPlayerGravEngine_NewTemp(m) != null);
+            Building_GravEngine engine = map == null ? null : GravshipUtility.GetPlayerGravEngine_NewTemp(map);
+            if (engine == null || !Yuudong2Mod.Yuudong2Mod.AppliedFeatures.Contains(Features.ReplaceStuff))
+            {
+                sb.AppendLine("skipped: no grav engine or feature off");
+                return;
+            }
+
+            Type util = AccessTools.TypeByName("Yuudong2Mod.ReplaceStuffUtility");
+            MethodInfo hasFrameDef = AccessTools.Method(util, "HasFrameDefFor");
+            MethodInfo place = AccessTools.Method(util, "PlaceReplaceFrame");
+            MethodInfo frameFor = AccessTools.Method(util, "FrameFor");
+            MethodInfo postSwap = AccessTools.Method(typeof(GravshipPlacementUtility), "PostSwapMap");
+            new Harmony("yuudong2.yuudong2test.gravship").Patch(AccessTools.Method(typeof(Frame), nameof(Frame.Destroy)),
+                prefix: new HarmonyMethod(typeof(Probes), nameof(OnFrameDestroy)));
+
+            engine.ForceSubstructureDirty();
+            HashSet<IntVec3> substructure = new HashSet<IntVec3>(engine.ValidSubstructure);
+            List<Thing> targets = map.listerBuildings.allBuildingsColonist
+                .Where(b => b.def.MadeFromStuff && b.OccupiedRect().All(substructure.Contains)
+                    && (bool)hasFrameDef.Invoke(null, new object[] { b.def }) && GenStuff.AllowedStuffsFor(b.def).Any(s => s != b.Stuff))
+                .OrderByDescending(b => b.def.building.isWall || b.def.Fillage == FillCategory.Full).ThenBy(b => b.Position.x).ThenBy(b => b.Position.z)
+                .Take(6).Cast<Thing>().ToList();
+            var pairs = new List<(Thing target, ReplaceFrame frame, IntVec3 cell)>();
+            for (int i = 0; i < targets.Count; i++)
+            {
+                Thing target = targets[i];
+                ThingDef stuff = GenStuff.AllowedStuffsFor(target.def).First(s => s != target.Stuff);
+                ReplaceFrame frame = (ReplaceFrame)place.Invoke(null, new object[] { target, stuff, null, null });
+                if (frame != null && i % 2 == 1)
+                {
+                    frame.workDone = 10f;
+                }
+
+                pairs.Add((target, frame, target.Position));
+            }
+
+            int bad = 0;
+            if (pairs.Count > 0 && pairs[0].frame != null)
+            {
+                ThingDef targetDef = pairs[0].target.def, frameDef = pairs[0].frame.def;
+                bool wipeFrame = GenSpawn.SpawningWipes(targetDef, frameDef), wipeTarget = GenSpawn.SpawningWipes(frameDef, targetDef);
+                bad += wipeFrame || wipeTarget ? 1 : 0;
+                sb.AppendLine($"{(wipeFrame || wipeTarget ? "FAIL" : "ok  ")} SpawningWipes(building over frame)={wipeFrame} (frame over building)={wipeTarget}");
+            }
+
+            sb.AppendLine($"engine at {engine.Position}, substructure {substructure.Count} cells, frames placed {pairs.Count(p => p.frame != null)}");
+            int errorsBefore = TestRunner.TickErrors.Count, warningsBefore = TestRunner.TickWarnings.Count;
+            TestRunner.ticking = true;
+            for (int cycle = 1; cycle <= 2; cycle++)
+            {
+                // 들고 있는 물건을 내려놓는 중에 기판 판정이 다시 계산되면 바닐라가 예외를 낸다. 실제 이륙 전처럼 미리 내려놓게 한다.
+                foreach (Pawn pawn in map.mapPawns.AllPawnsSpawned.ToList())
+                {
+                    if (pawn.carryTracker?.CarriedThing != null)
+                    {
+                        pawn.carryTracker.TryDropCarriedThing(pawn.Position, ThingPlaceMode.Near, out Thing _);
+                    }
+                }
+
+                engine.ForceSubstructureDirty();
+                _ = engine.ValidSubstructure;
+                Gravship gravship = GravshipUtility.GenerateGravship(engine);
+                map.powerNetManager.UpdatePowerNetsAndConnections_First(); // 비행 중 지나가는 틱 대신 전력망 정리
+                List<Thing> carried = gravship.Things.ToList();
+                sb.AppendLine($"cycle {cycle}: gravship carries {carried.Count} things, frames carried {pairs.Count(p => carried.Contains(p.frame))}, targets carried {pairs.Count(p => carried.Contains(p.target))}");
+                GravshipPlacementUtility.PlaceGravshipInMap(gravship, gravship.originalPosition, map, out List<Thing> spawned);
+                postSwap.Invoke(null, new object[] { gravship, spawned });
+                Current.Game.Gravship = null;
+                foreach (string stack in frameDestroyStacks)
+                {
+                    sb.AppendLine("    frame destroyed: " + stack);
+                }
+
+                frameDestroyStacks.Clear();
+            }
+
+            foreach ((Thing target, ReplaceFrame frame, IntVec3 cell) in pairs)
+            {
+                ReplaceFrame registered = frameFor.Invoke(null, new object[] { target }) as ReplaceFrame;
+                bool ok = frame != null && target.Spawned && frame.Spawned && frame.Position == target.Position && frame.oldThing == target && registered == frame;
+                bad += ok ? 0 : 1;
+                string others = target.Spawned ? string.Join(", ", target.Position.GetThingList(map).Select(t => t.def.defName)) : "-";
+                sb.AppendLine($"{(ok ? "ok  " : "FAIL")} {target.def.defName}({target.Stuff?.defName}) {cell}: target spawned={target.Spawned} pos={target.PositionHeld}; frame spawned={frame?.Spawned} pos={frame?.Position} work={frame?.workDone} registered={registered == frame}; cell now [{others}]");
+            }
+
+            TestRunner.ticking = false;
+            foreach (string message in TestRunner.TickErrors.Skip(errorsBefore).Concat(TestRunner.TickWarnings.Skip(warningsBefore)))
+            {
+                sb.AppendLine("    log: " + message.Split('\n')[0]);
+            }
+
+            sb.AppendLine(bad == 0 ? "PASS" : $"FAIL: {bad}");
+        }
 
         // 스캐너 세 종류는 지붕 아래에 지을 수 있고(설치 제한 없음) 지붕 경고 대상이 아니어야 한다. 지붕 아래 있는 스캐너는 쓸 수 있어야 한다.
         private static void RoofedScanning(StringBuilder sb)

@@ -151,7 +151,6 @@ namespace Yuudong2Mod
         private const string FrameDefPrefix = "Yuudong2_ReplaceFrame_";
 
         private static readonly Dictionary<ThingDef, ThingDef> frameDefs = new Dictionary<ThingDef, ThingDef>();
-        private static readonly HashSet<ThingDef> frameDefSet = new HashSet<ThingDef>();
         private static readonly ConditionalWeakTable<Thing, ReplaceFrame> framesByOldThing = new ConditionalWeakTable<Thing, ReplaceFrame>();
         private static readonly Dictionary<(BuildableDef, ThingDef), List<ThingDefCountClass>> costCache = new Dictionary<(BuildableDef, ThingDef), List<ThingDefCountClass>>();
 
@@ -182,7 +181,6 @@ namespace Yuudong2Mod
 
                 ThingDef frame = NewFrameDef(def, content);
                 frameDefs[def] = frame;
-                frameDefSet.Add(frame);
                 DefGenerator.AddImpliedDef(frame);
             }
         }
@@ -217,15 +215,19 @@ namespace Yuudong2Mod
                 entityDefToBuild = def,
                 modContentPack = content,
             };
+            // 게임은 암시적 Def의 이름 해시를 나중에 매긴다. 해시셋·사전에 넣거나 찾을 때 어긋나지 않게 바로 매긴다.
+            frame.ResolveDefNameHash();
             frame.comps.Add(new CompProperties_Forbiddable());
             frame.SetStatBaseValue(StatDefOf.MaxHitPoints, def.BaseMaxHitPoints * 0.25f);
             frame.SetStatBaseValue(StatDefOf.Beauty, -8f);
             return frame;
         }
 
+        // 수정: 예전에는 만든 프레임 Def를 해시셋에서 찾았는데, 넣을 때 Def 이름 해시가 아직 0이라 늘 못 찾았다.
+        // 그래서 교체 프레임과 원래 건물이 서로를 지우지 않는 판정(SpawningWipes)이 듣지 않아, 중력부양선이 내릴 때 둘 중 하나가 지워졌다.
         public static bool IsReplaceFrameDef(BuildableDef def)
         {
-            return def is ThingDef thingDef && frameDefSet.Contains(thingDef);
+            return def is ThingDef thingDef && thingDef.thingClass == typeof(ReplaceFrame);
         }
 
         // ---------- 교체 중 판정 ----------
