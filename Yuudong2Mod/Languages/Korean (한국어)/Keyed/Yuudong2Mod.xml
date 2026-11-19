@@ -300,7 +300,7 @@
   <Yuudong2.Feature.EggSacTargeting>알주머니 자동 공격</Yuudong2.Feature.EggSacTargeting>
   <Yuudong2.Feature.EggSacTargeting.Desc>적대 곤충이 던진 알주머니를 곤충 군락처럼 정착민과 포탑이 알아서 조준하고 공격합니다. 야생 여왕이나 정착지 여왕이 낳은 알주머니는 그대로 둡니다. (Odyssey)</Yuudong2.Feature.EggSacTargeting.Desc>
   <Yuudong2.Feature.BenchApparelRepair>재봉대 옷 수선</Yuudong2.Feature.BenchApparelRepair>
-  <Yuudong2.Feature.BenchApparelRepair.Desc>입은 옷의 내구도가 80% 밑으로 내려가면 정착민이 스스로 재봉대에 가서 수선합니다. 재료를 가져다 넣고, 옷을 벗어 맡기고, 재봉대에서 고친 뒤 다시 입습니다. 재료는 옷의 제작 비용(부품·고급 부품 제외)에 깎인 비율을 곱한 만큼 듭니다. 품질은 바뀌지 않습니다. 수동·전기 재봉대와 다른 모드의 재봉대 종류에서 됩니다.</Yuudong2.Feature.BenchApparelRepair.Desc>
+  <Yuudong2.Feature.BenchApparelRepair.Desc>입은 옷의 내구도가 80% 밑으로 내려가면 정착민이 스스로 재봉대에 가서 수선합니다. 재료를 가져다 넣고, 옷을 벗어 맡기고, 재봉대에서 고친 뒤 다시 입습니다. 재료는 옷의 제작 비용(부품·고급 부품 제외)에 깎인 비율을 곱한 만큼 듭니다. 품질은 바뀌지 않고, 수선하는 동안 제작 경험치를 얻습니다. 수동·전기 재봉대와 다른 모드의 재봉대 종류에서 됩니다.</Yuudong2.Feature.BenchApparelRepair.Desc>
   <Yuudong2.ApparelRepair.Eject>수선 내용물 꺼내기</Yuudong2.ApparelRepair.Eject>
   <Yuudong2.ApparelRepair.EjectDesc>재봉대에 맡긴 옷과 수선 재료를 모두 꺼냅니다. 수선 중이던 옷은 지금까지 진행한 만큼만 고쳐지고, 이미 쓴 재료는 돌려받지 못합니다.</Yuudong2.ApparelRepair.EjectDesc>
   <Yuudong2.ApparelRepair.Working>{0}의 옷 {1}벌 수선 중: {2}</Yuudong2.ApparelRepair.Working>

@@ -33,6 +33,9 @@ namespace Yuudong2Mod
         // 옷의 제작 작업량 × 깎인 비율을 틱당 이만큼 줄인다.
         public const float WorkPerTick = 2f;
 
+        // 수선하는 틱마다 얻는 제작 경험치. 바닐라 작업대 제작과 같다.
+        public const float CraftingXpPerTick = 0.1f;
+
         private const float MinApparelRecipeShare = 0.75f;
 
         public static readonly List<ThingDef> BenchDefs = new List<ThingDef>();
@@ -491,13 +494,14 @@ namespace Yuudong2Mod
             return true;
         }
 
-        // 정착민이 재봉대 앞에서 일한 만큼 진행한다. 전력이 끊긴 전기 재봉대는 멈춘다.
-        public void DoWork(int ticks)
+        // 정착민이 재봉대 앞에서 일한 만큼 진행하고 제작 경험치를 준다. 전력이 끊긴 전기 재봉대는 멈춘다.
+        public void DoWork(int ticks, Pawn worker = null)
         {
             if (state != ApparelRepairState.Working || !Usable)
             {
                 return;
             }
+            worker?.skills?.Learn(SkillDefOf.Crafting, ApparelRepairUtility.CraftingXpPerTick * ticks);
             DelayApparelOptimize();
             workLeft -= ticks * ApparelRepairUtility.WorkPerTick;
             if (workLeft <= 0f)
@@ -955,7 +959,7 @@ namespace Yuudong2Mod
                 CompApparelRepair comp = Comp;
                 pawn.rotationTracker.FaceTarget(job.GetTarget(BenchInd));
                 pawn.GainComfortFromCellIfPossible(delta, chairsOnly: true);
-                comp.DoWork(delta);
+                comp.DoWork(delta, pawn);
                 if (comp.State == ApparelRepairState.Done)
                 {
                     ReadyForNextToil();

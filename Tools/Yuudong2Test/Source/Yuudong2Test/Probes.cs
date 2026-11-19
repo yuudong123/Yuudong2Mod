@@ -312,11 +312,13 @@ namespace Yuudong2Test
             }
 
             CompApparelRepair anyBench = null;
+            Thing tempBench = null;
             Pawn pawn = null;
             Apparel target = null;
             foreach (Pawn candidate in Colonists)
             {
-                if (!candidate.Spawned || candidate.Downed || candidate.apparel == null)
+                // 이미 재봉대에 옷을 맡긴 정착민은 그 재봉대로 돌아가는 잡을 받으므로 고르지 않는다.
+                if (!candidate.Spawned || candidate.Downed || candidate.apparel == null || ApparelRepairUtility.BenchHolding(candidate) != null)
                 {
                     continue;
                 }
@@ -326,6 +328,20 @@ namespace Yuudong2Test
                     .FirstOrDefault(c => c != null && c.State == ApparelRepairState.Idle && c.GetDirectlyHeldThings().Count == 0);
                 Apparel worn = candidate.apparel.WornApparel.FirstOrDefault(a => a.def.useHitPoints && a.MaxHitPoints >= 10 && !candidate.apparel.IsLocked(a)
                     && a.def.CostListAdjusted(a.Stuff, false).Any(c => c.thingDef != null && c.count > 0 && !ApparelRepairUtility.IsExcludedMaterial(c.thingDef)));
+                // 재봉대가 모두 쓰이는 중이면 임시 수동 재봉대를 놓고 돌린다.
+                ThingDef handDef = DefDatabase<ThingDef>.GetNamedSilentFail("HandTailoringBench");
+                if (bench == null && worn != null && handDef != null)
+                {
+                    Map benchMap = candidate.Map;
+                    if (CellFinder.TryFindRandomCellNear(candidate.Position, benchMap, 40, c => GenAdj.OccupiedRect(c, Rot4.North, handDef.size).ExpandedBy(1).Cells
+                        .All(x => x.InBounds(benchMap) && x.Standable(benchMap) && x.GetEdifice(benchMap) == null), out IntVec3 benchSpot))
+                    {
+                        tempBench = GenSpawn.Spawn(ThingMaker.MakeThing(handDef, GenStuff.DefaultStuffFor(handDef)), benchSpot, benchMap, Rot4.North);
+                        tempBench.SetFaction(Faction.OfPlayer);
+                        bench = tempBench.TryGetComp<CompApparelRepair>();
+                        sb.AppendLine($"info: all benches busy, temporary HandTailoringBench placed at {benchSpot}");
+                    }
+                }
                 if (bench != null && worn != null)
                 {
                     anyBench = bench;
@@ -401,8 +417,16 @@ namespace Yuudong2Test
             Check(started && comp.State == ApparelRepairState.Working && !pawn.apparel.WornApparel.Contains(target) && comp.GetDirectlyHeldThings().Contains(target)
                 && ApparelRepairUtility.BenchHolding(pawn) == comp, $"apparel handed over, bench holds {comp.GetDirectlyHeldThings().Count} things, usable={comp.Usable}");
 
-            comp.DoWork(1);
+            SkillRecord crafting = pawn.skills?.GetSkill(SkillDefOf.Crafting);
+            int levelBefore = crafting?.Level ?? 0;
+            float xpBefore = crafting?.xpSinceLastLevel ?? 0f;
+            comp.DoWork(100, pawn);
             bool partial = comp.State == ApparelRepairState.Working || !comp.Usable;
+            if (crafting != null && !crafting.TotallyDisabled && comp.Usable)
+            {
+                Check(crafting.Level > levelBefore || crafting.xpSinceLastLevel > xpBefore,
+                    $"crafting xp gained in 100 ticks of repair: level {levelBefore} -> {crafting.Level}, xp in level {xpBefore:F1} -> {crafting.xpSinceLastLevel:F1}");
+            }
             comp.DoWork(10000000);
             if (!comp.Usable)
             {
@@ -417,6 +441,10 @@ namespace Yuudong2Test
             foreach (Thing stack in materials.Where(m => !m.Destroyed))
             {
                 stack.Destroy();
+            }
+            if (tempBench != null && !tempBench.Destroyed)
+            {
+                tempBench.Destroy();
             }
 
             sb.AppendLine(bad == 0 ? "PASS" : $"FAIL: {bad}");
