@@ -1,0 +1,874 @@
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using System.Reflection.Emit;
+using System.Text;
+using HarmonyLib;
+using RimWorld;
+using RimWorld.Planet;
+using UnityEngine;
+using Verse;
+
+namespace Yuudong2Mod
+{
+    [DefOf]
+    public static class FactionWarDefOf
+    {
+        public static WorldObjectDef Yuudong2_WarArmy;
+
+        static FactionWarDefOf()
+        {
+            DefOfHelper.EnsureInitializedInCtor(typeof(FactionWarDefOf));
+        }
+    }
+
+    public static class FactionWarUtility
+    {
+        public static bool Active => Yuudong2Mod.AppliedFeatures.Contains(Features.FactionWar);
+
+        public static WorldComponent_FactionWar Comp => Find.World?.GetComponent<WorldComponent_FactionWar>();
+
+        // 전쟁에 끼는 세력: 정착지를 가질 수 있는 사람 세력. 숨은 세력(기계, 곤충)과 퀘스트용 임시 세력은 뺀다.
+        public static bool IsWarFaction(Faction faction)
+        {
+            return faction != null && !faction.IsPlayer && !faction.Hidden && !faction.temporary && !faction.defeated && !faction.deactivated
+                && faction.def.humanlikeFaction;
+        }
+
+        public static float TechFactor(Faction faction)
+        {
+            return 0.6f + 0.2f * Mathf.Clamp((int)faction.def.techLevel, 1, 7);
+        }
+
+        public static bool OnSurface(WorldObject worldObject)
+        {
+            return worldObject.Tile.Valid && worldObject.Tile.Layer.IsRootSurface;
+        }
+
+        public static void DrawSettings(Rect rect, Yuudong2Settings s)
+        {
+            Listing_Standard listing = new Listing_Standard();
+            listing.Begin(rect);
+            listing.Label("Yuudong2.FactionWar.Intensity".Translate(s.factionWarIntensity.ToString("0.##")), -1f, "Yuudong2.FactionWar.Intensity.Desc".Translate());
+            s.factionWarIntensity = Mathf.Round(listing.Slider(s.factionWarIntensity, 0.25f, 4f) * 4f) / 4f;
+            listing.Label("Yuudong2.FactionWar.MaxArmies".Translate(s.factionWarMaxArmies), -1f, "Yuudong2.FactionWar.MaxArmies.Desc".Translate());
+            s.factionWarMaxArmies = Mathf.RoundToInt(listing.Slider(s.factionWarMaxArmies, 1f, 20f));
+            listing.Label("Yuudong2.FactionWar.MaxFactions".Translate(s.factionWarMaxFactions), -1f, "Yuudong2.FactionWar.MaxFactions.Desc".Translate());
+            s.factionWarMaxFactions = Mathf.RoundToInt(listing.Slider(s.factionWarMaxFactions, 0f, 40f));
+            listing.Gap();
+            listing.CheckboxLabeled("Yuudong2.FactionWar.AttackPlayer".Translate(), ref s.factionWarAttackPlayer, "Yuudong2.FactionWar.AttackPlayer.Desc".Translate());
+            listing.CheckboxLabeled("Yuudong2.FactionWar.ReplaceRaids".Translate(), ref s.factionWarReplaceRaids, "Yuudong2.FactionWar.ReplaceRaids.Desc".Translate());
+            listing.End();
+        }
+    }
+
+    // 세계 지도 위를 걸어가는 군대. 경로는 출발할 때 한 번만 구하고, 일정 틱마다 다음 타일로 옮긴다.
+    public class WorldObject_WarArmy : WorldObject
+    {
+        public const int TicksPerTile = 3000;
+
+        // 목표 맵에 플레이어가 들어가 있으면 이 간격으로 다시 확인하며 기다린다.
+        public const int ArrivalRetryTicks = 2500;
+
+        public const int MaxWaitTicks = GenDate.TicksPerDay * 3;
+
+        public WorldObject target;
+
+        public List<PlanetTile> path = new List<PlanetTile>();
+
+        public int pathIndex;
+
+        public int ticksOnTile;
+
+        public int waitedTicks;
+
+        public float strength;
+
+        private Material cachedMat;
+
+        public bool AtDestination => path == null || pathIndex >= path.Count - 1;
+
+        public int TicksToArrival => AtDestination ? 0 : (path.Count - 1 - pathIndex) * TicksPerTile - ticksOnTile;
+
+        public override string Label => Faction != null ? "Yuudong2.FactionWar.ArmyLabel".Translate(Faction.Name) : base.Label;
+
+        public override Material Material
+        {
+            get
+            {
+                if (cachedMat == null)
+                {
+                    cachedMat = MaterialPool.MatFrom(def.texture, ShaderDatabase.WorldOverlayTransparentLit, Faction?.Color ?? Color.white, 3600);
+                }
+                return cachedMat;
+            }
+        }
+
+        public override Color ExpandingIconColor => Faction?.Color ?? Color.white;
+
+        public override Vector3 DrawPos
+        {
+            get
+            {
+                if (AtDestination)
+                {
+                    return base.DrawPos;
+                }
+                WorldGrid grid = Find.WorldGrid;
+                Vector3 from = grid.GetTileCenter(path[pathIndex]);
+                Vector3 to = grid.GetTileCenter(path[pathIndex + 1]);
+                return Tile.Layer.Origin + Vector3.Slerp(from, to, Mathf.Clamp01((float)ticksOnTile / TicksPerTile));
+            }
+        }
+
+        public override void ExposeData()
+        {
+            base.ExposeData();
+            Scribe_References.Look(ref target, "target");
+            Scribe_Collections.Look(ref path, "path", LookMode.Value);
+            Scribe_Values.Look(ref pathIndex, "pathIndex", 0);
+            Scribe_Values.Look(ref ticksOnTile, "ticksOnTile", 0);
+            Scribe_Values.Look(ref waitedTicks, "waitedTicks", 0);
+            Scribe_Values.Look(ref strength, "strength", 0f);
+            if (Scribe.mode == LoadSaveMode.PostLoadInit)
+            {
+                path ??= new List<PlanetTile>();
+            }
+        }
+
+        protected override void TickInterval(int delta)
+        {
+            base.TickInterval(delta);
+            WorldComponent_FactionWar comp = FactionWarUtility.Active ? FactionWarUtility.Comp : null;
+            if (comp == null)
+            {
+                Destroy();
+                return;
+            }
+
+            ticksOnTile += delta;
+            if (!AtDestination)
+            {
+                while (ticksOnTile >= TicksPerTile && !AtDestination)
+                {
+                    ticksOnTile -= TicksPerTile;
+                    pathIndex++;
+                    Tile = path[pathIndex];
+                }
+                if (AtDestination)
+                {
+                    ticksOnTile = 0;
+                    comp.ArmyArrived(this);
+                }
+                return;
+            }
+
+            if (ticksOnTile >= ArrivalRetryTicks)
+            {
+                waitedTicks += ticksOnTile;
+                ticksOnTile = 0;
+                comp.ArmyArrived(this);
+            }
+        }
+
+        public override string GetInspectString()
+        {
+            StringBuilder sb = new StringBuilder(base.GetInspectString());
+            if (sb.Length > 0)
+            {
+                sb.AppendLine();
+            }
+            sb.AppendLine("Yuudong2.FactionWar.ArmyStrength".Translate(Mathf.RoundToInt(strength)));
+            if (target != null && !target.Destroyed)
+            {
+                sb.AppendLine("Yuudong2.FactionWar.ArmyTarget".Translate(target.Label, target.Faction?.Name ?? "-"));
+                sb.Append(AtDestination
+                    ? "Yuudong2.FactionWar.ArmyWaiting".Translate()
+                    : "Yuudong2.FactionWar.ArmyArrival".Translate(TicksToArrival.ToStringTicksToPeriod()));
+            }
+            return sb.ToString().TrimEndNewlines();
+        }
+    }
+
+    // 세력 전쟁 전체를 하루에 한 번 계산한다. 틱마다 하는 일은 날짜가 바뀌었는지 보는 것뿐이다.
+    public class WorldComponent_FactionWar : WorldComponent
+    {
+        private const int CheckInterval = 2000;
+
+        private const float PowerPerSettlement = 100f;
+
+        private const float MaxPowerPerSettlement = 300f;
+
+        private const float DailyPowerPerSettlement = 8f;
+
+        private const float MinPowerToAttack = 120f;
+
+        private const float DailyAttackChance = 0.12f;
+
+        private const float MaxTargetDistance = 60f;
+
+        private const float DefenseBonus = 1.3f;
+
+        private const float MaxArmyShare = 0.5f;
+
+        private static readonly FloatRange ArmyGarrisonFactor = new FloatRange(1f, 2.5f);
+
+        private const float WarMtbDays = 12f;
+
+        private const float PeaceMtbDays = 25f;
+
+        private const float NewFactionMtbDays = 20f;
+
+        private const int MinDaysBetweenPlayerAttacks = 5;
+
+        private const int MaxRaidCredit = 3;
+
+        private const int MaxNewsLines = 30;
+
+        private Dictionary<Faction, float> power = new Dictionary<Faction, float>();
+
+        private Dictionary<Faction, int> lastSettlements = new Dictionary<Faction, int>();
+
+        private List<string> news = new List<string>();
+
+        private bool newsThreat;
+
+        private int lastDay = -1;
+
+        private int raidCredit;
+
+        private int lastPlayerAttackTick = -9999999;
+
+        private List<Faction> tmpFactionKeys;
+
+        private List<float> tmpPowerValues;
+
+        private List<Faction> tmpCountKeys;
+
+        private List<int> tmpCountValues;
+
+        private readonly List<GlobalTargetInfo> newsTargets = new List<GlobalTargetInfo>();
+
+        private static readonly AccessTools.FieldRef<Settlement, Material> settlementMaterial = AccessTools.FieldRefAccess<Settlement, Material>("cachedMat");
+
+        private static readonly List<PlanetTile> tmpNeighbors = new List<PlanetTile>();
+
+        public WorldComponent_FactionWar(World world) : base(world)
+        {
+        }
+
+        public int RaidCredit => raidCredit;
+
+        public IEnumerable<WorldObject_WarArmy> Armies => Find.WorldObjects.AllWorldObjects.OfType<WorldObject_WarArmy>();
+
+        public float PowerOf(Faction faction)
+        {
+            return power.TryGetValue(faction, out float value) ? value : 0f;
+        }
+
+        public override void ExposeData()
+        {
+            base.ExposeData();
+            Scribe_Collections.Look(ref power, "power", LookMode.Reference, LookMode.Value, ref tmpFactionKeys, ref tmpPowerValues);
+            Scribe_Collections.Look(ref lastSettlements, "lastSettlements", LookMode.Reference, LookMode.Value, ref tmpCountKeys, ref tmpCountValues);
+            Scribe_Collections.Look(ref news, "news", LookMode.Value);
+            Scribe_Values.Look(ref newsThreat, "newsThreat", false);
+            Scribe_Values.Look(ref lastDay, "lastDay", -1);
+            Scribe_Values.Look(ref raidCredit, "raidCredit", 0);
+            Scribe_Values.Look(ref lastPlayerAttackTick, "lastPlayerAttackTick", -9999999);
+            if (Scribe.mode == LoadSaveMode.PostLoadInit)
+            {
+                power ??= new Dictionary<Faction, float>();
+                lastSettlements ??= new Dictionary<Faction, int>();
+                news ??= new List<string>();
+                power.RemoveAll(pair => pair.Key == null);
+                lastSettlements.RemoveAll(pair => pair.Key == null);
+            }
+        }
+
+        public override void WorldComponentTick()
+        {
+            if (Find.TickManager.TicksGame % CheckInterval != 0 || !FactionWarUtility.Active)
+            {
+                return;
+            }
+            int day = Find.TickManager.TicksGame / GenDate.TicksPerDay;
+            if (day == lastDay)
+            {
+                return;
+            }
+            bool firstRun = lastDay < 0;
+            lastDay = day;
+            if (firstRun)
+            {
+                SyncFactions();
+                return;
+            }
+            DailyUpdate();
+        }
+
+        public void DailyUpdate()
+        {
+            Yuudong2Settings settings = Yuudong2Settings.Current;
+            float intensity = Mathf.Max(0.01f, settings.factionWarIntensity);
+            List<Faction> factions = SyncFactions();
+
+            foreach (Faction faction in factions)
+            {
+                int count = lastSettlements[faction];
+                float gain = DailyPowerPerSettlement * count * FactionWarUtility.TechFactor(faction);
+                power[faction] = Mathf.Min(power[faction] + gain, Mathf.Max(power[faction], MaxPowerPerSettlement * count * FactionWarUtility.TechFactor(faction)));
+            }
+
+            if (Rand.Chance(intensity / WarMtbDays))
+            {
+                TryDeclareWar(factions);
+            }
+            if (Rand.Chance(1f / PeaceMtbDays))
+            {
+                TryMakePeace(factions);
+            }
+            if (factions.Count < settings.factionWarMaxFactions && Rand.Chance(intensity / NewFactionMtbDays))
+            {
+                TryAddFaction();
+                factions = SyncFactions();
+            }
+
+            int armies = Armies.Count();
+            foreach (Faction faction in factions.InRandomOrder().ToList())
+            {
+                if (armies >= settings.factionWarMaxArmies)
+                {
+                    break;
+                }
+                if (power[faction] >= MinPowerToAttack && Rand.Chance(DailyAttackChance * intensity) && TryLaunchArmy(faction, null) != null)
+                {
+                    armies++;
+                }
+            }
+
+            FlushNews();
+        }
+
+        // 지금 전쟁에 끼는 세력을 정리하고, 처음 보는 세력에는 힘을 준다.
+        // 우리가 한 일이 아닌데 정착지가 줄었으면(플레이어가 부숨) 그 비율만큼 힘을 깎는다.
+        public List<Faction> SyncFactions()
+        {
+            Dictionary<Faction, int> counts = new Dictionary<Faction, int>();
+            List<Settlement> settlements = Find.WorldObjects.Settlements;
+            for (int i = 0; i < settlements.Count; i++)
+            {
+                Faction faction = settlements[i].Faction;
+                if (FactionWarUtility.IsWarFaction(faction) && FactionWarUtility.OnSurface(settlements[i]))
+                {
+                    counts.TryGetValue(faction, out int count);
+                    counts[faction] = count + 1;
+                }
+            }
+
+            foreach (KeyValuePair<Faction, int> pair in counts)
+            {
+                if (!power.ContainsKey(pair.Key))
+                {
+                    power[pair.Key] = PowerPerSettlement * pair.Value * FactionWarUtility.TechFactor(pair.Key);
+                }
+                else if (lastSettlements.TryGetValue(pair.Key, out int before) && pair.Value < before)
+                {
+                    power[pair.Key] *= (float)pair.Value / before;
+                }
+            }
+            foreach (Faction gone in power.Keys.Where(f => !counts.ContainsKey(f)).ToList())
+            {
+                power.Remove(gone);
+            }
+            lastSettlements = counts;
+            return counts.Keys.ToList();
+        }
+
+        private static List<Settlement> SettlementsOf(Faction faction)
+        {
+            return Find.WorldObjects.Settlements.Where(s => s.Faction == faction && FactionWarUtility.OnSurface(s)).ToList();
+        }
+
+        private static float ClosestDistance(Faction a, Faction b)
+        {
+            float best = float.MaxValue;
+            List<Settlement> mine = SettlementsOf(a);
+            List<Settlement> theirs = SettlementsOf(b);
+            for (int i = 0; i < mine.Count; i++)
+            {
+                for (int j = 0; j < theirs.Count; j++)
+                {
+                    best = Mathf.Min(best, Find.WorldGrid.ApproxDistanceInTiles(mine[i].Tile, theirs[j].Tile));
+                }
+            }
+            return best;
+        }
+
+        public bool TryDeclareWar(List<Faction> factions)
+        {
+            foreach (Faction a in factions.InRandomOrder())
+            {
+                foreach (Faction b in factions.InRandomOrder())
+                {
+                    if (a == b || a.HostileTo(b) || !a.CanChangeGoodwillFor(b, -1) || ClosestDistance(a, b) > MaxTargetDistance)
+                    {
+                        continue;
+                    }
+                    a.TryAffectGoodwillWith(b, -200, canSendMessage: false, canSendHostilityLetter: false);
+                    if (a.HostileTo(b))
+                    {
+                        AddNews("Yuudong2.FactionWar.News.War".Translate(a.Name, b.Name));
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+        public bool TryMakePeace(List<Faction> factions)
+        {
+            foreach (Faction a in factions.InRandomOrder())
+            {
+                foreach (Faction b in factions.InRandomOrder())
+                {
+                    if (a == b || !a.HostileTo(b) || !a.CanChangeGoodwillFor(b, 1))
+                    {
+                        continue;
+                    }
+                    a.TryAffectGoodwillWith(b, -a.BaseGoodwillWith(b), canSendMessage: false, canSendHostilityLetter: false);
+                    if (!a.HostileTo(b))
+                    {
+                        foreach (WorldObject_WarArmy army in Armies.Where(x => (x.Faction == a && x.target?.Faction == b) || (x.Faction == b && x.target?.Faction == a)).ToList())
+                        {
+                            Retreat(army);
+                        }
+                        AddNews("Yuudong2.FactionWar.News.Peace".Translate(a.Name, b.Name));
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+        // 새 세력: 세계 생성 화면에서 고를 수 있는 사람 세력 종류 중 하나를 정착지 두세 곳과 함께 만든다.
+        public Faction TryAddFaction()
+        {
+            PlanetLayer surface = Find.WorldGrid.Surface;
+            List<Faction> existing = Find.FactionManager.AllFactionsListForReading;
+            IEnumerable<FactionDef> defs = DefDatabase<FactionDef>.AllDefsListForReading.Where(d => !d.hidden && !d.isPlayer && d.humanlikeFaction
+                && d.maxConfigurableAtWorldCreation > 0 && d.displayInFactionSelection && d.settlementGenerationWeight > 0f
+                && (d.layerWhitelist.NullOrEmpty() || d.layerWhitelist.Contains(surface.Def)) && (d.layerBlacklist.NullOrEmpty() || !d.layerBlacklist.Contains(surface.Def))
+                && existing.Count(f => f.def == d && !f.defeated) < d.maxConfigurableAtWorldCreation
+                && (d.fixedName == null || !existing.Any(f => f.def == d)));
+            if (!defs.TryRandomElementByWeight(d => d.settlementGenerationWeight, out FactionDef def))
+            {
+                return null;
+            }
+
+            HashSet<Faction> before = new HashSet<Faction>(existing);
+            FactionGenerator.CreateFactionAndAddToManager(surface, def);
+            Faction faction = Find.FactionManager.AllFactionsListForReading.FirstOrDefault(f => !before.Contains(f));
+            if (faction == null)
+            {
+                return null;
+            }
+            Find.IdeoManager.SortIdeos();
+
+            Settlement first = Find.WorldObjects.Settlements.FirstOrDefault(s => s.Faction == faction);
+            if (first != null)
+            {
+                int extra = Rand.RangeInclusive(1, 2);
+                for (int i = 0; i < extra; i++)
+                {
+                    PlanetTile tile = FindTileNear(first.Tile);
+                    if (tile.Valid)
+                    {
+                        AddSettlement(faction, tile);
+                    }
+                }
+                newsTargets.Add(first);
+            }
+            AddNews("Yuudong2.FactionWar.News.NewFaction".Translate(faction.Name, def.LabelCap, first?.Label ?? "-", faction.HostileTo(Faction.OfPlayer)
+                ? "Yuudong2.FactionWar.Hostile".Translate() : "Yuudong2.FactionWar.NotHostile".Translate()), faction.HostileTo(Faction.OfPlayer));
+            return faction;
+        }
+
+        private static Settlement AddSettlement(Faction faction, PlanetTile tile)
+        {
+            Settlement settlement = (Settlement)WorldObjectMaker.MakeWorldObject(tile.LayerDef.SettlementWorldObjectDef);
+            settlement.SetFaction(faction);
+            settlement.Tile = tile;
+            settlement.Name = SettlementNameGenerator.GenerateSettlementName(settlement);
+            Find.WorldObjects.Add(settlement);
+            return settlement;
+        }
+
+        // 가까운 빈 정착지 자리: 이웃 타일을 몇 걸음 무작위로 걸어가 본다.
+        private static PlanetTile FindTileNear(PlanetTile origin)
+        {
+            for (int attempt = 0; attempt < 40; attempt++)
+            {
+                PlanetTile tile = origin;
+                int steps = Rand.RangeInclusive(4, 10);
+                for (int i = 0; i < steps; i++)
+                {
+                    tmpNeighbors.Clear();
+                    Find.WorldGrid.GetTileNeighbors(tile, tmpNeighbors);
+                    if (tmpNeighbors.Count == 0)
+                    {
+                        break;
+                    }
+                    tile = tmpNeighbors.RandomElement();
+                }
+                if (tile != origin && TileFinder.IsValidTileForNewSettlement(tile) && !Find.WorldObjects.AnyWorldObjectAt(tile)
+                    && Find.WorldReachability.CanReach(origin, tile))
+                {
+                    return tile;
+                }
+            }
+            return PlanetTile.Invalid;
+        }
+
+        private static bool ValidTarget(Faction attacker, Settlement settlement, bool allowPlayer)
+        {
+            Faction owner = settlement.Faction;
+            if (owner == null || owner == attacker || !FactionWarUtility.OnSurface(settlement) || !attacker.HostileTo(owner) || !settlement.questTags.NullOrEmpty())
+            {
+                return false;
+            }
+            if (owner.IsPlayer)
+            {
+                return allowPlayer && settlement.HasMap && settlement.Map.IsPlayerHome;
+            }
+            return FactionWarUtility.IsWarFaction(owner);
+        }
+
+        // 적대 세력의 가까운 정착지 하나를 골라 군대를 보낸다. forcedTarget은 검사용이다.
+        public WorldObject_WarArmy TryLaunchArmy(Faction faction, Settlement forcedTarget)
+        {
+            List<Settlement> own = SettlementsOf(faction);
+            if (own.Count == 0)
+            {
+                return null;
+            }
+
+            Yuudong2Settings settings = Yuudong2Settings.Current;
+            bool allowPlayer = settings.factionWarAttackPlayer
+                && Find.TickManager.TicksGame - lastPlayerAttackTick >= MinDaysBetweenPlayerAttacks * GenDate.TicksPerDay
+                && !Armies.Any(a => a.target?.Faction != null && a.target.Faction.IsPlayer);
+            HashSet<WorldObject> taken = new HashSet<WorldObject>(Armies.Select(a => a.target));
+
+            Settlement origin = null;
+            Settlement target = forcedTarget;
+            if (target == null)
+            {
+                origin = own.RandomElement();
+                List<Settlement> candidates = Find.WorldObjects.Settlements.Where(s => ValidTarget(faction, s, allowPlayer) && !taken.Contains(s)
+                    && Find.WorldGrid.ApproxDistanceInTiles(origin.Tile, s.Tile) <= MaxTargetDistance && Find.WorldReachability.CanReach(origin.Tile, s.Tile)).ToList();
+                if (!candidates.TryRandomElementByWeight(s => 1f / (5f + Find.WorldGrid.ApproxDistanceInTiles(origin.Tile, s.Tile)), out target))
+                {
+                    return null;
+                }
+            }
+            else
+            {
+                origin = own.MinBy(s => Find.WorldGrid.ApproxDistanceInTiles(s.Tile, target.Tile));
+                if (!Find.WorldReachability.CanReach(origin.Tile, target.Tile))
+                {
+                    return null;
+                }
+            }
+
+            List<PlanetTile> nodes;
+            using (WorldPath worldPath = origin.Tile.Layer.Pather.FindPath(origin.Tile, target.Tile, null))
+            {
+                if (!worldPath.Found)
+                {
+                    return null;
+                }
+                nodes = new List<PlanetTile>(worldPath.NodesReversed);
+                nodes.Reverse();
+            }
+
+            // 정착지 한 곳 몫의 한두 배를 보낸다. 세력 전체 힘의 절반은 넘지 않는다.
+            float committed = Mathf.Min(power[faction] * MaxArmyShare, power[faction] / own.Count * ArmyGarrisonFactor.RandomInRange);
+            power[faction] -= committed;
+
+            WorldObject_WarArmy army = (WorldObject_WarArmy)WorldObjectMaker.MakeWorldObject(FactionWarDefOf.Yuudong2_WarArmy);
+            army.SetFaction(faction);
+            army.Tile = origin.Tile;
+            army.target = target;
+            army.path = nodes;
+            army.strength = committed;
+            Find.WorldObjects.Add(army);
+
+            bool atPlayer = target.Faction.IsPlayer;
+            if (atPlayer)
+            {
+                lastPlayerAttackTick = Find.TickManager.TicksGame;
+            }
+            newsTargets.Add(army);
+            AddNews((atPlayer ? "Yuudong2.FactionWar.News.MarchPlayer" : "Yuudong2.FactionWar.News.March").Translate(
+                faction.Name, origin.Label, target.Label, target.Faction.Name, army.TicksToArrival.ToStringTicksToPeriod()), atPlayer);
+            return army;
+        }
+
+        private void Retreat(WorldObject_WarArmy army)
+        {
+            if (army.Faction != null && power.ContainsKey(army.Faction))
+            {
+                power[army.Faction] += army.strength;
+            }
+            if (!army.Destroyed)
+            {
+                army.Destroy();
+            }
+        }
+
+        public void ArmyArrived(WorldObject_WarArmy army)
+        {
+            Faction attacker = army.Faction;
+            WorldObject target = army.target;
+            Faction defender = target?.Faction;
+            if (attacker == null || attacker.defeated || target == null || target.Destroyed || defender == null || defender == attacker || !attacker.HostileTo(defender))
+            {
+                if (attacker != null)
+                {
+                    AddNews("Yuudong2.FactionWar.News.Retreat".Translate(attacker.Name));
+                }
+                Retreat(army);
+                return;
+            }
+
+            if (defender.IsPlayer)
+            {
+                RaidPlayer(army, attacker, target);
+                return;
+            }
+
+            Settlement settlement = target as Settlement;
+            if (settlement == null || !settlement.questTags.NullOrEmpty())
+            {
+                AddNews("Yuudong2.FactionWar.News.Retreat".Translate(attacker.Name));
+                Retreat(army);
+                return;
+            }
+            if (settlement.HasMap)
+            {
+                // 플레이어가 그 정착지 맵에 있으면 결과를 미룬다.
+                if (army.waitedTicks >= WorldObject_WarArmy.MaxWaitTicks)
+                {
+                    AddNews("Yuudong2.FactionWar.News.Retreat".Translate(attacker.Name));
+                    Retreat(army);
+                }
+                return;
+            }
+
+            ResolveBattle(army, attacker, defender, settlement);
+        }
+
+        private void RaidPlayer(WorldObject_WarArmy army, Faction attacker, WorldObject target)
+        {
+            Map map = (target as MapParent)?.Map;
+            bool raided = false;
+            if (map != null)
+            {
+                IncidentParms parms = StorytellerUtility.DefaultParmsNow(IncidentCategoryDefOf.ThreatBig, map);
+                parms.faction = attacker;
+                parms.forced = true;
+                raided = IncidentDefOf.RaidEnemy.Worker.TryExecute(parms);
+            }
+
+            if (raided)
+            {
+                lastPlayerAttackTick = Find.TickManager.TicksGame;
+                if (Yuudong2Settings.Current.factionWarReplaceRaids)
+                {
+                    raidCredit = Mathf.Min(raidCredit + 1, MaxRaidCredit);
+                }
+                AddNews("Yuudong2.FactionWar.News.RaidPlayer".Translate(attacker.Name, target.Label), true);
+                army.Destroy();
+            }
+            else
+            {
+                AddNews("Yuudong2.FactionWar.News.Retreat".Translate(attacker.Name));
+                Retreat(army);
+            }
+        }
+
+        private void ResolveBattle(WorldObject_WarArmy army, Faction attacker, Faction defender, Settlement settlement)
+        {
+            int defenderCount = Mathf.Max(1, SettlementsOf(defender).Count);
+            float garrison = PowerOf(defender) / defenderCount;
+            float defense = garrison * DefenseBonus + 30f;
+            bool win = Rand.Chance(army.strength / (army.strength + defense));
+            string place = settlement.Label;
+            newsTargets.Add(new GlobalTargetInfo(settlement.Tile));
+
+            if (!win)
+            {
+                if (power.ContainsKey(defender))
+                {
+                    power[defender] = Mathf.Max(0f, power[defender] - army.strength * 0.3f);
+                }
+                AddNews("Yuudong2.FactionWar.News.Repelled".Translate(defender.Name, place, attacker.Name));
+                army.Destroy();
+                return;
+            }
+
+            if (power.ContainsKey(defender))
+            {
+                power[defender] = Mathf.Max(0f, power[defender] - garrison);
+            }
+            bool raze = Rand.Chance(attacker.def.permanentEnemy ? 0.75f : 0.4f);
+            if (raze)
+            {
+                DestroyedSettlement ruins = (DestroyedSettlement)WorldObjectMaker.MakeWorldObject(settlement.Tile.LayerDef.DestroyedSettlementWorldObjectDef);
+                ruins.Tile = settlement.Tile;
+                ruins.SetFaction(defender);
+                Find.WorldObjects.Add(ruins);
+                settlement.Destroy();
+                if (power.ContainsKey(attacker))
+                {
+                    power[attacker] += army.strength * 0.7f;
+                }
+                AddNews("Yuudong2.FactionWar.News.Razed".Translate(attacker.Name, defender.Name, place));
+            }
+            else
+            {
+                settlement.SetFaction(attacker);
+                settlementMaterial(settlement) = null;
+                Find.World.renderer.Notify_StaticWorldObjectPosChanged();
+                if (power.ContainsKey(attacker))
+                {
+                    power[attacker] += army.strength * 0.5f;
+                }
+                AddNews("Yuudong2.FactionWar.News.Captured".Translate(attacker.Name, defender.Name, place));
+            }
+
+            if (defenderCount <= 1)
+            {
+                defender.defeated = true;
+                power.Remove(defender);
+                AddNews("Yuudong2.FactionWar.News.Defeated".Translate(defender.Name));
+            }
+            army.Destroy();
+            SyncFactions();
+        }
+
+        public bool TryConsumeRaidCredit()
+        {
+            if (raidCredit <= 0 || !Yuudong2Settings.Current.factionWarReplaceRaids)
+            {
+                return false;
+            }
+            raidCredit--;
+            return true;
+        }
+
+        private void AddNews(string line, bool threat = false)
+        {
+            if (news.Count < MaxNewsLines)
+            {
+                news.Add(line);
+            }
+            newsThreat |= threat;
+        }
+
+        // 하루치 소식을 편지 한 통으로 보낸다.
+        private void FlushNews()
+        {
+            if (news.Count == 0)
+            {
+                newsTargets.Clear();
+                newsThreat = false;
+                return;
+            }
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < news.Count; i++)
+            {
+                sb.AppendLine("- " + news[i]);
+            }
+            newsTargets.RemoveAll(t => !t.IsValid || (t.HasWorldObject && t.WorldObject.Destroyed));
+            Find.LetterStack.ReceiveLetter("Yuudong2.FactionWar.NewsLabel".Translate(), sb.ToString().TrimEndNewlines(),
+                newsThreat ? LetterDefOf.NegativeEvent : LetterDefOf.NeutralEvent, newsTargets.Count > 0 ? new LookTargets(newsTargets) : null);
+            news.Clear();
+            newsTargets.Clear();
+            newsThreat = false;
+        }
+    }
+
+    // 전쟁 군대가 내 정착지를 습격한 만큼 스토리텔러가 고른 적 습격을 건너뛴다. 퀘스트 습격은 건드리지 않는다.
+    [HarmonyPatchCategory(Features.FactionWar)]
+    [HarmonyPatch(typeof(Storyteller), nameof(Storyteller.TryFire))]
+    internal static class Storyteller_TryFire_FactionWar_Patch
+    {
+        private static bool Prefix(FiringIncident fi, ref bool __result)
+        {
+            if (fi?.def != IncidentDefOf.RaidEnemy || fi.source == null || fi.sourceQuestPart != null)
+            {
+                return true;
+            }
+            WorldComponent_FactionWar comp = FactionWarUtility.Comp;
+            if (comp == null || !comp.TryConsumeRaidCredit())
+            {
+                return true;
+            }
+            __result = false;
+            return false;
+        }
+    }
+
+    // 세계 생성 화면의 세력 수 제한(12)을 푼다. 제한은 "세력 추가" 버튼의 검사 함수 안에 숫자로 박혀 있다.
+    [HarmonyPatchCategory(Features.NoFactionLimit)]
+    [HarmonyPatch]
+    internal static class WorldFactionsUIUtility_NoFactionLimit_Patch
+    {
+        private const int VanillaLimit = 12;
+
+        private const int NewLimit = 9999;
+
+        private static IEnumerable<MethodBase> TargetMethods()
+        {
+            List<MethodBase> found = new List<MethodBase>();
+            List<System.Type> types = new List<System.Type> { typeof(WorldFactionsUIUtility) };
+            types.AddRange(typeof(WorldFactionsUIUtility).GetNestedTypes(AccessTools.all));
+            foreach (System.Type type in types)
+            {
+                foreach (MethodInfo method in AccessTools.GetDeclaredMethods(type))
+                {
+                    if (method.Name.Contains("CanAddFaction"))
+                    {
+                        found.Add(method);
+                    }
+                }
+            }
+            if (found.Count == 0)
+            {
+                Log.Error("[Yuudong2Mod] NoFactionLimit: could not find the faction count check in WorldFactionsUIUtility. The game code changed; update the patch target.");
+            }
+            return found;
+        }
+
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+        {
+            int replaced = 0;
+            foreach (CodeInstruction instruction in instructions)
+            {
+                if ((instruction.opcode == OpCodes.Ldc_I4_S && instruction.operand is sbyte small && small == VanillaLimit)
+                    || (instruction.opcode == OpCodes.Ldc_I4 && instruction.operand is int big && big == VanillaLimit))
+                {
+                    instruction.opcode = OpCodes.Ldc_I4;
+                    instruction.operand = NewLimit;
+                    replaced++;
+                }
+                yield return instruction;
+            }
+            if (replaced == 0)
+            {
+                Log.Error("[Yuudong2Mod] NoFactionLimit: the faction limit constant 12 was not found in the faction count check. The game code changed; update the patch.");
+            }
+        }
+    }
+}

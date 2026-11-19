@@ -28,6 +28,7 @@ namespace Yuudong2Test
             ("egg sac targeting", EggSacTargeting),
             ("bench apparel repair", BenchApparelRepair),
             ("enemy bases", EnemyBases),
+            ("faction war", FactionWar),
             // 맵을 바꾸므로 항상 마지막에 둔다.
             ("gravship replace stuff", GravshipReplace),
         };
@@ -447,6 +448,184 @@ namespace Yuudong2Test
                 tempBench.Destroy();
             }
 
+            sb.AppendLine(bad == 0 ? "PASS" : $"FAIL: {bad}");
+        }
+
+        // 세력 전쟁: 출병과 전투 결과, 새 세력, 내 정착지 습격과 스토리텔러 습격 건너뛰기, 하루 요약 편지를 직접 돌려 본다.
+        private static void FactionWar(StringBuilder sb)
+        {
+            if (!Yuudong2Mod.Yuudong2Mod.AppliedFeatures.Contains(Features.FactionWar))
+            {
+                sb.AppendLine("skipped: feature not applied");
+                return;
+            }
+
+            int bad = 0;
+            void Check(bool ok, string text)
+            {
+                bad += ok ? 0 : 1;
+                sb.AppendLine($"{(ok ? "ok  " : "FAIL")} {text}");
+            }
+
+            WorldComponent_FactionWar comp = FactionWarUtility.Comp;
+            Check(comp != null && FactionWarDefOf.Yuudong2_WarArmy != null, "world component and army def exist");
+            if (comp == null)
+            {
+                sb.AppendLine("FAIL: 1");
+                return;
+            }
+
+            int errorsBefore = TestRunner.TickErrors.Count;
+            List<Faction> factions = comp.SyncFactions();
+            int SettlementCount(Faction f) => Find.WorldObjects.Settlements.Count(x => x.Faction == f);
+            sb.AppendLine($"war factions ({factions.Count}): " + string.Join(", ", factions.OrderByDescending(comp.PowerOf)
+                .Select(f => $"{f.Name}[{f.def.defName}] power {comp.PowerOf(f):F0}, settlements {SettlementCount(f)}{(f.HostileTo(Faction.OfPlayer) ? ", hostile to player" : "")}")));
+            sb.AppendLine($"armies already on the map: {comp.Armies.Count()}");
+
+            bool declared = comp.TryDeclareWar(factions);
+            sb.AppendLine($"info: war declared between two non-hostile factions: {declared}");
+
+            int battles = 0;
+            foreach (Faction attacker in factions.OrderByDescending(comp.PowerOf).ToList())
+            {
+                if (battles >= 4)
+                {
+                    break;
+                }
+                Settlement target = Find.WorldObjects.Settlements.Where(x => x.Faction != null && x.Faction != attacker && FactionWarUtility.IsWarFaction(x.Faction)
+                    && attacker.HostileTo(x.Faction) && !x.HasMap && x.questTags.NullOrEmpty() && FactionWarUtility.OnSurface(x)).InRandomOrder().FirstOrDefault();
+                if (target == null || SettlementCount(attacker) == 0)
+                {
+                    continue;
+                }
+
+                Faction defender = target.Faction;
+                PlanetTile tile = target.Tile;
+                string place = target.Label;
+                float attackerPower = comp.PowerOf(attacker);
+                WorldObject_WarArmy army = comp.TryLaunchArmy(attacker, target);
+                if (army == null)
+                {
+                    sb.AppendLine($"info: {attacker.Name} cannot reach {place}");
+                    continue;
+                }
+
+                Check(army.Spawned && army.path.Count >= 2 && army.path[0] == army.Tile && army.path[army.path.Count - 1] == tile && army.strength > 0f
+                    && comp.PowerOf(attacker) < attackerPower, $"{attacker.Name} -> {place} ({defender.Name}): path {army.path.Count} tiles, strength {army.strength:F0}, arrives in {army.TicksToArrival / 60000f:F1} days");
+                if (battles == 0)
+                {
+                    // 첫 군대는 틱을 실제로 돌려 경로를 따라 걷게 한다.
+                    int pathTiles = army.path.Count;
+                    int calls = 0;
+                    int limit = pathTiles * WorldObject_WarArmy.TicksPerTile + 5000;
+                    bool movedMidway = false;
+                    while (!army.Destroyed && calls < limit)
+                    {
+                        army.DoTick();
+                        calls++;
+                        if (!movedMidway && army.pathIndex >= 1 && !army.AtDestination)
+                        {
+                            Vector3 pos = army.DrawPos;
+                            movedMidway = army.Tile == army.path[army.pathIndex] && !float.IsNaN(pos.x) && pos != Vector3.zero;
+                        }
+                    }
+                    Check(army.Destroyed && (movedMidway || pathTiles <= 2) && calls >= (pathTiles - 1) * WorldObject_WarArmy.TicksPerTile * 0.9f,
+                        $"army walked {pathTiles} tiles by ticking and arrived after {calls} ticks ({calls / 60000f:F1} days)");
+                }
+                else
+                {
+                    army.pathIndex = army.path.Count - 1;
+                    army.Tile = tile;
+                    comp.ArmyArrived(army);
+                }
+
+                string outcome = target.Destroyed && Find.WorldObjects.DestroyedSettlementAt(tile) != null ? "razed"
+                    : !target.Destroyed && target.Faction == attacker ? "captured"
+                    : !target.Destroyed && target.Faction == defender ? "repelled" : null;
+                Check(army.Destroyed && outcome != null, $"battle resolved: {outcome ?? "inconsistent state"}; {defender.Name} now has {SettlementCount(defender)} settlements, defeated={defender.defeated}");
+                battles++;
+            }
+            if (battles == 0)
+            {
+                sb.AppendLine("info: no hostile pair of factions within reach, battle check skipped");
+            }
+
+            int factionsBefore = Find.FactionManager.AllFactionsListForReading.Count;
+            Faction added = comp.TryAddFaction();
+            Check(added != null && Find.FactionManager.AllFactionsListForReading.Count == factionsBefore + 1 && SettlementCount(added) >= 1
+                && Find.FactionManager.AllFactionsListForReading.All(f => f == added || added.RelationWith(f, true) != null),
+                $"new faction: {added?.Name} [{added?.def.defName}], settlements {(added == null ? 0 : SettlementCount(added))}, hostile to player={added?.HostileTo(Faction.OfPlayer)}");
+
+            factions = comp.SyncFactions();
+            sb.AppendLine($"info: peace made between two hostile factions: {comp.TryMakePeace(factions)}");
+
+            Settlement home = Find.WorldObjects.Settlements.FirstOrDefault(x => x.Faction == Faction.OfPlayer && x.HasMap && x.Map.IsPlayerHome && FactionWarUtility.OnSurface(x));
+            WorldObject_WarArmy raidArmy = null;
+            if (home != null)
+            {
+                foreach (Faction enemy in factions.Where(f => f.HostileTo(Faction.OfPlayer) && comp.PowerOf(f) > 0f)
+                    .OrderBy(f => Find.WorldObjects.Settlements.Where(x => x.Faction == f).Min(x => Find.WorldGrid.ApproxDistanceInTiles(x.Tile, home.Tile))))
+                {
+                    raidArmy = comp.TryLaunchArmy(enemy, home);
+                    if (raidArmy != null)
+                    {
+                        break;
+                    }
+                }
+            }
+            if (raidArmy == null)
+            {
+                sb.AppendLine($"info: no hostile faction can reach a player settlement (home found={home != null}), raid check skipped");
+            }
+            else
+            {
+                Map map = home.Map;
+                Faction enemy = raidArmy.Faction;
+                HashSet<int> thingsBefore = new HashSet<int>(map.listerThings.AllThings.Select(t => t.thingIDNumber));
+                int creditBefore = comp.RaidCredit;
+                sb.AppendLine($"{enemy.Name} -> {home.Label}: path {raidArmy.path.Count} tiles, arrives in {raidArmy.TicksToArrival / 60000f:F1} days");
+                raidArmy.pathIndex = raidArmy.path.Count - 1;
+                raidArmy.Tile = home.Tile;
+                comp.ArmyArrived(raidArmy);
+
+                List<Thing> arrived = map.listerThings.AllThings.Where(t => !thingsBefore.Contains(t.thingIDNumber) && ((t is Pawn p && p.Faction == enemy) || t is Skyfaller)).ToList();
+                int expectedCredit = Yuudong2Settings.Current.factionWarReplaceRaids ? Mathf.Min(creditBefore + 1, 3) : creditBefore;
+                Check(raidArmy.Destroyed && arrived.Count > 0 && comp.RaidCredit == expectedCredit,
+                    $"raid on the player settlement: {arrived.Count(t => t is Pawn)} raiders spawned, {arrived.Count(t => t is Skyfaller)} incoming pods, raid credit {creditBefore} -> {comp.RaidCredit}");
+
+                if (comp.RaidCredit > 0)
+                {
+                    int credit = comp.RaidCredit;
+                    int thingsMid = map.listerThings.AllThings.Count;
+                    FiringIncident fi = new FiringIncident(IncidentDefOf.RaidEnemy, Find.Storyteller.storytellerComps.First(), StorytellerUtility.DefaultParmsNow(IncidentCategoryDefOf.ThreatBig, map));
+                    bool fired = Find.Storyteller.TryFire(fi);
+                    Check(!fired && comp.RaidCredit == credit - 1 && map.listerThings.AllThings.Count == thingsMid, $"storyteller raid skipped once: fired={fired}, raid credit {credit} -> {comp.RaidCredit}");
+                }
+
+                foreach (Thing thing in arrived.Where(t => !t.Destroyed))
+                {
+                    thing.Destroy();
+                }
+            }
+
+            int lettersBefore = Find.LetterStack.LettersListForReading.Count;
+            comp.DailyUpdate();
+            Letter last = Find.LetterStack.LettersListForReading.LastOrDefault();
+            Check(Find.LetterStack.LettersListForReading.Count > lettersBefore && last is ChoiceLetter, "daily summary letter sent");
+            if (last is ChoiceLetter summary)
+            {
+                sb.AppendLine($"--- {summary.Label}");
+                sb.AppendLine(summary.Text.ToString());
+                sb.AppendLine("---");
+            }
+            sb.AppendLine($"armies on the map after the daily update: {comp.Armies.Count()}");
+
+            List<string> errors = TestRunner.TickErrors.Skip(errorsBefore).ToList();
+            foreach (IGrouping<string, string> group in errors.GroupBy(m => m.Split('\n')[0]).Take(15))
+            {
+                sb.AppendLine($"error x{group.Count()}: {group.Key}");
+            }
+            bad += errors.Count;
             sb.AppendLine(bad == 0 ? "PASS" : $"FAIL: {bad}");
         }
 

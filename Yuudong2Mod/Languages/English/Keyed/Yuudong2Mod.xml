@@ -314,6 +314,39 @@
   <Yuudong2.Feature.EnemyBaseScaling.Desc>Defenders of other factions' settlements get the same points as a raid on your colony (threat scale included), and the base grows to match. Vanilla always uses 1150-1600 points.</Yuudong2.Feature.EnemyBaseScaling.Desc>
   <Yuudong2.Feature.RealRuinsBases>Player-made enemy bases (Real Ruins)</Yuudong2.Feature.RealRuinsBases>
   <Yuudong2.Feature.RealRuinsBases.Desc>With the Real Ruins mod active, other factions' settlements are built intact from real bases of other players that Real Ruins has downloaded. A base is picked at random from the larger half of the downloaded bases, among those worth about as much as your colony, and defenders are added separately. Falls back to vanilla generation when no base fits.</Yuudong2.Feature.RealRuinsBases.Desc>
+  <Yuudong2.Feature.FactionWar>Faction wars</Yuudong2.Feature.FactionWar>
+  <Yuudong2.Feature.FactionWar.Desc>Factions declare war and make peace, and send armies across the world map to capture or raze each other's settlements. New factions appear during the game. Armies of factions hostile to you also march on your settlements and raid them. News arrives once a day as a single summary letter. Everything is computed once a day.</Yuudong2.Feature.FactionWar.Desc>
+  <Yuudong2.Feature.NoFactionLimit>No faction count limit</Yuudong2.Feature.NoFactionLimit>
+  <Yuudong2.Feature.NoFactionLimit.Desc>Removes the limit of 12 factions when creating a world. Per-type maximums stay.</Yuudong2.Feature.NoFactionLimit.Desc>
+  <Yuudong2.FactionWar.Intensity>War frequency: x{0}</Yuudong2.FactionWar.Intensity>
+  <Yuudong2.FactionWar.Intensity.Desc>How often wars are declared, armies are sent and new factions appear.</Yuudong2.FactionWar.Intensity.Desc>
+  <Yuudong2.FactionWar.MaxArmies>Armies on the move: up to {0}</Yuudong2.FactionWar.MaxArmies>
+  <Yuudong2.FactionWar.MaxArmies.Desc>How many armies can be on the world map at once.</Yuudong2.FactionWar.MaxArmies.Desc>
+  <Yuudong2.FactionWar.MaxFactions>New factions appear below: {0} factions</Yuudong2.FactionWar.MaxFactions>
+  <Yuudong2.FactionWar.MaxFactions.Desc>New factions appear only while fewer living factions exist (hidden factions and the player not counted). 0 disables new factions.</Yuudong2.FactionWar.MaxFactions.Desc>
+  <Yuudong2.FactionWar.AttackPlayer>Hostile armies also attack my settlements</Yuudong2.FactionWar.AttackPlayer>
+  <Yuudong2.FactionWar.AttackPlayer.Desc>Armies of factions hostile to you can target your settlements. On arrival they become a raid of your current raid points. Non-hostile factions never come.</Yuudong2.FactionWar.AttackPlayer.Desc>
+  <Yuudong2.FactionWar.ReplaceRaids>War raids replace storyteller raids</Yuudong2.FactionWar.ReplaceRaids>
+  <Yuudong2.FactionWar.ReplaceRaids.Desc>Each time a war army raids your settlement, the next enemy raid chosen by the storyteller is skipped. When off, war raids are simply added. Quest raids are untouched.</Yuudong2.FactionWar.ReplaceRaids.Desc>
+  <Yuudong2.FactionWar.ArmyLabel>army of {0}</Yuudong2.FactionWar.ArmyLabel>
+  <Yuudong2.FactionWar.ArmyStrength>Strength: {0}</Yuudong2.FactionWar.ArmyStrength>
+  <Yuudong2.FactionWar.ArmyTarget>Target: {0} ({1})</Yuudong2.FactionWar.ArmyTarget>
+  <Yuudong2.FactionWar.ArmyArrival>Arrives in {0}</Yuudong2.FactionWar.ArmyArrival>
+  <Yuudong2.FactionWar.ArmyWaiting>Waiting outside the target</Yuudong2.FactionWar.ArmyWaiting>
+  <Yuudong2.FactionWar.Hostile>hostile to us</Yuudong2.FactionWar.Hostile>
+  <Yuudong2.FactionWar.NotHostile>not hostile to us</Yuudong2.FactionWar.NotHostile>
+  <Yuudong2.FactionWar.NewsLabel>Faction war news</Yuudong2.FactionWar.NewsLabel>
+  <Yuudong2.FactionWar.News.War>War broke out between {0} and {1}.</Yuudong2.FactionWar.News.War>
+  <Yuudong2.FactionWar.News.Peace>{0} and {1} made peace.</Yuudong2.FactionWar.News.Peace>
+  <Yuudong2.FactionWar.News.NewFaction>A new faction, {0} ({1}), appeared near {2}. ({3})</Yuudong2.FactionWar.News.NewFaction>
+  <Yuudong2.FactionWar.News.March>An army of {0} left {1} to attack {2} ({3}). Arrives in {4}.</Yuudong2.FactionWar.News.March>
+  <Yuudong2.FactionWar.News.MarchPlayer>An army of {0} left {1} to attack our settlement {2}! Arrives in {4}.</Yuudong2.FactionWar.News.MarchPlayer>
+  <Yuudong2.FactionWar.News.Retreat>An army of {0} lost its target and went home.</Yuudong2.FactionWar.News.Retreat>
+  <Yuudong2.FactionWar.News.RaidPlayer>The army of {0} reached {1} and raided it.</Yuudong2.FactionWar.News.RaidPlayer>
+  <Yuudong2.FactionWar.News.Repelled>{0} held {1} against the army of {2}.</Yuudong2.FactionWar.News.Repelled>
+  <Yuudong2.FactionWar.News.Razed>{0} razed {2}, a settlement of {1}.</Yuudong2.FactionWar.News.Razed>
+  <Yuudong2.FactionWar.News.Captured>{0} captured {2}, a settlement of {1}.</Yuudong2.FactionWar.News.Captured>
+  <Yuudong2.FactionWar.News.Defeated>{0} lost its last settlement and was destroyed.</Yuudong2.FactionWar.News.Defeated>
   <Yuudong2.Feature.RpgLevelUp>RPG level up</Yuudong2.Feature.RpgLevelUp>
   <Yuudong2.Feature.RpgLevelUp.Desc>Pawns level up from skill XP and kills and spend points on six attributes that boost many stats. Manage them in the Level tab; hover an attribute to see its effects and limits. Existing save data carries over. (RPG Style Level Up Mod)</Yuudong2.Feature.RpgLevelUp.Desc>
   <Yuudong2.Feature.BirthAgeByLifespan>Scale mother's age at birth by lifespan</Yuudong2.Feature.BirthAgeByLifespan>

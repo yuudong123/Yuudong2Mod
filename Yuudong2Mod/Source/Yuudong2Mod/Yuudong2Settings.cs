@@ -62,6 +62,8 @@ namespace Yuudong2Mod
         public const string BenchApparelRepair = "BenchApparelRepair";
         public const string EnemyBaseScaling = "EnemyBaseScaling";
         public const string RealRuinsBases = "RealRuinsBases";
+        public const string FactionWar = "FactionWar";
+        public const string NoFactionLimit = "NoFactionLimit";
         public const string RealisticRooms = "RealisticRooms";
         public const string BetterWorkbench = "BetterWorkbench";
         public const string GeneRipper = "GeneRipper";
@@ -100,7 +102,7 @@ namespace Yuudong2Mod
             new FeatureGroup("Interface", MessagePlacement, HealthCardSorting, DamageIndicators, LetterStackCleaner, SmartSpeed, TpsDisplay, SaveHotkey, DragSelect, GeneAssistant, TechprintTradeHighlight),
             new FeatureGroup("Pawn", HairUnderHats, HiddenBionicEyes, EquipmentDurability, EndlessGrowth, NoGrowthNickname, RpgLevelUp, BirthAgeByLifespan, CalmMoveSpeed, BetterHearing, SleepLimits, ImplantsOnAddedParts),
             new FeatureGroup("Ideology", AllSpecialistsCanWork, RolesUntiedToMemes, NoIdeologyLimits, AutoCastSpecialistCommands, FasterBiosculpter),
-            new FeatureGroup("Trade", CaravanArrivalSpot, TradeShipDropSpot, MapWideTradeBeacon, TradeStockBoost, OrbitalTraderFrequency, InsultFaction, EmpireGoodwillFix, EnemyBaseScaling, RealRuinsBases),
+            new FeatureGroup("Trade", CaravanArrivalSpot, TradeShipDropSpot, MapWideTradeBeacon, TradeStockBoost, OrbitalTraderFrequency, InsultFaction, EmpireGoodwillFix, EnemyBaseScaling, RealRuinsBases, FactionWar, NoFactionLimit),
             new FeatureGroup("Performance", WorldPawnSleep, FastTickInterval, FastMoodThoughts, IdleMissingParts, PlantSwayPerFrame, IdleIceChecks, DoorReachabilityCache),
             new FeatureGroup("Compatibility", EpoeAiCore, DragonianGenes, DragonianHealing, DragonianMix, GloomyFurnitureFix, RatkinDrawScaleFix),
         };
@@ -109,7 +111,7 @@ namespace Yuudong2Mod
         public static readonly HashSet<string> WithDetails = new HashSet<string>
         {
             HairUnderHats, CustomMapSize, NoIdeologyLimits, RoomFood, MeatOptimization, DamageIndicators, LetterStackCleaner,
-            SmartSpeed, EndlessGrowth, AutoCastSpecialistCommands, RomanceTweaks, RpgLevelUp, GeneAssistant, RealisticRooms, BetterWorkbench, GeneRipper, TradeStockBoost,
+            SmartSpeed, EndlessGrowth, AutoCastSpecialistCommands, RomanceTweaks, RpgLevelUp, GeneAssistant, RealisticRooms, BetterWorkbench, GeneRipper, TradeStockBoost, FactionWar,
         };
 
         public static bool Enabled(string feature)
@@ -222,6 +224,12 @@ namespace Yuudong2Mod
         public float tradeStockCaravan = 8f;
         public float tradeStockSettlement = 8f;
         public float tradeStockVisitor = 1f;
+
+        public float factionWarIntensity = 1f;
+        public int factionWarMaxArmies = 8;
+        public int factionWarMaxFactions = 20;
+        public bool factionWarAttackPlayer = true;
+        public bool factionWarReplaceRaids = true;
 
         // 유전자 분쇄기 (Gene Ripper)
         public int geneRipperHours = 24;
@@ -338,6 +346,11 @@ namespace Yuudong2Mod
             Scribe_Values.Look(ref tradeStockCaravan, "tradeStockCaravan", 8f);
             Scribe_Values.Look(ref tradeStockSettlement, "tradeStockSettlement", 8f);
             Scribe_Values.Look(ref tradeStockVisitor, "tradeStockVisitor", 1f);
+            Scribe_Values.Look(ref factionWarIntensity, "factionWarIntensity", 1f);
+            Scribe_Values.Look(ref factionWarMaxArmies, "factionWarMaxArmies", 8);
+            Scribe_Values.Look(ref factionWarMaxFactions, "factionWarMaxFactions", 20);
+            Scribe_Values.Look(ref factionWarAttackPlayer, "factionWarAttackPlayer", true);
+            Scribe_Values.Look(ref factionWarReplaceRaids, "factionWarReplaceRaids", true);
 
             Scribe_Values.Look(ref geneRipperHours, "geneRipperHours", 24);
             Scribe_Values.Look(ref geneRipperBlendChance, "geneRipperBlendChance", 0.5f);
@@ -579,6 +592,9 @@ namespace Yuudong2Mod
                     break;
                 case Features.TradeStockBoost:
                     TradingStockUtility.DrawSettings(body, settings);
+                    break;
+                case Features.FactionWar:
+                    FactionWarUtility.DrawSettings(body, settings);
                     break;
             }
         }

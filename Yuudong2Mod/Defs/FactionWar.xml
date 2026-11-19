@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+
+  <!-- 세력 전쟁: 세계 지도 위를 걸어가는 군대(Source/FactionWar.cs). 그림은 바닐라 상단 아이콘에 세력 색을 입힌다. -->
+  <WorldObjectDef>
+    <defName>Yuudong2_WarArmy</defName>
+    <label>army</label>
+    <description>An army marching to attack an enemy settlement.</description>
+    <worldObjectClass>Yuudong2Mod.WorldObject_WarArmy</worldObjectClass>
+    <texture>World/WorldObjects/Caravan</texture>
+    <useDynamicDrawer>true</useDynamicDrawer>
+    <expandingIcon>true</expandingIcon>
+    <expandingIconTexture>World/WorldObjects/Expanding/Caravan</expandingIconTexture>
+    <expandingIconPriority>90</expandingIconPriority>
+    <expandMore>true</expandMore>
+  </WorldObjectDef>
+
+</Defs>

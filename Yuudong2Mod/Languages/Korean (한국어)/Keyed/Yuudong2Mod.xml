@@ -314,6 +314,39 @@
   <Yuudong2.Feature.EnemyBaseScaling.Desc>다른 세력 정착지의 방어 병력을 내 정착지에 오는 습격과 같은 포인트(난이도 위협 배율 포함)로 맞추고, 그만큼 기지도 넓힙니다. 바닐라는 내 수준과 상관없이 1150~1600 포인트로 고정입니다.</Yuudong2.Feature.EnemyBaseScaling.Desc>
   <Yuudong2.Feature.RealRuinsBases>남이 만든 기지 (Real Ruins)</Yuudong2.Feature.RealRuinsBases>
   <Yuudong2.Feature.RealRuinsBases.Desc>Real Ruins 모드가 켜져 있으면, 다른 세력 정착지를 Real Ruins가 받아 둔 다른 플레이어의 실제 기지로 망가뜨리지 않고 짓습니다. 받아 둔 기지 중 큰 쪽 절반에서, 가치가 내 정착지와 비슷한 것을 무작위로 고르고 방어 병력은 따로 넣습니다. 쓸 만한 기지가 없으면 바닐라 방식으로 짓습니다.</Yuudong2.Feature.RealRuinsBases.Desc>
+  <Yuudong2.Feature.FactionWar>세력 전쟁</Yuudong2.Feature.FactionWar>
+  <Yuudong2.Feature.FactionWar.Desc>세력끼리 전쟁을 선포하고 화해하며, 세계 지도 위로 군대를 보내 서로의 정착지를 점령하거나 파괴합니다. 게임 도중 새 세력이 나타납니다. 적대 세력의 군대는 내 정착지로도 와서 습격합니다. 소식은 하루에 한 번 편지 한 통으로 요약됩니다. 계산은 하루에 한 번만 합니다.</Yuudong2.Feature.FactionWar.Desc>
+  <Yuudong2.Feature.NoFactionLimit>세력 수 제한 해제</Yuudong2.Feature.NoFactionLimit>
+  <Yuudong2.Feature.NoFactionLimit.Desc>세계를 만들 때 고를 수 있는 세력 수 제한(12개)을 없앱니다. 세력 종류별 최대 개수는 그대로입니다.</Yuudong2.Feature.NoFactionLimit.Desc>
+  <Yuudong2.FactionWar.Intensity>전쟁 빈도: {0}배</Yuudong2.FactionWar.Intensity>
+  <Yuudong2.FactionWar.Intensity.Desc>전쟁 선포, 군대 출병, 새 세력 등장이 얼마나 자주 일어나는지 정합니다.</Yuudong2.FactionWar.Intensity.Desc>
+  <Yuudong2.FactionWar.MaxArmies>동시에 움직이는 군대: 최대 {0}</Yuudong2.FactionWar.MaxArmies>
+  <Yuudong2.FactionWar.MaxArmies.Desc>세계 지도에 동시에 있을 수 있는 군대 수입니다.</Yuudong2.FactionWar.MaxArmies.Desc>
+  <Yuudong2.FactionWar.MaxFactions>새 세력이 나타나는 한도: 세력 {0}개</Yuudong2.FactionWar.MaxFactions>
+  <Yuudong2.FactionWar.MaxFactions.Desc>살아 있는 세력(숨은 세력과 플레이어 제외)이 이 수보다 적을 때만 새 세력이 나타납니다. 0이면 나타나지 않습니다.</Yuudong2.FactionWar.MaxFactions.Desc>
+  <Yuudong2.FactionWar.AttackPlayer>적대 세력의 군대가 내 정착지도 공격</Yuudong2.FactionWar.AttackPlayer>
+  <Yuudong2.FactionWar.AttackPlayer.Desc>나와 적대인 세력의 군대가 내 정착지를 목표로 삼을 수 있습니다. 도착하면 지금 습격 포인트와 같은 규모의 습격이 됩니다. 적대가 아닌 세력은 오지 않습니다.</Yuudong2.FactionWar.AttackPlayer.Desc>
+  <Yuudong2.FactionWar.ReplaceRaids>전쟁 습격이 스토리텔러 습격을 대체</Yuudong2.FactionWar.ReplaceRaids>
+  <Yuudong2.FactionWar.ReplaceRaids.Desc>전쟁 군대가 내 정착지를 습격할 때마다 스토리텔러가 고른 다음 적 습격 한 번을 건너뜁니다. 끄면 전쟁 습격이 그대로 더해집니다. 퀘스트 습격은 건드리지 않습니다.</Yuudong2.FactionWar.ReplaceRaids.Desc>
+  <Yuudong2.FactionWar.ArmyLabel>{0}의 군대</Yuudong2.FactionWar.ArmyLabel>
+  <Yuudong2.FactionWar.ArmyStrength>병력: {0}</Yuudong2.FactionWar.ArmyStrength>
+  <Yuudong2.FactionWar.ArmyTarget>목표: {0} ({1})</Yuudong2.FactionWar.ArmyTarget>
+  <Yuudong2.FactionWar.ArmyArrival>도착까지 {0}</Yuudong2.FactionWar.ArmyArrival>
+  <Yuudong2.FactionWar.ArmyWaiting>목표 앞에서 대기 중</Yuudong2.FactionWar.ArmyWaiting>
+  <Yuudong2.FactionWar.Hostile>우리와 적대</Yuudong2.FactionWar.Hostile>
+  <Yuudong2.FactionWar.NotHostile>우리와 적대 아님</Yuudong2.FactionWar.NotHostile>
+  <Yuudong2.FactionWar.NewsLabel>세력 전쟁 소식</Yuudong2.FactionWar.NewsLabel>
+  <Yuudong2.FactionWar.News.War>{0}(와)과 {1} 사이에 전쟁이 일어났습니다.</Yuudong2.FactionWar.News.War>
+  <Yuudong2.FactionWar.News.Peace>{0}(와)과 {1}(이)가 화해했습니다.</Yuudong2.FactionWar.News.Peace>
+  <Yuudong2.FactionWar.News.NewFaction>새 세력 {0}(이)가 {2} 근처에 나타났습니다. (종류: {1}, {3})</Yuudong2.FactionWar.News.NewFaction>
+  <Yuudong2.FactionWar.News.March>{0}의 군대가 {1}에서 {3}의 정착지 {2}(을)를 치러 출발했습니다. 도착까지 {4}.</Yuudong2.FactionWar.News.March>
+  <Yuudong2.FactionWar.News.MarchPlayer>{0}의 군대가 {1}에서 우리 정착지 {2}(을)를 치러 출발했습니다! 도착까지 {4}.</Yuudong2.FactionWar.News.MarchPlayer>
+  <Yuudong2.FactionWar.News.Retreat>{0}의 군대가 목표를 잃고 돌아갔습니다.</Yuudong2.FactionWar.News.Retreat>
+  <Yuudong2.FactionWar.News.RaidPlayer>{0}의 군대가 {1}에 도착해 습격했습니다.</Yuudong2.FactionWar.News.RaidPlayer>
+  <Yuudong2.FactionWar.News.Repelled>{0}(이)가 {1}에서 {2}의 군대를 막아냈습니다.</Yuudong2.FactionWar.News.Repelled>
+  <Yuudong2.FactionWar.News.Razed>{0}(이)가 {1}의 정착지 {2}(을)를 파괴했습니다.</Yuudong2.FactionWar.News.Razed>
+  <Yuudong2.FactionWar.News.Captured>{0}(이)가 {1}의 정착지 {2}(을)를 점령했습니다.</Yuudong2.FactionWar.News.Captured>
+  <Yuudong2.FactionWar.News.Defeated>{0}(이)가 마지막 정착지를 잃고 멸망했습니다.</Yuudong2.FactionWar.News.Defeated>
   <Yuudong2.Feature.RpgLevelUp>RPG 레벨업</Yuudong2.Feature.RpgLevelUp>
   <Yuudong2.Feature.RpgLevelUp.Desc>폰이 스킬 경험치와 적 처치로 레벨을 올리고, 레벨업 포인트를 힘·재주·민첩·체력·지능·매력에 나눠 여러 스탯을 올립니다. 화면 위 '레벨' 탭과 폰 정보의 '레벨' 탭에서 관리하며, 각 능력치에 마우스를 올리면 효과와 한계가 나옵니다. 기존 저장 파일의 레벨은 그대로 이어집니다. (RPG Style Level Up Mod)</Yuudong2.Feature.RpgLevelUp.Desc>
   <Yuudong2.Feature.BirthAgeByLifespan>출산 산모 나이를 수명에 맞추기</Yuudong2.Feature.BirthAgeByLifespan>
