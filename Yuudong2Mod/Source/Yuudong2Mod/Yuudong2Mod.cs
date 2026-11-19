@@ -42,6 +42,7 @@ namespace Yuudong2Mod
             WhenEnabled(Features.GloomyFurnitureFix, GloomyWorkbenchSync.Apply);
             WhenEnabled(Features.MapWideTradeBeacon, MapWideTradeBeacon.ApplyDefChanges);
             WhenEnabled(Features.EquipmentDurability, EquipmentDurabilityUtility.ApplyDefPatches);
+            WhenEnabled(Features.BenchApparelRepair, ApparelRepairUtility.ApplyDefPatches);
 
             if (AppliedFeatures.Contains(Features.BetterWorkbench))
             {

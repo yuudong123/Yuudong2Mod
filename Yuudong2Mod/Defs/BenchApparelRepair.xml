@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+
+  <!-- 재봉대 옷 수선: 정착민이 스스로 하는 행동이라 작업 종류가 아니다(Source/BenchApparelRepair.cs). 진행 문구는 JobDriver가 단계별로 낸다. -->
+  <JobDef>
+    <defName>Yuudong2_RepairApparel</defName>
+    <driverClass>Yuudong2Mod.JobDriver_RepairApparel</driverClass>
+    <reportString>repairing apparel at TargetA.</reportString>
+    <casualInterruptible>false</casualInterruptible>
+    <suspendable>false</suspendable>
+  </JobDef>
+
+</Defs>

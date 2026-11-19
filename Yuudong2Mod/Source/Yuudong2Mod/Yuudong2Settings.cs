@@ -59,6 +59,7 @@ namespace Yuudong2Mod
         public const string RoofedScanning = "RoofedScanning";
         public const string NoFloorInfestation = "NoFloorInfestation";
         public const string EggSacTargeting = "EggSacTargeting";
+        public const string BenchApparelRepair = "BenchApparelRepair";
         public const string EnemyBaseScaling = "EnemyBaseScaling";
         public const string RealRuinsBases = "RealRuinsBases";
         public const string RealisticRooms = "RealisticRooms";
@@ -95,7 +96,7 @@ namespace Yuudong2Mod
         public static readonly FeatureGroup[] Groups =
         {
             new FeatureGroup("Romance", AlwaysAcceptProposal, NoBreakup, SameBedLovin, NoRandomRelations, RomanceTweaks, ConsensualIncest),
-            new FeatureGroup("Colony", ShelfNoSlowdown, ShelfAcceptAll, NoMapEdgeLimit, CustomMapSize, PowerOnDemand, ReplaceStuff, GloomyWallReplace, RoomFood, MeatOptimization, SinglePlantTexture, RoofedScanning, NoFloorInfestation, EggSacTargeting, RealisticRooms, BetterWorkbench, GeneRipper, MultiReinstall, MultiCopy, RebuildBills, InstalledPartsCount, WorkRouteOrder, SurgeryManager),
+            new FeatureGroup("Colony", ShelfNoSlowdown, ShelfAcceptAll, NoMapEdgeLimit, CustomMapSize, PowerOnDemand, ReplaceStuff, GloomyWallReplace, RoomFood, MeatOptimization, SinglePlantTexture, RoofedScanning, NoFloorInfestation, EggSacTargeting, BenchApparelRepair, RealisticRooms, BetterWorkbench, GeneRipper, MultiReinstall, MultiCopy, RebuildBills, InstalledPartsCount, WorkRouteOrder, SurgeryManager),
             new FeatureGroup("Interface", MessagePlacement, HealthCardSorting, DamageIndicators, LetterStackCleaner, SmartSpeed, TpsDisplay, SaveHotkey, DragSelect, GeneAssistant, TechprintTradeHighlight),
             new FeatureGroup("Pawn", HairUnderHats, HiddenBionicEyes, EquipmentDurability, EndlessGrowth, NoGrowthNickname, RpgLevelUp, BirthAgeByLifespan, CalmMoveSpeed, BetterHearing, SleepLimits, ImplantsOnAddedParts),
             new FeatureGroup("Ideology", AllSpecialistsCanWork, RolesUntiedToMemes, NoIdeologyLimits, AutoCastSpecialistCommands, FasterBiosculpter),

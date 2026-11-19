@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Patch>
+
+  <!-- 재봉대 옷 수선: 정착민의 욕구 우선순위 정렬 노드에 넣는다(Source/BenchApparelRepair.cs). 재봉대에 붙는 컴프는 코드가 재봉대 종류를 골라 붙인다. -->
+  <Operation Class="Yuudong2Mod.PatchOperationFeature">
+    <feature>BenchApparelRepair</feature>
+    <enabled Class="PatchOperationInsert">
+      <xpath>/Defs/ThinkTreeDef[defName="MainColonistBehaviorCore"]/thinkRoot/subNodes/li[@Class="ThinkNode_PrioritySorter"]/subNodes/li[@Class="JobGiver_Work"]</xpath>
+      <order>Prepend</order>
+      <value>
+        <li Class="Yuudong2Mod.JobGiver_RepairApparel" />
+      </value>
+    </enabled>
+  </Operation>
+
+</Patch>

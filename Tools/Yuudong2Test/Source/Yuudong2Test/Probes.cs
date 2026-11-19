@@ -6,7 +6,9 @@ using System.Text;
 using HarmonyLib;
 using RimWorld;
 using RimWorld.Planet;
+using UnityEngine;
 using Verse;
+using Verse.AI;
 using Yuudong2Mod;
 using Yuudong2Mod.SurgeryManager;
 
@@ -24,6 +26,7 @@ namespace Yuudong2Test
             ("roofed scanning", RoofedScanning),
             ("no floor infestation", FloorInfestation),
             ("egg sac targeting", EggSacTargeting),
+            ("bench apparel repair", BenchApparelRepair),
             ("enemy bases", EnemyBases),
             // 맵을 바꾸므로 항상 마지막에 둔다.
             ("gravship replace stuff", GravshipReplace),
@@ -255,6 +258,165 @@ namespace Yuudong2Test
                 bad += ok ? 0 : 1;
                 sb.AppendLine($"{(ok ? "ok  " : "FAIL")} faction={faction?.Name ?? "none"}: hostile target for colony={targeted}");
                 sac.DeSpawn();
+            }
+
+            sb.AppendLine(bad == 0 ? "PASS" : $"FAIL: {bad}");
+        }
+
+        // 재봉대 종류에 컴프가 붙었는지 보고, 정착민 한 명의 옷을 깎아 잡 발급부터 맡기기, 수선, 다시 입기까지 돌려 본다.
+        private static void BenchApparelRepair(StringBuilder sb)
+        {
+            if (!Yuudong2Mod.Yuudong2Mod.AppliedFeatures.Contains(Features.BenchApparelRepair))
+            {
+                sb.AppendLine("skipped: feature not applied");
+                return;
+            }
+
+            int bad = 0;
+            void Check(bool ok, string text)
+            {
+                bad += ok ? 0 : 1;
+                sb.AppendLine($"{(ok ? "ok  " : "FAIL")} {text}");
+            }
+
+            List<ThingDef> benchDefs = ApparelRepairUtility.BenchDefs;
+            sb.AppendLine($"bench defs ({benchDefs.Count}): {string.Join(", ", benchDefs.Select(d => d.defName))}");
+            foreach (string name in new[] { "HandTailoringBench", "ElectricTailoringBench" })
+            {
+                ThingDef def = DefDatabase<ThingDef>.GetNamedSilentFail(name);
+                Check(def != null && benchDefs.Contains(def) && def.HasComp(typeof(CompApparelRepair)), $"{name} has the repair comp");
+            }
+            foreach (string name in new[] { "CraftingSpot", "FueledSmithy", "ElectricSmithy", "TableMachining", "FabricationBench", "TableButcher", "TableStonecutter" })
+            {
+                ThingDef def = DefDatabase<ThingDef>.GetNamedSilentFail(name);
+                Check(def != null && !benchDefs.Contains(def), $"{name} is not a tailoring bench");
+            }
+
+            ThinkTreeDef tree = DefDatabase<ThinkTreeDef>.GetNamedSilentFail("MainColonistBehaviorCore");
+            Check(tree != null && tree.thinkRoot.ThisAndChildrenRecursive.Any(n => n is JobGiver_RepairApparel), "job giver is in MainColonistBehaviorCore");
+            Check(ApparelRepairDefOf.Yuudong2_RepairApparel != null, "job def exists");
+
+            // 테스트 틱 동안 정착민이 스스로 쓰고 있던 재봉대는 여기서 상태가 보인다.
+            foreach (Map m in Find.Maps.Where(x => x.IsPlayerHome))
+            {
+                foreach (Thing bench in benchDefs.SelectMany(d => m.listerThings.ThingsOfDef(d)))
+                {
+                    CompApparelRepair c = bench.TryGetComp<CompApparelRepair>();
+                    Pawn worker = m.mapPawns.FreeColonistsSpawned.FirstOrDefault(x => x.CurJobDef == ApparelRepairDefOf.Yuudong2_RepairApparel && x.CurJob.targetA.Thing == bench);
+                    sb.AppendLine($"{m}: {bench.def.defName} state={c?.State.ToString() ?? "no comp"} user={c?.User?.LabelShort ?? "none"} progress={c?.Progress.ToStringPercent()} holds={c?.GetDirectlyHeldThings().ContentsString}; at work: {(worker == null ? "nobody" : worker.LabelShort + " (" + worker.jobs.curDriver.GetReport() + ")")}");
+                    if (c != null && worker == null && c.State == ApparelRepairState.Idle && c.GetDirectlyHeldThings().Count > 0)
+                    {
+                        Check(false, "materials left in an idle bench that nobody is using");
+                    }
+                }
+            }
+
+            CompApparelRepair anyBench = null;
+            Pawn pawn = null;
+            Apparel target = null;
+            foreach (Pawn candidate in Colonists)
+            {
+                if (!candidate.Spawned || candidate.Downed || candidate.apparel == null)
+                {
+                    continue;
+                }
+                CompApparelRepair bench = benchDefs.SelectMany(d => candidate.Map.listerThings.ThingsOfDef(d))
+                    .Where(t => t.Faction == Faction.OfPlayer)
+                    .Select(t => t.TryGetComp<CompApparelRepair>())
+                    .FirstOrDefault(c => c != null && c.State == ApparelRepairState.Idle && c.GetDirectlyHeldThings().Count == 0);
+                Apparel worn = candidate.apparel.WornApparel.FirstOrDefault(a => a.def.useHitPoints && a.MaxHitPoints >= 10 && !candidate.apparel.IsLocked(a)
+                    && a.def.CostListAdjusted(a.Stuff, false).Any(c => c.thingDef != null && c.count > 0 && !ApparelRepairUtility.IsExcludedMaterial(c.thingDef)));
+                if (bench != null && worn != null)
+                {
+                    anyBench = bench;
+                    pawn = candidate;
+                    target = worn;
+                    break;
+                }
+            }
+            if (pawn == null)
+            {
+                foreach (Map m in Find.Maps.Where(x => x.IsPlayerHome))
+                {
+                    var tables = m.listerBuildings.allBuildingsColonist.OfType<Building_WorkTable>().GroupBy(t => t.def)
+                        .Select(g => $"{g.Key.defName} x{g.Count()} (apparel recipes {g.Key.AllRecipes.Count(r => r.ProducedThingDef != null && r.ProducedThingDef.IsApparel)}/{g.Key.AllRecipes.Count(r => r.ProducedThingDef != null)})");
+                    sb.AppendLine($"{m}: work tables: {string.Join(", ", tables)}");
+                    int repairable = m.mapPawns.FreeColonistsSpawned.Count(c => c.apparel != null && c.apparel.WornApparel.Any(a => a.def.useHitPoints && !c.apparel.IsLocked(a)
+                        && a.def.CostListAdjusted(a.Stuff, false).Any(x => x.thingDef != null && x.count > 0 && !ApparelRepairUtility.IsExcludedMaterial(x.thingDef))));
+                    sb.AppendLine($"{m}: colonists {m.mapPawns.FreeColonistsSpawnedCount}, with repairable apparel {repairable}, worn apparel defs: {string.Join(", ", m.mapPawns.FreeColonistsSpawned.SelectMany(c => c.apparel.WornApparel).Select(a => a.def.defName).Distinct().Take(30))}");
+                }
+                sb.AppendLine("skipped run: no colonist with repairable apparel on a map with an idle tailoring bench");
+                sb.AppendLine(bad == 0 ? "PASS" : $"FAIL: {bad}");
+                return;
+            }
+
+            Map map = pawn.Map;
+            JobGiver_RepairApparel giver = new JobGiver_RepairApparel();
+            target.HitPoints = Mathf.Max(1, Mathf.FloorToInt(target.MaxHitPoints * 0.85f));
+            bool above = !ApparelRepairUtility.NeedsRepair(pawn, target);
+            target.HitPoints = Mathf.Max(1, target.MaxHitPoints / 2);
+            Check(above && ApparelRepairUtility.NeedsRepair(pawn, target), $"{pawn.LabelShort}: {target.LabelShort} is left alone at 85% and needs repair at 50%");
+            Check(giver.GetPriority(pawn) > 0f, "job giver priority is above zero");
+
+            Dictionary<ThingDef, int> need = new Dictionary<ThingDef, int>();
+            List<Apparel> plan = ApparelRepairUtility.PlanRepair(pawn, _ => int.MaxValue / 2, need);
+            Check(plan.Contains(target), $"plan has {plan.Count} apparel, materials: {string.Join(", ", need.Select(n => n.Key.defName + " x" + n.Value))}");
+
+            List<Thing> materials = new List<Thing>();
+            foreach (KeyValuePair<ThingDef, int> entry in need.ToList())
+            {
+                int left = entry.Value;
+                while (left > 0)
+                {
+                    Thing stack = ThingMaker.MakeThing(entry.Key);
+                    stack.stackCount = Mathf.Min(left, entry.Key.stackLimit);
+                    left -= stack.stackCount;
+                    if (GenPlace.TryPlaceThing(stack, pawn.Position, map, ThingPlaceMode.Near, out Thing placed))
+                    {
+                        materials.Add(placed);
+                    }
+                }
+            }
+
+            CompApparelRepair free = ApparelRepairUtility.FindFreeBench(pawn);
+            if (free == null)
+            {
+                sb.AppendLine("info: no bench the colonist can reserve and reach right now, job check skipped");
+            }
+            else
+            {
+                Job job = (Job)AccessTools.Method(typeof(JobGiver_RepairApparel), "TryGiveJob").Invoke(giver, new object[] { pawn });
+                Check(job != null && job.def == ApparelRepairDefOf.Yuudong2_RepairApparel && job.targetA.Thing == free.parent && !job.GetTargetQueue(TargetIndex.B).NullOrEmpty(),
+                    $"job issued for {free.parent.def.defName} with {job?.GetTargetQueue(TargetIndex.B)?.Count ?? 0} material stacks queued");
+            }
+
+            CompApparelRepair comp = free ?? anyBench;
+            foreach (Thing stack in materials.Where(m => m.Spawned).ToList())
+            {
+                stack.DeSpawn();
+                comp.GetDirectlyHeldThings().TryAdd(stack);
+            }
+
+            bool started = comp.TryStartRepair(pawn);
+            Check(started && comp.State == ApparelRepairState.Working && !pawn.apparel.WornApparel.Contains(target) && comp.GetDirectlyHeldThings().Contains(target)
+                && ApparelRepairUtility.BenchHolding(pawn) == comp, $"apparel handed over, bench holds {comp.GetDirectlyHeldThings().Count} things, usable={comp.Usable}");
+
+            comp.DoWork(1);
+            bool partial = comp.State == ApparelRepairState.Working || !comp.Usable;
+            comp.DoWork(10000000);
+            if (!comp.Usable)
+            {
+                comp.FinishRepair();
+            }
+            Check(partial && comp.State == ApparelRepairState.Done && target.HitPoints == target.MaxHitPoints, $"repair finished, hit points {target.HitPoints}/{target.MaxHitPoints}");
+
+            comp.RetrieveFor(pawn);
+            Check(comp.State == ApparelRepairState.Idle && comp.GetDirectlyHeldThings().Count == 0 && pawn.apparel.WornApparel.Contains(target)
+                && ApparelRepairUtility.BenchHolding(pawn) == null, "apparel worn again and bench empty");
+
+            foreach (Thing stack in materials.Where(m => !m.Destroyed))
+            {
+                stack.Destroy();
             }
 
             sb.AppendLine(bad == 0 ? "PASS" : $"FAIL: {bad}");
