@@ -91,6 +91,11 @@ namespace Yuudong2Mod
 
         public float strength;
 
+        // 출발할 때 자기 세력의 정착지 한 곳 몫에 견준 군대 크기. 내 전투에 합세할 때 병력 규모가 된다.
+        public float sizeFactor = DefaultSizeFactor;
+
+        private const float DefaultSizeFactor = 0.7f;
+
         private Material cachedMat;
 
         public bool AtDestination => path == null || pathIndex >= path.Count - 1;
@@ -137,6 +142,7 @@ namespace Yuudong2Mod
             Scribe_Values.Look(ref ticksOnTile, "ticksOnTile", 0);
             Scribe_Values.Look(ref waitedTicks, "waitedTicks", 0);
             Scribe_Values.Look(ref strength, "strength", 0f);
+            Scribe_Values.Look(ref sizeFactor, "sizeFactor", DefaultSizeFactor);
             if (Scribe.mode == LoadSaveMode.PostLoadInit)
             {
                 path ??= new List<PlanetTile>();
@@ -223,7 +229,8 @@ namespace Yuudong2Mod
 
         private const float MaxArmyShare = 0.5f;
 
-        private static readonly FloatRange ArmyGarrisonFactor = new FloatRange(1f, 2.5f);
+        // 원정군은 본거지 수비대보다 작다: 정착지 한 곳 몫의 이 배수만큼 보낸다.
+        private static readonly FloatRange ArmyGarrisonFactor = new FloatRange(0.4f, 1f);
 
         private const float WarMtbDays = 12f;
 
@@ -241,6 +248,8 @@ namespace Yuudong2Mod
         private const float VanillaSettlementPoints = 1400f;
 
         private const float MinAllyPoints = 300f;
+
+        private const float FallbackRaidPawnCost = 100f;
 
         private const int AllyCaptureGoodwill = 20;
 
@@ -621,8 +630,9 @@ namespace Yuudong2Mod
                 nodes.Reverse();
             }
 
-            // 정착지 한 곳 몫의 한두 배를 보낸다. 세력 전체 힘의 절반은 넘지 않는다.
-            float committed = Mathf.Min(power[faction] * MaxArmyShare, power[faction] / own.Count * ArmyGarrisonFactor.RandomInRange);
+            // 세력 전체 힘의 절반은 넘지 않는다.
+            float garrisonShare = power[faction] / own.Count;
+            float committed = Mathf.Min(power[faction] * MaxArmyShare, garrisonShare * ArmyGarrisonFactor.RandomInRange);
             power[faction] -= committed;
 
             WorldObject_WarArmy army = (WorldObject_WarArmy)WorldObjectMaker.MakeWorldObject(FactionWarDefOf.Yuudong2_WarArmy);
@@ -631,6 +641,7 @@ namespace Yuudong2Mod
             army.target = target;
             army.path = nodes;
             army.strength = committed;
+            army.sizeFactor = committed / garrisonShare;
             Find.WorldObjects.Add(army);
 
             bool atPlayer = target.Faction.IsPlayer;
@@ -724,12 +735,47 @@ namespace Yuudong2Mod
             return false;
         }
 
-        // 군대 병력을 정착지 한 곳의 기준 수비대와 견주어, 적 기지 방어 병력 포인트의 그 배수만큼 아군으로 들여보낸다.
-        public float AllyPoints(WorldObject_WarArmy army, Faction defender)
+        public static float DefenderPoints => Yuudong2Mod.AppliedFeatures.Contains(Features.EnemyBaseScaling) ? EnemyBaseUtility.PlayerThreatPoints() : VanillaSettlementPoints;
+
+        // 합세 병력의 머릿수가 맵에 있는 방어 병력의 (군대 크기 배수)배가 되도록 포인트를 잡는다.
+        // 습격 편성은 정착지 편성보다 병사 값이 싸서, 포인트를 그대로 견주면 머릿수가 방어 병력보다 많아진다.
+        public float AllyPoints(WorldObject_WarArmy army, Faction defender, Map map)
         {
-            float basePoints = Yuudong2Mod.AppliedFeatures.Contains(Features.EnemyBaseScaling) ? EnemyBaseUtility.PlayerThreatPoints() : VanillaSettlementPoints;
-            float nominalGarrison = PowerPerSettlement * FactionWarUtility.TechFactor(defender);
-            return Mathf.Max(MinAllyPoints, basePoints * army.strength / nominalGarrison);
+            int defenders = 0;
+            List<Pawn> pawns = map.mapPawns.SpawnedPawnsInFaction(defender);
+            for (int i = 0; i < pawns.Count; i++)
+            {
+                if (pawns[i].RaceProps.Humanlike && !pawns[i].Downed)
+                {
+                    defenders++;
+                }
+            }
+            float points = defenders > 0 ? defenders * army.sizeFactor * AverageRaidPawnCost(army.Faction) : DefenderPoints * army.sizeFactor;
+            return Mathf.Max(MinAllyPoints, points);
+        }
+
+        public static float AverageRaidPawnCost(Faction faction)
+        {
+            float weight = 0f;
+            float cost = 0f;
+            List<PawnGroupMaker> makers = faction.def.pawnGroupMakers;
+            if (makers != null)
+            {
+                for (int i = 0; i < makers.Count; i++)
+                {
+                    if (makers[i].kindDef != PawnGroupKindDefOf.Combat || makers[i].options == null)
+                    {
+                        continue;
+                    }
+                    foreach (PawnGenOption option in makers[i].options)
+                    {
+                        float w = option.selectionWeight * makers[i].commonality;
+                        weight += w;
+                        cost += w * option.kind.combatPower;
+                    }
+                }
+            }
+            return weight > 0f ? cost / weight : FallbackRaidPawnCost;
         }
 
         private bool JoinPlayerBattle(WorldObject_WarArmy army, Faction attacker, Faction defender, Settlement settlement)
@@ -738,7 +784,7 @@ namespace Yuudong2Mod
             {
                 target = settlement.Map,
                 faction = attacker,
-                points = AllyPoints(army, defender),
+                points = AllyPoints(army, defender, settlement.Map),
                 forced = true,
                 raidArrivalMode = PawnsArrivalModeDefOf.EdgeWalkIn,
             };

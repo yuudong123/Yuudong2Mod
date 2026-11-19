@@ -637,18 +637,24 @@ namespace Yuudong2Test
             {
                 Faction defender = enemyBase.Faction;
                 PlanetTile baseTile = enemyBase.Tile;
-                Check(ally.PlayerRelationKind == FactionRelationKind.Ally && FactionWarUtility.CanJoinPlayer(ally, defender),
-                    $"ally {ally.Name} marches on {enemyBase.Label} ({defender.Name}): strength {allyArmy.strength:F0}, ally points {comp.AllyPoints(allyArmy, defender):F0}");
+                Check(ally.PlayerRelationKind == FactionRelationKind.Ally && FactionWarUtility.CanJoinPlayer(ally, defender)
+                    && allyArmy.sizeFactor >= 0.39f && allyArmy.sizeFactor <= 1.01f,
+                    $"ally {ally.Name} marches on {enemyBase.Label} ({defender.Name}): strength {allyArmy.strength:F0}, size x{allyArmy.sizeFactor:F2} of a garrison");
                 System.Diagnostics.Stopwatch watch = System.Diagnostics.Stopwatch.StartNew();
                 Map battleMap = GetOrGenerateMapUtility.GetOrGenerateMap(baseTile, null);
                 long mapMs = watch.ElapsedMilliseconds;
                 watch.Restart();
+                float sizeFactor = allyArmy.sizeFactor;
+                float allyPoints = comp.AllyPoints(allyArmy, defender, battleMap);
                 allyArmy.pathIndex = allyArmy.path.Count - 1;
                 allyArmy.Tile = baseTile;
                 comp.ArmyArrived(allyArmy);
                 int allies = battleMap.mapPawns.SpawnedPawnsInFaction(ally).Count;
-                int defenders = battleMap.mapPawns.SpawnedPawnsInFaction(defender).Count;
-                Check(allyArmy.Destroyed && allies > 0, $"allied army joined the battle: {allies} allied pawns against {defenders} defenders (map {mapMs} ms, allies {watch.ElapsedMilliseconds} ms)");
+                int defenders = battleMap.mapPawns.SpawnedPawnsInFaction(defender).Count(x => x.RaceProps.Humanlike);
+                float headRatio = defenders > 0 ? (float)allies / defenders : 0f;
+                // 머릿수 비율이 군대 크기 배수에서 크게 벗어나지 않아야 한다(병사 값 추정 오차 허용).
+                Check(allyArmy.Destroyed && allies > 0 && headRatio <= sizeFactor * 1.4f + 0.05f && headRatio >= sizeFactor * 0.5f,
+                    $"allied army joined the battle: {allies} allied pawns against {defenders} defenders (x{headRatio:F2}, target x{sizeFactor:F2}; {allyPoints:F0} points, average raid pawn cost {WorldComponent_FactionWar.AverageRaidPawnCost(ally):F0}; map {mapMs} ms, allies {watch.ElapsedMilliseconds} ms)");
 
                 SettlementDefeatUtility.CheckDefeated(enemyBase);
                 Check(!enemyBase.Destroyed && enemyBase.Faction == defender, "settlement still held while defenders stand");
