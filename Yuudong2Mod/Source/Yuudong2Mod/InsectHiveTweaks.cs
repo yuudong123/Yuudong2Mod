@@ -1,6 +1,7 @@
 using HarmonyLib;
 using RimWorld;
 using Verse;
+using Verse.AI;
 
 namespace Yuudong2Mod
 {
@@ -87,6 +88,22 @@ namespace Yuudong2Mod
             }
 
             return false;
+        }
+    }
+
+    // 알주머니 자동 공격: Patches/EggSacTargeting.xml이 Odyssey 알주머니의 thingClass를 이것으로 바꾼다.
+    // 알주머니는 던진 여왕의 세력을 물려받는다. 곤충 세력 것만 적대라서 자동 조준되고, 야생이나 정착지 여왕의 것은 그대로 둔다.
+    public class Building_EggSac : Building, IAttackTarget
+    {
+        Thing IAttackTarget.Thing => this;
+
+        public float TargetPriorityFactor => 0.4f;
+
+        public LocalTargetInfo TargetCurrentlyAimingAt => LocalTargetInfo.Invalid;
+
+        public bool ThreatDisabled(IAttackTargetSearcher disabledFor)
+        {
+            return !Spawned;
         }
     }
 }

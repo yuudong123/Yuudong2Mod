@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Patch>
+
+  <!-- 알주머니 자동 공격: Odyssey 알주머니를 공격 대상 클래스로 바꾼다(Source/InsectHiveTweaks.cs). Odyssey가 없으면 아무것도 하지 않는다. -->
+  <Operation Class="Yuudong2Mod.PatchOperationFeature">
+    <feature>EggSacTargeting</feature>
+    <enabled Class="PatchOperationSequence">
+      <success>Always</success>
+      <operations>
+        <li Class="PatchOperationReplace">
+          <xpath>/Defs/ThingDef[defName="EggSac"]/thingClass</xpath>
+          <value>
+            <thingClass>Yuudong2Mod.Building_EggSac</thingClass>
+          </value>
+        </li>
+      </operations>
+    </enabled>
+  </Operation>
+
+</Patch>

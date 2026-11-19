@@ -23,6 +23,7 @@ namespace Yuudong2Test
             ("installed parts count", InstalledParts),
             ("roofed scanning", RoofedScanning),
             ("no floor infestation", FloorInfestation),
+            ("egg sac targeting", EggSacTargeting),
             // 맵을 바꾸므로 항상 마지막에 둔다.
             ("gravship replace stuff", GravshipReplace),
         };
@@ -170,6 +171,52 @@ namespace Yuudong2Test
                 int mapBad = picksOnFloor + scored + hiveAllowed;
                 bad += mapBad;
                 sb.AppendLine($"{(mapBad == 0 ? "ok  " : "FAIL")} {map}: floor cells={floors.Count}, scored floor cells={scored}, hive allowed on floor={hiveAllowed}, infestation picks={picks} (on floor {picksOnFloor})");
+            }
+
+            sb.AppendLine(bad == 0 ? "PASS" : $"FAIL: {bad}");
+        }
+
+        private static void EggSacTargeting(StringBuilder sb)
+        {
+            if (!Yuudong2Mod.Yuudong2Mod.AppliedFeatures.Contains(Features.EggSacTargeting))
+            {
+                sb.AppendLine("skipped: feature not applied");
+                return;
+            }
+
+            ThingDef def = DefDatabase<ThingDef>.GetNamedSilentFail("EggSac");
+            Map map = Find.CurrentMap ?? Find.Maps.FirstOrDefault();
+            if (def == null || map == null || Faction.OfInsects == null)
+            {
+                sb.AppendLine($"skipped: egg sac def={def != null}, map={map != null}, insects={Faction.OfInsects != null}");
+                return;
+            }
+
+            int bad = 0;
+            bool classOk = def.thingClass == typeof(Building_EggSac);
+            bad += classOk ? 0 : 1;
+            sb.AppendLine($"{(classOk ? "ok  " : "FAIL")} thingClass={def.thingClass}");
+
+            if (!CellFinder.TryFindRandomCell(map, c => c.Standable(map) && c.GetEdifice(map) == null && !c.Fogged(map), out IntVec3 spot))
+            {
+                sb.AppendLine("FAIL: no free cell");
+                return;
+            }
+
+            // 알주머니 투사체처럼 놓은 뒤 던진 쪽 세력을 준다. 지울 때는 유충이 나오지 않게 DeSpawn만 한다.
+            foreach (Faction faction in new[] { Faction.OfInsects, null })
+            {
+                Thing sac = GenSpawn.Spawn(ThingMaker.MakeThing(def), spot, map);
+                if (faction != null)
+                {
+                    sac.SetFaction(faction);
+                }
+
+                bool targeted = sac is Verse.AI.IAttackTarget target && map.attackTargetsCache.TargetsHostileToColony.Contains(target);
+                bool ok = targeted == (faction != null);
+                bad += ok ? 0 : 1;
+                sb.AppendLine($"{(ok ? "ok  " : "FAIL")} faction={faction?.Name ?? "none"}: hostile target for colony={targeted}");
+                sac.DeSpawn();
             }
 
             sb.AppendLine(bad == 0 ? "PASS" : $"FAIL: {bad}");
