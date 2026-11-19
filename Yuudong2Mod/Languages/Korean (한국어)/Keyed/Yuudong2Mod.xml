@@ -299,6 +299,10 @@
   <Yuudong2.Feature.NoFloorInfestation.Desc>지어 깐 바닥(타일, 카펫, 다리, 하부 구조 등)이 있는 칸에서는 곤충 군락이 솟아나거나 번식하지 않습니다. 다듬은 돌 바닥은 바닥으로 치지 않습니다.</Yuudong2.Feature.NoFloorInfestation.Desc>
   <Yuudong2.Feature.EggSacTargeting>알주머니 자동 공격</Yuudong2.Feature.EggSacTargeting>
   <Yuudong2.Feature.EggSacTargeting.Desc>적대 곤충이 던진 알주머니를 곤충 군락처럼 정착민과 포탑이 알아서 조준하고 공격합니다. 야생 여왕이나 정착지 여왕이 낳은 알주머니는 그대로 둡니다. (Odyssey)</Yuudong2.Feature.EggSacTargeting.Desc>
+  <Yuudong2.Feature.EnemyBaseScaling>적 기지 강화</Yuudong2.Feature.EnemyBaseScaling>
+  <Yuudong2.Feature.EnemyBaseScaling.Desc>다른 세력 정착지의 방어 병력을 내 정착지에 오는 습격과 같은 포인트(난이도 위협 배율 포함)로 맞추고, 그만큼 기지도 넓힙니다. 바닐라는 내 수준과 상관없이 1150~1600 포인트로 고정입니다.</Yuudong2.Feature.EnemyBaseScaling.Desc>
+  <Yuudong2.Feature.RealRuinsBases>남이 만든 기지 (Real Ruins)</Yuudong2.Feature.RealRuinsBases>
+  <Yuudong2.Feature.RealRuinsBases.Desc>Real Ruins 모드가 켜져 있으면, 다른 세력 정착지를 Real Ruins가 받아 둔 다른 플레이어의 실제 기지로 망가뜨리지 않고 짓습니다. 받아 둔 기지 중 큰 쪽 절반에서, 가치가 내 정착지와 비슷한 것을 무작위로 고르고 방어 병력은 따로 넣습니다. 쓸 만한 기지가 없으면 바닐라 방식으로 짓습니다.</Yuudong2.Feature.RealRuinsBases.Desc>
   <Yuudong2.Feature.RpgLevelUp>RPG 레벨업</Yuudong2.Feature.RpgLevelUp>
   <Yuudong2.Feature.RpgLevelUp.Desc>폰이 스킬 경험치와 적 처치로 레벨을 올리고, 레벨업 포인트를 힘·재주·민첩·체력·지능·매력에 나눠 여러 스탯을 올립니다. 화면 위 '레벨' 탭과 폰 정보의 '레벨' 탭에서 관리하며, 각 능력치에 마우스를 올리면 효과와 한계가 나옵니다. 기존 저장 파일의 레벨은 그대로 이어집니다. (RPG Style Level Up Mod)</Yuudong2.Feature.RpgLevelUp.Desc>
   <Yuudong2.Feature.BirthAgeByLifespan>출산 산모 나이를 수명에 맞추기</Yuudong2.Feature.BirthAgeByLifespan>

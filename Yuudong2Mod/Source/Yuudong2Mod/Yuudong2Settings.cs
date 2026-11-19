@@ -59,6 +59,8 @@ namespace Yuudong2Mod
         public const string RoofedScanning = "RoofedScanning";
         public const string NoFloorInfestation = "NoFloorInfestation";
         public const string EggSacTargeting = "EggSacTargeting";
+        public const string EnemyBaseScaling = "EnemyBaseScaling";
+        public const string RealRuinsBases = "RealRuinsBases";
         public const string RealisticRooms = "RealisticRooms";
         public const string BetterWorkbench = "BetterWorkbench";
         public const string GeneRipper = "GeneRipper";
@@ -97,7 +99,7 @@ namespace Yuudong2Mod
             new FeatureGroup("Interface", MessagePlacement, HealthCardSorting, DamageIndicators, LetterStackCleaner, SmartSpeed, TpsDisplay, SaveHotkey, DragSelect, GeneAssistant, TechprintTradeHighlight),
             new FeatureGroup("Pawn", HairUnderHats, HiddenBionicEyes, EquipmentDurability, EndlessGrowth, NoGrowthNickname, RpgLevelUp, BirthAgeByLifespan, CalmMoveSpeed, BetterHearing, SleepLimits, ImplantsOnAddedParts),
             new FeatureGroup("Ideology", AllSpecialistsCanWork, RolesUntiedToMemes, NoIdeologyLimits, AutoCastSpecialistCommands, FasterBiosculpter),
-            new FeatureGroup("Trade", CaravanArrivalSpot, TradeShipDropSpot, MapWideTradeBeacon, TradeStockBoost, OrbitalTraderFrequency, InsultFaction, EmpireGoodwillFix),
+            new FeatureGroup("Trade", CaravanArrivalSpot, TradeShipDropSpot, MapWideTradeBeacon, TradeStockBoost, OrbitalTraderFrequency, InsultFaction, EmpireGoodwillFix, EnemyBaseScaling, RealRuinsBases),
             new FeatureGroup("Performance", WorldPawnSleep, FastTickInterval, FastMoodThoughts, IdleMissingParts, PlantSwayPerFrame, IdleIceChecks, DoorReachabilityCache),
             new FeatureGroup("Compatibility", EpoeAiCore, DragonianGenes, DragonianHealing, DragonianMix, GloomyFurnitureFix, RatkinDrawScaleFix),
         };

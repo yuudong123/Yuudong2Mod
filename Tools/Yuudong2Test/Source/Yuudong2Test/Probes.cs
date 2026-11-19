@@ -24,6 +24,7 @@ namespace Yuudong2Test
             ("roofed scanning", RoofedScanning),
             ("no floor infestation", FloorInfestation),
             ("egg sac targeting", EggSacTargeting),
+            ("enemy bases", EnemyBases),
             // 맵을 바꾸므로 항상 마지막에 둔다.
             ("gravship replace stuff", GravshipReplace),
         };
@@ -36,6 +37,18 @@ namespace Yuudong2Test
             if (__instance is ReplaceFrame && frameDestroyStacks.Count < 2)
             {
                 frameDestroyStacks.Add($"{__instance} mode={mode}" + Environment.NewLine + string.Join(Environment.NewLine, Environment.StackTrace.Split('\n').Skip(2).Take(6)));
+            }
+        }
+
+        // 이륙 준비(GenerateGravship) 도중에 기판 판정을 다시 계산하게 만드는 호출을 남긴다. 그때 바닐라가 "Collection was modified"로 죽는다.
+        private static bool watchSubstructureDirty;
+        private static readonly List<string> substructureDirtyStacks = new List<string>();
+
+        private static void OnSubstructureDirty()
+        {
+            if (watchSubstructureDirty && substructureDirtyStacks.Count < 3)
+            {
+                substructureDirtyStacks.Add(string.Join(Environment.NewLine, Environment.StackTrace.Split('\n').Skip(2).Take(10)));
             }
         }
 
@@ -58,6 +71,8 @@ namespace Yuudong2Test
             MethodInfo postSwap = AccessTools.Method(typeof(GravshipPlacementUtility), "PostSwapMap");
             new Harmony("yuudong2.yuudong2test.gravship").Patch(AccessTools.Method(typeof(Frame), nameof(Frame.Destroy)),
                 prefix: new HarmonyMethod(typeof(Probes), nameof(OnFrameDestroy)));
+            new Harmony("yuudong2.yuudong2test.gravship").Patch(AccessTools.Method(typeof(Building_GravEngine), nameof(Building_GravEngine.ForceSubstructureDirty)),
+                prefix: new HarmonyMethod(typeof(Probes), nameof(OnSubstructureDirty)));
 
             engine.ForceSubstructureDirty();
             HashSet<IntVec3> substructure = new HashSet<IntVec3>(engine.ValidSubstructure);
@@ -103,9 +118,32 @@ namespace Yuudong2Test
                     }
                 }
 
+                // 게임에서는 매 틱 구역과 방이 갱신된다. 갱신이 밀린 채로 이륙을 흉내 내면 수집 도중에 시설 연결이 다시 계산되어 기판 목록이 바뀐다.
+                map.regionAndRoomUpdater.TryRebuildDirtyRegionsAndRooms();
                 engine.ForceSubstructureDirty();
                 _ = engine.ValidSubstructure;
-                Gravship gravship = GravshipUtility.GenerateGravship(engine);
+                Gravship gravship;
+                substructureDirtyStacks.Clear();
+                watchSubstructureDirty = true;
+                try
+                {
+                    gravship = GravshipUtility.GenerateGravship(engine);
+                }
+                catch (InvalidOperationException)
+                {
+                    // 생성자 첫머리의 정상 호출 하나를 뺀 나머지가 범인이다.
+                    foreach (string stack in substructureDirtyStacks)
+                    {
+                        sb.AppendLine("substructure dirtied during capture by:" + Environment.NewLine + stack);
+                    }
+
+                    throw;
+                }
+                finally
+                {
+                    watchSubstructureDirty = false;
+                }
+
                 map.powerNetManager.UpdatePowerNetsAndConnections_First(); // 비행 중 지나가는 틱 대신 전력망 정리
                 List<Thing> carried = gravship.Things.ToList();
                 sb.AppendLine($"cycle {cycle}: gravship carries {carried.Count} things, frames carried {pairs.Count(p => carried.Contains(p.frame))}, targets carried {pairs.Count(p => carried.Contains(p.target))}");
@@ -219,6 +257,100 @@ namespace Yuudong2Test
                 sac.DeSpawn();
             }
 
+            sb.AppendLine(bad == 0 ? "PASS" : $"FAIL: {bad}");
+        }
+
+        // 적대 정착지 맵을 실제로 하나 만들어 보고 지운다.
+        private static void EnemyBases(StringBuilder sb)
+        {
+            bool scaling = Yuudong2Mod.Yuudong2Mod.AppliedFeatures.Contains(Features.EnemyBaseScaling);
+            bool ruins = Yuudong2Mod.Yuudong2Mod.AppliedFeatures.Contains(Features.RealRuinsBases);
+            if (!scaling && !ruins)
+            {
+                sb.AppendLine("skipped: features not applied");
+                return;
+            }
+
+            Settlement settlement = Find.WorldObjects.Settlements
+                .Where(s => s.Faction != null && !s.Faction.IsPlayer && s.Faction.def.humanlikeFaction && s.Faction.HostileTo(Faction.OfPlayer) && !s.HasMap)
+                .OrderBy(s => s.ID)
+                .FirstOrDefault();
+            if (settlement == null)
+            {
+                sb.AppendLine("skipped: no hostile settlement on this world");
+                return;
+            }
+
+            float points = EnemyBaseUtility.PlayerThreatPoints();
+            bool expectRuins = ruins && RealRuinsBridge.Available && RealRuinsBridge.BlueprintFiles().Length > 0;
+            sb.AppendLine($"settlement {settlement.Label} ({settlement.Faction.Name}, {settlement.Faction.def.techLevel}), raid points now {points:F0}, player wealth {EnemyBaseUtility.PlayerWealth():F0}, real ruins available={RealRuinsBridge.Available}");
+
+            int errorsBefore = TestRunner.TickErrors.Count, warningsBefore = TestRunner.TickWarnings.Count;
+            string placedBefore = RealRuinsBridge.LastPlacedFile;
+            TestRunner.ticking = true;
+            Map map = null;
+            int bad = 0;
+            try
+            {
+                DateTime start = DateTime.UtcNow;
+                map = GetOrGenerateMapUtility.GetOrGenerateMap(settlement.Tile, null);
+                sb.AppendLine($"map {map.Size.x}x{map.Size.z} generated in {(DateTime.UtcNow - start).TotalSeconds:F1}s");
+                if (expectRuins)
+                {
+                    sb.AppendLine($"real ruins bases: {RealRuinsBridge.BlueprintFiles().Length} downloaded, {RealRuinsBridge.LargeBaseCount(map)} in the large pool for this map size");
+                }
+
+                List<Pawn> defenders = map.mapPawns.AllPawnsSpawned.Where(p => p.Faction == settlement.Faction).ToList();
+                float defenderPoints = defenders.Sum(p => p.kindDef.combatPower);
+                List<Thing> owned = map.listerThings.AllThings.Where(t => t.def.category == ThingCategory.Building && t.Faction == settlement.Faction).ToList();
+                List<Building_Turret> allTurrets = map.listerThings.AllThings.OfType<Building_Turret>().ToList();
+                int mannable = owned.Count(t => t.TryGetComp<CompMannable>() != null);
+                int turretOperators = map.lordManager.lords.Where(l => l.LordJob is LordJob_ManTurrets).Sum(l => l.ownedPawns.Count);
+                sb.AppendLine($"defenders {defenders.Count} worth {defenderPoints:F0} combat power, faction buildings {owned.Count}, turrets {allTurrets.Count} (owned by the faction {allTurrets.Count(t => t.Faction == settlement.Faction)}), mannable {mannable}, turret operators {turretOperators}");
+                sb.AppendLine($"powered buildings on: {owned.Count(t => t.TryGetComp<CompPowerTrader>()?.PowerOn == true)} of {owned.Count(t => t.TryGetComp<CompPowerTrader>() != null)}, doors {owned.Count(t => t is Building_Door)}, beds {owned.Count(t => t is Building_Bed)}");
+
+                if (scaling)
+                {
+                    // 무리 생성기는 포인트를 다 쓰지 못할 수 있다. 바닐라 고정값(최대 1600)보다 확실히 많은지만 본다.
+                    bool ok = points <= 3200f || defenderPoints >= points * 0.5f;
+                    bad += ok ? 0 : 1;
+                    sb.AppendLine($"{(ok ? "ok  " : "FAIL")} defenders scaled: {defenderPoints:F0} of {points:F0} points");
+                }
+
+                if (expectRuins)
+                {
+                    bool placed = RealRuinsBridge.LastPlacedFile != null && (placedBefore == null || owned.Count > 0);
+                    CellRect rect = RealRuinsBridge.LastPlacedRect;
+                    bool ok = placed && owned.Count > 0;
+                    bad += ok ? 0 : 1;
+                    sb.AppendLine($"{(ok ? "ok  " : "FAIL")} real ruins base: {RealRuinsBridge.LastPlacedFile ?? "none"} at {rect} ({rect.Width}x{rect.Height}), market value of items in it {rect.Cells.Where(c => c.InBounds(map)).SelectMany(c => c.GetThingList(map)).Where(t => t.def.category == ThingCategory.Item).Distinct().Sum(t => t.MarketValue * t.stackCount):F0}");
+                }
+                else if (ruins)
+                {
+                    sb.AppendLine("--   real ruins base not expected: mod inactive or no downloaded blueprints");
+                }
+            }
+            catch (Exception e)
+            {
+                bad++;
+                sb.AppendLine("FAIL: " + e);
+            }
+            finally
+            {
+                TestRunner.ticking = false;
+                if (map != null)
+                {
+                    Current.Game.DeinitAndRemoveMap(map, false);
+                }
+            }
+
+            List<string> errors = TestRunner.TickErrors.Skip(errorsBefore).ToList();
+            foreach (IGrouping<string, string> group in errors.Concat(TestRunner.TickWarnings.Skip(warningsBefore)).GroupBy(m => m.Split('\n')[0]).Take(15))
+            {
+                sb.AppendLine($"log x{group.Count()}: {group.Key}");
+            }
+
+            bad += errors.Count;
             sb.AppendLine(bad == 0 ? "PASS" : $"FAIL: {bad}");
         }
 

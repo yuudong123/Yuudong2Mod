@@ -35,6 +35,15 @@ $prefs = $prefs -replace '<devMode>\w+</devMode>', '<devMode>True</devMode>'
 [IO.File]::WriteAllText($prefsPath, $prefs)
 Get-ChildItem (Join-Path $data "Saves") -Filter *.rws | Remove-Item
 
+# Real Ruins keeps its downloaded bases under the save data folder. Bring them along so base placement can be tested.
+$ruins = Join-Path $userData "RealRuins"
+if (Test-Path $ruins) {
+    robocopy $ruins (Join-Path $data "RealRuins") /E /NFL /NDL /NJH /NJS /NP | Out-Null
+    # robocopy reports success as 0-7; keep that from becoming this script's exit code.
+    if ($LASTEXITCODE -ge 8) { Write-Output "Could not copy Real Ruins bases (robocopy exit $LASTEXITCODE); Real Ruins base placement will not be tested." }
+    $global:LASTEXITCODE = 0
+}
+
 $modsPath = Join-Path $data "Config\ModsConfig.xml"
 if ($Mode -eq "save") {
     $mods = [IO.File]::ReadAllText($modsPath)
