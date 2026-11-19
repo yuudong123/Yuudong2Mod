@@ -22,6 +22,7 @@ namespace Yuudong2Test
             ("sleep limits", Sleep),
             ("installed parts count", InstalledParts),
             ("roofed scanning", RoofedScanning),
+            ("no floor infestation", FloorInfestation),
             // 맵을 바꾸므로 항상 마지막에 둔다.
             ("gravship replace stuff", GravshipReplace),
         };
@@ -137,6 +138,43 @@ namespace Yuudong2Test
         }
 
         // 스캐너 세 종류는 지붕 아래에 지을 수 있고(설치 제한 없음) 지붕 경고 대상이 아니어야 한다. 지붕 아래 있는 스캐너는 쓸 수 있어야 한다.
+        private static void FloorInfestation(StringBuilder sb)
+        {
+            if (!Yuudong2Mod.Yuudong2Mod.AppliedFeatures.Contains(Features.NoFloorInfestation))
+            {
+                sb.AppendLine("skipped: feature not applied");
+                return;
+            }
+
+            MethodInfo score = AccessTools.Method(typeof(InfestationCellFinder), "GetScoreAt");
+            MethodInfo canSpawn = AccessTools.Method(typeof(CompSpawnerHives), "CanSpawnHiveAt");
+            int bad = 0;
+            foreach (Map map in Find.Maps)
+            {
+                List<IntVec3> floors = map.AllCells.Where(c => FloorInfestationUtility.HasFloor(c, map)).ToList();
+
+                // TryFindCell이 이 맵의 점수용 격자를 계산해 두므로 먼저 부른다.
+                int picks = 0;
+                int picksOnFloor = 0;
+                for (int i = 0; i < 30; i++)
+                {
+                    if (InfestationCellFinder.TryFindCell(out IntVec3 cell, map))
+                    {
+                        picks++;
+                        picksOnFloor += FloorInfestationUtility.HasFloor(cell, map) ? 1 : 0;
+                    }
+                }
+
+                int scored = floors.Count(c => (float)score.Invoke(null, new object[] { c, map }) > 0f);
+                int hiveAllowed = floors.Count(c => (bool)canSpawn.Invoke(null, new object[] { c, map, c, ThingDefOf.Hive, 0f, true }));
+                int mapBad = picksOnFloor + scored + hiveAllowed;
+                bad += mapBad;
+                sb.AppendLine($"{(mapBad == 0 ? "ok  " : "FAIL")} {map}: floor cells={floors.Count}, scored floor cells={scored}, hive allowed on floor={hiveAllowed}, infestation picks={picks} (on floor {picksOnFloor})");
+            }
+
+            sb.AppendLine(bad == 0 ? "PASS" : $"FAIL: {bad}");
+        }
+
         private static void RoofedScanning(StringBuilder sb)
         {
             if (!Yuudong2Mod.Yuudong2Mod.AppliedFeatures.Contains(Features.RoofedScanning))
