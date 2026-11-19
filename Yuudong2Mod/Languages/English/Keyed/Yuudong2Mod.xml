@@ -315,7 +315,7 @@
   <Yuudong2.Feature.RealRuinsBases>Player-made enemy bases (Real Ruins)</Yuudong2.Feature.RealRuinsBases>
   <Yuudong2.Feature.RealRuinsBases.Desc>With the Real Ruins mod active, other factions' settlements are built intact from real bases of other players that Real Ruins has downloaded. A base is picked at random from the larger half of the downloaded bases, among those worth about as much as your colony, and defenders are added separately. Falls back to vanilla generation when no base fits.</Yuudong2.Feature.RealRuinsBases.Desc>
   <Yuudong2.Feature.FactionWar>Faction wars</Yuudong2.Feature.FactionWar>
-  <Yuudong2.Feature.FactionWar.Desc>Factions declare war and make peace, and send armies across the world map to capture or raze each other's settlements. New factions appear during the game. Armies of factions hostile to you also march on your settlements and raid them. News arrives once a day as a single summary letter. Everything is computed once a day.</Yuudong2.Feature.FactionWar.Desc>
+  <Yuudong2.Feature.FactionWar.Desc>Factions declare war and make peace, and send armies across the world map to capture or raze each other's settlements. New factions appear during the game. Armies of factions hostile to you also march on your settlements and raid them. If you attack a settlement an allied army is marching on, that army joins your battle, and on victory the ally takes the settlement. News arrives once a day as a single summary letter. Everything is computed once a day.</Yuudong2.Feature.FactionWar.Desc>
   <Yuudong2.Feature.NoFactionLimit>No faction count limit</Yuudong2.Feature.NoFactionLimit>
   <Yuudong2.Feature.NoFactionLimit.Desc>Removes the limit of 12 factions when creating a world. Per-type maximums stay.</Yuudong2.Feature.NoFactionLimit.Desc>
   <Yuudong2.FactionWar.Intensity>War frequency: x{0}</Yuudong2.FactionWar.Intensity>
@@ -347,6 +347,12 @@
   <Yuudong2.FactionWar.News.Razed>{0} razed {2}, a settlement of {1}.</Yuudong2.FactionWar.News.Razed>
   <Yuudong2.FactionWar.News.Captured>{0} captured {2}, a settlement of {1}.</Yuudong2.FactionWar.News.Captured>
   <Yuudong2.FactionWar.News.Defeated>{0} lost its last settlement and was destroyed.</Yuudong2.FactionWar.News.Defeated>
+  <Yuudong2.FactionWar.News.MarchAlly>An army of our ally {0} left {1} to attack {2} ({3}). Arrives in {4}. It will join us if we attack the same settlement.</Yuudong2.FactionWar.News.MarchAlly>
+  <Yuudong2.FactionWar.News.Joined>The army of our ally {0} joined our battle at {1}.</Yuudong2.FactionWar.News.Joined>
+  <Yuudong2.FactionWar.News.CapturedWithUs>Together with {0} we took {2}, a settlement of {1}. {0} now holds it.</Yuudong2.FactionWar.News.CapturedWithUs>
+  <Yuudong2.FactionWar.ArmyAllyHint>Allied army: joins the battle if we attack the same settlement. Waits up to 3 days while our caravan is on its way.</Yuudong2.FactionWar.ArmyAllyHint>
+  <Yuudong2.FactionWar.AllyCaptureLabel>Settlement taken: captured by our ally</Yuudong2.FactionWar.AllyCaptureLabel>
+  <Yuudong2.FactionWar.AllyCaptureText>Together with the army of our ally {0} we defeated the defenders of {2}, a settlement of {1}. The settlement was not destroyed and now belongs to {0}.</Yuudong2.FactionWar.AllyCaptureText>
   <Yuudong2.Feature.RpgLevelUp>RPG level up</Yuudong2.Feature.RpgLevelUp>
   <Yuudong2.Feature.RpgLevelUp.Desc>Pawns level up from skill XP and kills and spend points on six attributes that boost many stats. Manage them in the Level tab; hover an attribute to see its effects and limits. Existing save data carries over. (RPG Style Level Up Mod)</Yuudong2.Feature.RpgLevelUp.Desc>
   <Yuudong2.Feature.BirthAgeByLifespan>Scale mother's age at birth by lifespan</Yuudong2.Feature.BirthAgeByLifespan>

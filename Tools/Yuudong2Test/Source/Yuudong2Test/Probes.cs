@@ -608,6 +608,64 @@ namespace Yuudong2Test
                 }
             }
 
+            // 동맹 합세: 한 세력을 동맹으로 만들고, 적대 정착지 맵을 만든 뒤 동맹 군대를 도착시킨다.
+            Faction ally = factions.Where(f => !f.HostileTo(Faction.OfPlayer) && Faction.OfPlayer.CanChangeGoodwillFor(f, 1) && SettlementCount(f) > 0)
+                .OrderByDescending(comp.PowerOf).FirstOrDefault();
+            WorldObject_WarArmy allyArmy = null;
+            Settlement enemyBase = null;
+            if (ally != null)
+            {
+                Faction.OfPlayer.TryAffectGoodwillWith(ally, 200, canSendMessage: false, canSendHostilityLetter: false);
+                List<Settlement> allySettlements = Find.WorldObjects.Settlements.Where(x => x.Faction == ally).ToList();
+                foreach (Settlement candidate in Find.WorldObjects.Settlements.Where(x => FactionWarUtility.IsWarFaction(x.Faction) && x.Faction.HostileTo(Faction.OfPlayer)
+                    && ally.HostileTo(x.Faction) && !x.HasMap && x.questTags.NullOrEmpty() && FactionWarUtility.OnSurface(x))
+                    .OrderBy(x => allySettlements.Min(o => Find.WorldGrid.ApproxDistanceInTiles(o.Tile, x.Tile))).Take(6))
+                {
+                    allyArmy = comp.TryLaunchArmy(ally, candidate);
+                    if (allyArmy != null)
+                    {
+                        enemyBase = candidate;
+                        break;
+                    }
+                }
+            }
+            if (allyArmy == null)
+            {
+                sb.AppendLine($"info: no ally with a reachable enemy of the player (ally candidate={ally?.Name ?? "none"}), join check skipped");
+            }
+            else
+            {
+                Faction defender = enemyBase.Faction;
+                PlanetTile baseTile = enemyBase.Tile;
+                Check(ally.PlayerRelationKind == FactionRelationKind.Ally && FactionWarUtility.CanJoinPlayer(ally, defender),
+                    $"ally {ally.Name} marches on {enemyBase.Label} ({defender.Name}): strength {allyArmy.strength:F0}, ally points {comp.AllyPoints(allyArmy, defender):F0}");
+                System.Diagnostics.Stopwatch watch = System.Diagnostics.Stopwatch.StartNew();
+                Map battleMap = GetOrGenerateMapUtility.GetOrGenerateMap(baseTile, null);
+                long mapMs = watch.ElapsedMilliseconds;
+                watch.Restart();
+                allyArmy.pathIndex = allyArmy.path.Count - 1;
+                allyArmy.Tile = baseTile;
+                comp.ArmyArrived(allyArmy);
+                int allies = battleMap.mapPawns.SpawnedPawnsInFaction(ally).Count;
+                int defenders = battleMap.mapPawns.SpawnedPawnsInFaction(defender).Count;
+                Check(allyArmy.Destroyed && allies > 0, $"allied army joined the battle: {allies} allied pawns against {defenders} defenders (map {mapMs} ms, allies {watch.ElapsedMilliseconds} ms)");
+
+                SettlementDefeatUtility.CheckDefeated(enemyBase);
+                Check(!enemyBase.Destroyed && enemyBase.Faction == defender, "settlement still held while defenders stand");
+
+                foreach (Pawn pawn in battleMap.mapPawns.SpawnedPawnsInFaction(defender).ToList())
+                {
+                    pawn.Destroy();
+                }
+                int lettersAtCapture = Find.LetterStack.LettersListForReading.Count;
+                SettlementDefeatUtility.CheckDefeated(enemyBase);
+                Check(!enemyBase.Destroyed && enemyBase.Faction == ally && Find.WorldObjects.DestroyedSettlementAt(baseTile) == null
+                    && Find.LetterStack.LettersListForReading.Count == lettersAtCapture + 1, $"defenders gone: settlement captured by the ally, owner now {enemyBase.Faction?.Name}");
+                SettlementDefeatUtility.CheckDefeated(enemyBase);
+                Check(!enemyBase.Destroyed && enemyBase.Faction == ally && Find.LetterStack.LettersListForReading.Count == lettersAtCapture + 1, "captured settlement is left alone afterwards");
+                Current.Game.DeinitAndRemoveMap(battleMap, false);
+            }
+
             int lettersBefore = Find.LetterStack.LettersListForReading.Count;
             comp.DailyUpdate();
             Letter last = Find.LetterStack.LettersListForReading.LastOrDefault();

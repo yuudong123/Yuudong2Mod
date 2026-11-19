@@ -315,7 +315,7 @@
   <Yuudong2.Feature.RealRuinsBases>남이 만든 기지 (Real Ruins)</Yuudong2.Feature.RealRuinsBases>
   <Yuudong2.Feature.RealRuinsBases.Desc>Real Ruins 모드가 켜져 있으면, 다른 세력 정착지를 Real Ruins가 받아 둔 다른 플레이어의 실제 기지로 망가뜨리지 않고 짓습니다. 받아 둔 기지 중 큰 쪽 절반에서, 가치가 내 정착지와 비슷한 것을 무작위로 고르고 방어 병력은 따로 넣습니다. 쓸 만한 기지가 없으면 바닐라 방식으로 짓습니다.</Yuudong2.Feature.RealRuinsBases.Desc>
   <Yuudong2.Feature.FactionWar>세력 전쟁</Yuudong2.Feature.FactionWar>
-  <Yuudong2.Feature.FactionWar.Desc>세력끼리 전쟁을 선포하고 화해하며, 세계 지도 위로 군대를 보내 서로의 정착지를 점령하거나 파괴합니다. 게임 도중 새 세력이 나타납니다. 적대 세력의 군대는 내 정착지로도 와서 습격합니다. 소식은 하루에 한 번 편지 한 통으로 요약됩니다. 계산은 하루에 한 번만 합니다.</Yuudong2.Feature.FactionWar.Desc>
+  <Yuudong2.Feature.FactionWar.Desc>세력끼리 전쟁을 선포하고 화해하며, 세계 지도 위로 군대를 보내 서로의 정착지를 점령하거나 파괴합니다. 게임 도중 새 세력이 나타납니다. 적대 세력의 군대는 내 정착지로도 와서 습격합니다. 동맹의 군대가 치러 가는 정착지를 내가 같이 공격하면 동맹군이 전투에 합세하고, 이기면 그 정착지는 동맹이 차지합니다. 소식은 하루에 한 번 편지 한 통으로 요약됩니다. 계산은 하루에 한 번만 합니다.</Yuudong2.Feature.FactionWar.Desc>
   <Yuudong2.Feature.NoFactionLimit>세력 수 제한 해제</Yuudong2.Feature.NoFactionLimit>
   <Yuudong2.Feature.NoFactionLimit.Desc>세계를 만들 때 고를 수 있는 세력 수 제한(12개)을 없앱니다. 세력 종류별 최대 개수는 그대로입니다.</Yuudong2.Feature.NoFactionLimit.Desc>
   <Yuudong2.FactionWar.Intensity>전쟁 빈도: {0}배</Yuudong2.FactionWar.Intensity>
@@ -347,6 +347,12 @@
   <Yuudong2.FactionWar.News.Razed>{0}(이)가 {1}의 정착지 {2}(을)를 파괴했습니다.</Yuudong2.FactionWar.News.Razed>
   <Yuudong2.FactionWar.News.Captured>{0}(이)가 {1}의 정착지 {2}(을)를 점령했습니다.</Yuudong2.FactionWar.News.Captured>
   <Yuudong2.FactionWar.News.Defeated>{0}(이)가 마지막 정착지를 잃고 멸망했습니다.</Yuudong2.FactionWar.News.Defeated>
+  <Yuudong2.FactionWar.News.MarchAlly>동맹 {0}의 군대가 {1}에서 {3}의 정착지 {2}(을)를 치러 출발했습니다. 도착까지 {4}. 우리가 같은 곳을 공격하면 합세합니다.</Yuudong2.FactionWar.News.MarchAlly>
+  <Yuudong2.FactionWar.News.Joined>동맹 {0}의 군대가 {1}에서 우리 전투에 합세했습니다.</Yuudong2.FactionWar.News.Joined>
+  <Yuudong2.FactionWar.News.CapturedWithUs>우리와 {0}(이)가 함께 {1}의 정착지 {2}(을)를 함락했고, {0}(이)가 차지했습니다.</Yuudong2.FactionWar.News.CapturedWithUs>
+  <Yuudong2.FactionWar.ArmyAllyHint>동맹군: 우리가 같은 정착지를 공격하면 전투에 합세합니다. 우리 상단이 오는 중이면 최대 3일 기다립니다.</Yuudong2.FactionWar.ArmyAllyHint>
+  <Yuudong2.FactionWar.AllyCaptureLabel>정착지 함락: 동맹이 점령</Yuudong2.FactionWar.AllyCaptureLabel>
+  <Yuudong2.FactionWar.AllyCaptureText>동맹 {0}의 군대와 함께 {1}의 정착지 {2}의 방어 병력을 물리쳤습니다. 정착지는 파괴되지 않고 {0}의 것이 되었습니다.</Yuudong2.FactionWar.AllyCaptureText>
   <Yuudong2.Feature.RpgLevelUp>RPG 레벨업</Yuudong2.Feature.RpgLevelUp>
   <Yuudong2.Feature.RpgLevelUp.Desc>폰이 스킬 경험치와 적 처치로 레벨을 올리고, 레벨업 포인트를 힘·재주·민첩·체력·지능·매력에 나눠 여러 스탯을 올립니다. 화면 위 '레벨' 탭과 폰 정보의 '레벨' 탭에서 관리하며, 각 능력치에 마우스를 올리면 효과와 한계가 나옵니다. 기존 저장 파일의 레벨은 그대로 이어집니다. (RPG Style Level Up Mod)</Yuudong2.Feature.RpgLevelUp.Desc>
   <Yuudong2.Feature.BirthAgeByLifespan>출산 산모 나이를 수명에 맞추기</Yuudong2.Feature.BirthAgeByLifespan>

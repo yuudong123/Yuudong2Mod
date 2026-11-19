@@ -40,6 +40,13 @@ namespace Yuudong2Mod
             return 0.6f + 0.2f * Mathf.Clamp((int)faction.def.techLevel, 1, 7);
         }
 
+        // 우리와 동맹이고, 우리와 적대인 세력을 치는 군대만 우리 전투에 합세한다.
+        public static bool CanJoinPlayer(Faction attacker, Faction defender)
+        {
+            return attacker != null && defender != null && !attacker.IsPlayer && !defender.IsPlayer
+                && attacker.PlayerRelationKind == FactionRelationKind.Ally && defender.HostileTo(Faction.OfPlayer);
+        }
+
         public static bool OnSurface(WorldObject worldObject)
         {
             return worldObject.Tile.Valid && worldObject.Tile.Layer.IsRootSurface;
@@ -185,6 +192,11 @@ namespace Yuudong2Mod
                 sb.Append(AtDestination
                     ? "Yuudong2.FactionWar.ArmyWaiting".Translate()
                     : "Yuudong2.FactionWar.ArmyArrival".Translate(TicksToArrival.ToStringTicksToPeriod()));
+                if (FactionWarUtility.CanJoinPlayer(Faction, target.Faction))
+                {
+                    sb.AppendLine();
+                    sb.Append("Yuudong2.FactionWar.ArmyAllyHint".Translate());
+                }
             }
             return sb.ToString().TrimEndNewlines();
         }
@@ -225,6 +237,13 @@ namespace Yuudong2Mod
 
         private const int MaxNewsLines = 30;
 
+        // Enemy Base Scaling이 꺼져 있을 때 정착지 방어 병력의 기준 포인트(바닐라 정착지의 중간값).
+        private const float VanillaSettlementPoints = 1400f;
+
+        private const float MinAllyPoints = 300f;
+
+        private const int AllyCaptureGoodwill = 20;
+
         private Dictionary<Faction, float> power = new Dictionary<Faction, float>();
 
         private Dictionary<Faction, int> lastSettlements = new Dictionary<Faction, int>();
@@ -238,6 +257,13 @@ namespace Yuudong2Mod
         private int raidCredit;
 
         private int lastPlayerAttackTick = -9999999;
+
+        // 동맹 군대가 내 전투에 합세한 정착지와 그 동맹. 내가 이기면 그 동맹이 정착지를 차지한다.
+        private Dictionary<WorldObject, Faction> assists = new Dictionary<WorldObject, Faction>();
+
+        private List<WorldObject> tmpAssistKeys;
+
+        private List<Faction> tmpAssistValues;
 
         private List<Faction> tmpFactionKeys;
 
@@ -276,8 +302,11 @@ namespace Yuudong2Mod
             Scribe_Values.Look(ref lastDay, "lastDay", -1);
             Scribe_Values.Look(ref raidCredit, "raidCredit", 0);
             Scribe_Values.Look(ref lastPlayerAttackTick, "lastPlayerAttackTick", -9999999);
+            Scribe_Collections.Look(ref assists, "assists", LookMode.Reference, LookMode.Reference, ref tmpAssistKeys, ref tmpAssistValues);
             if (Scribe.mode == LoadSaveMode.PostLoadInit)
             {
+                assists ??= new Dictionary<WorldObject, Faction>();
+                assists.RemoveAll(pair => pair.Key == null || pair.Value == null);
                 power ??= new Dictionary<Faction, float>();
                 lastSettlements ??= new Dictionary<Faction, int>();
                 news ??= new List<string>();
@@ -382,6 +411,7 @@ namespace Yuudong2Mod
                 power.Remove(gone);
             }
             lastSettlements = counts;
+            assists.RemoveAll(pair => pair.Key.Destroyed || !(pair.Key is MapParent parent) || !parent.HasMap);
             return counts.Keys.ToList();
         }
 
@@ -609,8 +639,9 @@ namespace Yuudong2Mod
                 lastPlayerAttackTick = Find.TickManager.TicksGame;
             }
             newsTargets.Add(army);
-            AddNews((atPlayer ? "Yuudong2.FactionWar.News.MarchPlayer" : "Yuudong2.FactionWar.News.March").Translate(
-                faction.Name, origin.Label, target.Label, target.Faction.Name, army.TicksToArrival.ToStringTicksToPeriod()), atPlayer);
+            string marchKey = atPlayer ? "Yuudong2.FactionWar.News.MarchPlayer"
+                : FactionWarUtility.CanJoinPlayer(faction, target.Faction) ? "Yuudong2.FactionWar.News.MarchAlly" : "Yuudong2.FactionWar.News.March";
+            AddNews(marchKey.Translate(faction.Name, origin.Label, target.Label, target.Faction.Name, army.TicksToArrival.ToStringTicksToPeriod()), atPlayer);
             return army;
         }
 
@@ -654,9 +685,14 @@ namespace Yuudong2Mod
                 Retreat(army);
                 return;
             }
+            bool canJoin = FactionWarUtility.CanJoinPlayer(attacker, defender);
             if (settlement.HasMap)
             {
-                // 플레이어가 그 정착지 맵에 있으면 결과를 미룬다.
+                // 플레이어가 그 정착지 맵에 있다. 동맹 군대는 전투에 합세하고, 다른 군대는 결과를 미룬다.
+                if (canJoin && JoinPlayerBattle(army, attacker, defender, settlement))
+                {
+                    return;
+                }
                 if (army.waitedTicks >= WorldObject_WarArmy.MaxWaitTicks)
                 {
                     AddNews("Yuudong2.FactionWar.News.Retreat".Translate(attacker.Name));
@@ -665,7 +701,126 @@ namespace Yuudong2Mod
                 return;
             }
 
+            // 내 상단이 같은 정착지를 치러 오는 중이면 동맹 군대는 기다린다. 한도가 지나면 혼자 공격한다.
+            if (canJoin && army.waitedTicks < WorldObject_WarArmy.MaxWaitTicks && PlayerCaravanHeadingTo(settlement.Tile))
+            {
+                return;
+            }
+
             ResolveBattle(army, attacker, defender, settlement);
+        }
+
+        private static bool PlayerCaravanHeadingTo(PlanetTile tile)
+        {
+            List<Caravan> caravans = Find.WorldObjects.Caravans;
+            for (int i = 0; i < caravans.Count; i++)
+            {
+                Caravan caravan = caravans[i];
+                if (caravan.IsPlayerControlled && (caravan.Tile == tile || (caravan.pather.Moving && caravan.pather.Destination == tile)))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        // 군대 병력을 정착지 한 곳의 기준 수비대와 견주어, 적 기지 방어 병력 포인트의 그 배수만큼 아군으로 들여보낸다.
+        public float AllyPoints(WorldObject_WarArmy army, Faction defender)
+        {
+            float basePoints = Yuudong2Mod.AppliedFeatures.Contains(Features.EnemyBaseScaling) ? EnemyBaseUtility.PlayerThreatPoints() : VanillaSettlementPoints;
+            float nominalGarrison = PowerPerSettlement * FactionWarUtility.TechFactor(defender);
+            return Mathf.Max(MinAllyPoints, basePoints * army.strength / nominalGarrison);
+        }
+
+        private bool JoinPlayerBattle(WorldObject_WarArmy army, Faction attacker, Faction defender, Settlement settlement)
+        {
+            IncidentParms parms = new IncidentParms
+            {
+                target = settlement.Map,
+                faction = attacker,
+                points = AllyPoints(army, defender),
+                forced = true,
+                raidArrivalMode = PawnsArrivalModeDefOf.EdgeWalkIn,
+            };
+            if (!IncidentDefOf.RaidFriendly.Worker.TryExecute(parms))
+            {
+                return false;
+            }
+            assists[settlement] = attacker;
+            AddNews("Yuudong2.FactionWar.News.Joined".Translate(attacker.Name, settlement.Label));
+            army.Destroy();
+            return true;
+        }
+
+        // 바닐라 함락 판정 대신: 동맹이 합세한 정착지의 방어 병력을 다 물리치면 정착지를 부수지 않고 그 동맹에게 넘긴다.
+        // true를 돌려주면 바닐라 판정을 건너뛴다.
+        public bool TryAllyCapture(Settlement settlement)
+        {
+            if (!assists.TryGetValue(settlement, out Faction ally))
+            {
+                return false;
+            }
+            if (settlement.Faction == ally)
+            {
+                return true;
+            }
+            Faction defender = settlement.Faction;
+            Map map = settlement.Map;
+            if (map == null || ally == null || ally.defeated || !FactionWarUtility.CanJoinPlayer(ally, defender))
+            {
+                assists.Remove(settlement);
+                return false;
+            }
+            if (!SettlementDefeatUtility.IsDefeated(map, defender))
+            {
+                return true;
+            }
+
+            IdeoUtility.Notify_PlayerRaidedSomeone(map.mapPawns.FreeColonistsSpawned);
+            string place = settlement.Label;
+            int defenderCount = Mathf.Max(1, SettlementsOf(defender).Count);
+            if (power.ContainsKey(defender))
+            {
+                power[defender] = Mathf.Max(0f, power[defender] - power[defender] / defenderCount);
+            }
+            CaptureSettlement(settlement, ally);
+
+            StringBuilder sb = new StringBuilder();
+            sb.Append("Yuudong2.FactionWar.AllyCaptureText".Translate(ally.Name, defender.Name, place));
+            if (defenderCount <= 1)
+            {
+                defender.defeated = true;
+                power.Remove(defender);
+                sb.AppendLine();
+                sb.AppendLine();
+                sb.Append("LetterFactionBaseDefeated_FactionDestroyed".Translate(defender.Name));
+            }
+            foreach (Faction other in Find.FactionManager.AllFactionsListForReading)
+            {
+                if (other.Hidden || other.IsPlayer || other == defender || !other.HostileTo(defender))
+                {
+                    continue;
+                }
+                FactionRelationKind before = other.PlayerRelationKind;
+                if (Faction.OfPlayer.TryAffectGoodwillWith(other, AllyCaptureGoodwill, canSendMessage: false, canSendHostilityLetter: false, HistoryEventDefOf.DestroyedEnemyBase))
+                {
+                    sb.AppendLine();
+                    sb.AppendLine();
+                    sb.Append("RelationsWith".Translate(other.Name) + ": " + AllyCaptureGoodwill.ToStringWithSign());
+                    other.TryAppendRelationKindChangedInfo(sb, before, other.PlayerRelationKind);
+                }
+            }
+            Find.LetterStack.ReceiveLetter("Yuudong2.FactionWar.AllyCaptureLabel".Translate(), sb.ToString(), LetterDefOf.PositiveEvent, new GlobalTargetInfo(settlement.Tile), ally);
+            AddNews("Yuudong2.FactionWar.News.CapturedWithUs".Translate(ally.Name, defender.Name, place));
+            SyncFactions();
+            return true;
+        }
+
+        private static void CaptureSettlement(Settlement settlement, Faction newOwner)
+        {
+            settlement.SetFaction(newOwner);
+            settlementMaterial(settlement) = null;
+            Find.World.renderer.Notify_StaticWorldObjectPosChanged();
         }
 
         private void RaidPlayer(WorldObject_WarArmy army, Faction attacker, WorldObject target)
@@ -737,9 +892,7 @@ namespace Yuudong2Mod
             }
             else
             {
-                settlement.SetFaction(attacker);
-                settlementMaterial(settlement) = null;
-                Find.World.renderer.Notify_StaticWorldObjectPosChanged();
+                CaptureSettlement(settlement, attacker);
                 if (power.ContainsKey(attacker))
                 {
                     power[attacker] += army.strength * 0.5f;
@@ -817,6 +970,18 @@ namespace Yuudong2Mod
             }
             __result = false;
             return false;
+        }
+    }
+
+    // 동맹이 합세한 정착지는 함락되면 파괴되지 않고 그 동맹 것이 된다(WorldComponent_FactionWar.TryAllyCapture).
+    [HarmonyPatchCategory(Features.FactionWar)]
+    [HarmonyPatch(typeof(SettlementDefeatUtility), nameof(SettlementDefeatUtility.CheckDefeated))]
+    internal static class SettlementDefeatUtility_CheckDefeated_FactionWar_Patch
+    {
+        private static bool Prefix(Settlement factionBase)
+        {
+            WorldComponent_FactionWar comp = FactionWarUtility.Comp;
+            return comp == null || !comp.TryAllyCapture(factionBase);
         }
     }
 
