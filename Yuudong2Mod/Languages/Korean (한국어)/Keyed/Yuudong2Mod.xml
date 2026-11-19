@@ -394,8 +394,6 @@
   <Yuudong2.Rpg.Set.StartMax.Desc>'시작 능력치를 모두 0으로'가 꺼져 있을 때 쓰입니다.</Yuudong2.Rpg.Set.StartMax.Desc>
   <Yuudong2.Rpg.Set.MaxLevel>최대 레벨 (0은 제한 없음):</Yuudong2.Rpg.Set.MaxLevel>
   <Yuudong2.Rpg.Set.MaxLevel.Desc>이 레벨에 도달하면 더 오르지 않습니다.</Yuudong2.Rpg.Set.MaxLevel.Desc>
-  <Yuudong2.Rpg.Set.Scaling>새 폰 레벨 스케일링: 정착민 평균 레벨의 {0}%</Yuudong2.Rpg.Set.Scaling>
-  <Yuudong2.Rpg.Set.Scaling.Desc>새로 생기는 폰(적 포함)의 레벨을 정착민 평균 레벨의 몇 %로 맞출지 정합니다. 0이면 쓰지 않습니다.</Yuudong2.Rpg.Set.Scaling.Desc>
   <Yuudong2.Gene.OverrideSorting>유전자팩 정렬 개선</Yuudong2.Gene.OverrideSorting>
   <Yuudong2.Gene.OverrideSorting.Desc>유전자 조립기에서 유전자팩을 첫 유전자가 아니라 가장 영향이 큰 유전자 기준으로 정렬합니다.</Yuudong2.Gene.OverrideSorting.Desc>
   <Yuudong2.Gene.SinglesFirst>단일 유전자팩을 먼저</Yuudong2.Gene.SinglesFirst>

@@ -394,8 +394,6 @@
   <Yuudong2.Rpg.Set.StartMax.Desc>Used when flat starting attributes is off.</Yuudong2.Rpg.Set.StartMax.Desc>
   <Yuudong2.Rpg.Set.MaxLevel>Max level (0 for none):</Yuudong2.Rpg.Set.MaxLevel>
   <Yuudong2.Rpg.Set.MaxLevel.Desc>Pawns stop leveling at this level.</Yuudong2.Rpg.Set.MaxLevel.Desc>
-  <Yuudong2.Rpg.Set.Scaling>New pawn level scaling: {0}% of colonist average</Yuudong2.Rpg.Set.Scaling>
-  <Yuudong2.Rpg.Set.Scaling.Desc>Sets new pawns' (including enemies') level to this share of the colonist average. 0 disables it.</Yuudong2.Rpg.Set.Scaling.Desc>
   <Yuudong2.Gene.OverrideSorting>Better genepack sorting</Yuudong2.Gene.OverrideSorting>
   <Yuudong2.Gene.OverrideSorting.Desc>Sorts genepacks by their most impactful gene instead of the first one.</Yuudong2.Gene.OverrideSorting.Desc>
   <Yuudong2.Gene.SinglesFirst>Single genes first</Yuudong2.Gene.SinglesFirst>

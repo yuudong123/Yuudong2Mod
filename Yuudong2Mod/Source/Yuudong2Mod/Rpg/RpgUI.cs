@@ -494,7 +494,6 @@ namespace Yuudong2Mod.Rpg
             Widgets.TextFieldNumericLabeled(maxRect, "Yuudong2.Rpg.Set.MaxLevel".Translate() + " ", ref s.rpgMaxLevel, ref maxLevelBuffer, 0f, 1E+09f);
             TooltipHandler.TipRegion(maxRect, "Yuudong2.Rpg.Set.MaxLevel.Desc".Translate());
             listing.Gap(6f);
-            s.rpgLevelScaling = (int)listing.SliderLabeled("Yuudong2.Rpg.Set.Scaling".Translate(s.rpgLevelScaling), s.rpgLevelScaling, 0f, 100f, 0.6f, "Yuudong2.Rpg.Set.Scaling.Desc".Translate());
             listing.End();
         }
     }

@@ -207,7 +207,6 @@ namespace Yuudong2Mod
         public int rpgStartingStatMax;
         public int rpgKillExpMult = 50;
         public int rpgMaxLevel = 9999;
-        public int rpgLevelScaling;
 
         // 방 크기 기준 (Realistic Rooms Rewritten). 빡빡함, 평범, 약간 넓음, 꽤나 넓음, 상당히 넓음, 매우 넓음 순서
         public float[] roomSpaceThresholds = (float[])RealisticRoomsUtility.DefaultThresholds.Clone();
@@ -321,7 +320,6 @@ namespace Yuudong2Mod
             Scribe_Values.Look(ref rpgStartingStatMax, "rpgStartingStatMax", 0);
             Scribe_Values.Look(ref rpgKillExpMult, "rpgKillExpMult", 50);
             Scribe_Values.Look(ref rpgMaxLevel, "rpgMaxLevel", 9999);
-            Scribe_Values.Look(ref rpgLevelScaling, "rpgLevelScaling", 0);
 
             for (int i = 0; i < RealisticRoomsUtility.DefaultThresholds.Length; i++)
             {
