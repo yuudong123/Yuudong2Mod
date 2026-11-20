@@ -832,6 +832,7 @@ namespace Yuudong2Test
             Check(!cutsceneReport.StartsWith("FAIL") && !WorldComponent_GravshipController.CutsceneInProgress && !Find.ScreenshotModeHandler.Active, "cutscene landing: " + cutsceneReport);
             Check(ShipLibrary.WaitForScan(180000), $"design scan finished: {ShipLibrary.Count} files hold a gravship");
             int sampled = 0;
+            System.Diagnostics.Stopwatch loadTimer = System.Diagnostics.Stopwatch.StartNew();
             List<string> shapes = new List<string>();
             foreach (string file in ShipLibrary.Files.Take(40))
             {
@@ -842,7 +843,7 @@ namespace Yuudong2Test
                     shapes.Add($"{d.size.x}x{d.size.z} {d.cells.Count}c {d.things.Count}t {d.floors.Count}f");
                 }
             }
-            Check(shapes.Count > 0, $"{shapes.Count} of {sampled} sampled files give a whole ship: {string.Join(", ", shapes.Take(14))}");
+            Check(shapes.Count > 0, $"{shapes.Count} of {sampled} sampled files give a whole ship (read in {loadTimer.ElapsedMilliseconds} ms): {string.Join(", ", shapes.Take(14))}");
 
             Map map = Find.AnyPlayerHomeMap;
             Faction faction = GravshipRaider();
@@ -851,6 +852,12 @@ namespace Yuudong2Test
                 sb.AppendLine("info: no home map or no hostile industrial faction, raid check skipped");
                 sb.AppendLine($"FAIL: {bad}");
                 return;
+            }
+
+            foreach (float points in new[] { 300f, 1500f, 5000f, 10000f })
+            {
+                bool planned = EnemyGravshipUtility.TryPlan(map, points, out ShipDesign plan, out IntVec3 at);
+                sb.AppendLine($"info: {points} points aims at {EnemyGravshipUtility.TargetCells(points)} cells -> {(planned ? $"{plan.size.x}x{plan.size.z} {plan.cells.Count} cells at {at}" : EnemyGravshipUtility.lastReport)}");
             }
 
             int errorsBefore = TestRunner.TickErrors.Count;
@@ -870,7 +877,8 @@ namespace Yuudong2Test
                 List<Thing> buildings = cells.SelectMany(c => c.GetThingList(map)).Where(t => t is Building).Distinct().ToList();
                 Check(buildings.Count > 10 && buildings.Where(b => b.def.CanHaveFaction).All(b => b.Faction == faction),
                     $"{buildings.Count} buildings aboard: {string.Join(", ", buildings.GroupBy(b => b.def.defName).OrderByDescending(g => g.Count()).Take(10).Select(g => g.Key + " x" + g.Count()))}");
-                Check(cells.All(c => c.GetFirstItem(map) == null), "no items aboard");
+                int aboardItems = cells.Count(c => c.GetFirstItem(map) != null);
+                Check(aboardItems == 0, $"items left under the ship: {aboardItems}");
                 if (engine != null)
                 {
                     sb.AppendLine($"info: engine supports {engine.ValidSubstructure.Count} of {cells.Count} cells, claimable by player: {engine.ClaimableBy(Faction.OfPlayer)}");

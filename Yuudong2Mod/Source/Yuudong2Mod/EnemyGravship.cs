@@ -191,17 +191,28 @@ namespace Yuudong2Mod
             public List<(string def, string stuff, int rot)> items;
         }
 
+        private static readonly Dictionary<string, ShipDesign> loaded = new Dictionary<string, ShipDesign>();
+
+        // 한 번 읽은 설계도는 기억해 둔다. 배가 안 나오는 파일은 null로 남는다.
         public static ShipDesign TryLoad(string fileName)
         {
+            if (loaded.TryGetValue(fileName, out ShipDesign known))
+            {
+                return known;
+            }
+
+            ShipDesign design = null;
             try
             {
-                return Extract(fileName, ReadAll(Path.Combine(Folder, fileName)));
+                design = Extract(fileName, ReadAll(Path.Combine(Folder, fileName)));
             }
             catch (Exception e)
             {
                 Log.Warning($"[Yuudong2Mod] gravship design {fileName} could not be read: {e.Message}");
-                return null;
             }
+
+            loaded[fileName] = design;
+            return design;
         }
 
         private static ShipDesign Extract(string fileName, byte[] data)
@@ -422,16 +433,19 @@ namespace Yuudong2Mod
 
     public static class EnemyGravshipUtility
     {
-        private const int SiteTries = 400;
+        private const int SiteStride = 2;
         private const int EdgeMargin = 8;
         private const int SubstructureGap = 3;
-        private const int DesignTries = 16;
+        private const float Oversize = 1.25f;
+        private const float PointsPerCell = 5f;
 
         private static readonly MethodInfo ResolveFaction = AccessTools.Method(typeof(IncidentWorker_Raid), "TryResolveRaidFaction");
         private static readonly MethodInfo ResolvePoints = AccessTools.Method(typeof(IncidentWorker_Raid), "ResolveRaidPoints");
         private static readonly MethodInfo ExecuteWorker = AccessTools.Method(typeof(IncidentWorker), "TryExecuteWorker");
 
-        private static readonly HashSet<string> unusable = new HashSet<string>();
+        private static bool[] freeCells;
+        private static Map freeMap;
+        private static int freeTick;
 
         public static bool executingRaid;
         public static List<Thing> lastShipThings = new List<Thing>();
@@ -454,7 +468,11 @@ namespace Yuudong2Mod
             listing.End();
         }
 
-        public static bool TryPlan(Map map, out ShipDesign design, out IntVec3 root)
+        // 습격 포인트 1,000이면 200칸쯤 되는 배를 노린다.
+        public static int TargetCells(float points) => Mathf.Max(ShipLibrary.MinCells, Mathf.RoundToInt(points / PointsPerCell));
+
+        // 목표 크기에 가까운 배부터 놓을 자리를 찾는다. 목표보다 많이 큰 배는 빼고, 자리가 없으면 점점 작은 배로 내려간다.
+        public static bool TryPlan(Map map, float points, out ShipDesign design, out IntVec3 root)
         {
             design = null;
             root = IntVec3.Invalid;
@@ -463,17 +481,14 @@ namespace Yuudong2Mod
                 return false;
             }
 
-            int loaded = 0;
-            foreach (string file in ShipLibrary.Files.Where(f => !unusable.Contains(f)).InRandomOrder().Take(DesignTries))
+            int target = TargetCells(points);
+            List<ShipDesign> designs = ShipLibrary.Files.Select(ShipLibrary.TryLoad).Where(d => d != null).ToList();
+            IEnumerable<ShipDesign> order = designs
+                .Where(d => d.cells.Count <= target * Oversize)
+                .OrderBy(d => Mathf.Abs(d.cells.Count - target) + Rand.Range(0f, target * 0.15f))
+                .Concat(designs.Where(d => d.cells.Count > target * Oversize).OrderBy(d => d.cells.Count));
+            foreach (ShipDesign candidate in order)
             {
-                ShipDesign candidate = ShipLibrary.TryLoad(file);
-                if (candidate == null)
-                {
-                    unusable.Add(file);
-                    continue;
-                }
-
-                loaded++;
                 if (TryFindSite(map, candidate, out root))
                 {
                     design = candidate;
@@ -481,10 +496,11 @@ namespace Yuudong2Mod
                 }
             }
 
-            lastReport = $"no landing site: {loaded} designs tried, none fits on the map";
+            lastReport = $"no landing site: none of {designs.Count} designs fits on the map";
             return false;
         }
 
+        // 맵 전체를 두 칸 간격으로 훑어, 배의 모든 칸이 비어 있는 자리 중 정착지 중심에 가장 가까운 곳을 고른다.
         public static bool TryFindSite(Map map, ShipDesign design, out IntVec3 root)
         {
             root = IntVec3.Invalid;
@@ -495,17 +511,46 @@ namespace Yuudong2Mod
                 return false;
             }
 
-            IntVec3 colony = ColonyCenter(map);
-            float best = float.MaxValue;
-            for (int i = 0; i < SiteTries; i++)
+            bool[] free = FreeCells(map);
+            int width = map.Size.x;
+            int[] offsets = new int[design.cells.Count];
+            for (int i = 0; i < offsets.Length; i++)
             {
-                IntVec3 candidate = new IntVec3(Rand.RangeInclusive(EdgeMargin, maxX), 0, Rand.RangeInclusive(EdgeMargin, maxZ));
-                IntVec3 center = candidate + new IntVec3(design.size.x / 2, 0, design.size.z / 2);
-                float distance = center.DistanceToSquared(colony);
-                if (distance < best && SiteValid(map, design, candidate))
+                offsets[i] = design.cells[i].z * width + design.cells[i].x;
+            }
+
+            IntVec3 colony = ColonyCenter(map);
+            int halfX = design.size.x / 2;
+            int halfZ = design.size.z / 2;
+            float best = float.MaxValue;
+            for (int z = EdgeMargin + Rand.Range(0, SiteStride); z <= maxZ; z += SiteStride)
+            {
+                for (int x = EdgeMargin + Rand.Range(0, SiteStride); x <= maxX; x += SiteStride)
                 {
-                    best = distance;
-                    root = candidate;
+                    float dx = x + halfX - colony.x;
+                    float dz = z + halfZ - colony.z;
+                    float distance = dx * dx + dz * dz;
+                    if (distance >= best)
+                    {
+                        continue;
+                    }
+
+                    int origin = z * width + x;
+                    bool fits = true;
+                    for (int i = 0; i < offsets.Length; i++)
+                    {
+                        if (!free[origin + offsets[i]])
+                        {
+                            fits = false;
+                            break;
+                        }
+                    }
+
+                    if (fits)
+                    {
+                        best = distance;
+                        root = new IntVec3(x, 0, z);
+                    }
                 }
             }
 
@@ -531,61 +576,96 @@ namespace Yuudong2Mod
             return new IntVec3((int)(x / buildings.Count), 0, (int)(z / buildings.Count));
         }
 
-        private static bool SiteValid(Map map, ShipDesign design, IntVec3 root)
+        // 배의 칸이 놓일 수 있는 맵 칸. 같은 틱 안에서는 한 번만 계산한다.
+        private static bool[] FreeCells(Map map)
         {
-            TerrainAffordanceDef needed = TerrainDefOf.Substructure.terrainAffordanceNeeded;
-            foreach (IntVec3 local in design.cells)
+            int tick = Find.TickManager.TicksGame;
+            if (freeCells != null && freeMap == map && freeTick == tick)
             {
-                IntVec3 c = root + local;
-                if (!c.InBounds(map) || c.Fogged(map) || c.Roofed(map) || map.terrainGrid.FoundationAt(c) != null || map.terrainGrid.UnderTerrainAt(c) != null)
+                return freeCells;
+            }
+
+            TerrainAffordanceDef needed = TerrainDefOf.Substructure.terrainAffordanceNeeded;
+            bool[] free = new bool[map.cellIndices.NumGridCells];
+            List<IntVec3> substructure = new List<IntVec3>();
+            foreach (IntVec3 c in map.AllCells)
+            {
+                TerrainDef foundation = map.terrainGrid.FoundationAt(c);
+                if (foundation != null)
                 {
-                    return false;
+                    if (foundation.IsSubstructure)
+                    {
+                        substructure.Add(c);
+                    }
+
+                    continue;
+                }
+
+                if (c.Fogged(map) || c.Roofed(map) || map.terrainGrid.UnderTerrainAt(c) != null)
+                {
+                    continue;
                 }
 
                 if (needed != null && !map.terrainGrid.TerrainAt(c).affordances.Contains(needed))
                 {
-                    return false;
+                    continue;
                 }
 
+                bool clear = true;
                 List<Thing> things = map.thingGrid.ThingsListAtFast(c);
                 for (int i = 0; i < things.Count; i++)
                 {
                     ThingCategory category = things[i].def.category;
-                    if (category != ThingCategory.Plant && category != ThingCategory.Filth && category != ThingCategory.Mote && category != ThingCategory.Ethereal)
+                    if (category != ThingCategory.Plant && category != ThingCategory.Filth && category != ThingCategory.Mote && category != ThingCategory.Ethereal && category != ThingCategory.Item)
                     {
-                        return false;
+                        clear = false;
+                        break;
                     }
                 }
+
+                free[map.cellIndices.CellToIndex(c)] = clear;
             }
 
             // 이미 있는 하부 구조와 붙으면 두 배가 한 척으로 이어진다.
-            CellRect around = new CellRect(root.x, root.z, design.size.x, design.size.z).ExpandedBy(SubstructureGap).ClipInsideMap(map);
-            foreach (IntVec3 c in around)
+            foreach (IntVec3 c in substructure)
             {
-                TerrainDef foundation = map.terrainGrid.FoundationAt(c);
-                if (foundation != null && foundation.IsSubstructure)
+                foreach (IntVec3 near in CellRect.CenteredOn(c, SubstructureGap).ClipInsideMap(map))
                 {
-                    return false;
+                    free[map.cellIndices.CellToIndex(near)] = false;
                 }
             }
 
-            return true;
+            freeCells = free;
+            freeMap = map;
+            freeTick = tick;
+            return free;
         }
 
         public static Building_GravEngine Place(Map map, ShipDesign design, IntVec3 root, Faction faction)
         {
-            HashSet<IntVec3> occupied = new HashSet<IntVec3>();
+            freeCells = null;
+            HashSet<IntVec3> occupied = new HashSet<IntVec3>(design.cells.Select(local => root + local));
+            CellRect outer = CellRect.FromCellList(occupied).ExpandedBy(1).ClipInsideMap(map);
             foreach (IntVec3 local in design.cells)
             {
                 IntVec3 c = root + local;
-                occupied.Add(c);
                 map.zoneManager.ZoneAt(c)?.RemoveCell(c);
                 List<Thing> things = map.thingGrid.ThingsListAt(c);
                 for (int i = things.Count - 1; i >= 0; i--)
                 {
-                    if (things[i].def.category == ThingCategory.Plant || things[i].def.category == ThingCategory.Filth)
+                    Thing thing = things[i];
+                    if (thing.def.category == ThingCategory.Plant || thing.def.category == ThingCategory.Filth)
                     {
-                        things[i].Destroy();
+                        thing.Destroy();
+                    }
+                    else if (thing.def.category == ThingCategory.Item)
+                    {
+                        // 바닥에 놓인 물건과 돌덩이는 배 밖 가장 가까운 곳으로 밀어낸다.
+                        thing.DeSpawn();
+                        if (!GenPlace.TryPlaceThing(thing, NearestEdge(outer, c), map, ThingPlaceMode.Near, null, cell => !occupied.Contains(cell)))
+                        {
+                            GenSpawn.Spawn(thing, c, map);
+                        }
                     }
                 }
 
@@ -658,6 +738,26 @@ namespace Yuudong2Mod
             }
         }
 
+        private static IntVec3 NearestEdge(CellRect rect, IntVec3 c)
+        {
+            int left = c.x - rect.minX;
+            int right = rect.maxX - c.x;
+            int bottom = c.z - rect.minZ;
+            int top = rect.maxZ - c.z;
+            int nearest = Mathf.Min(Mathf.Min(left, right), Mathf.Min(bottom, top));
+            if (nearest == left)
+            {
+                return new IntVec3(rect.minX, 0, c.z);
+            }
+
+            if (nearest == right)
+            {
+                return new IntVec3(rect.maxX, 0, c.z);
+            }
+
+            return nearest == bottom ? new IntVec3(c.x, 0, rect.minZ) : new IntVec3(c.x, 0, rect.maxZ);
+        }
+
         private static int SpawnOrder(ShipThing entry)
         {
             if (entry.def.building.isAttachment)
@@ -723,7 +823,7 @@ namespace Yuudong2Mod
                 return false;
             }
 
-            if (!TryPlan(map, out ShipDesign design, out IntVec3 root))
+            if (!TryPlan(map, parms.points, out ShipDesign design, out IntVec3 root))
             {
                 return false;
             }
@@ -738,7 +838,7 @@ namespace Yuudong2Mod
                 try
                 {
                     bool done = (bool)ExecuteWorker.Invoke(worker, new object[] { parms });
-                    lastReport = $"{design.source} {design.cells.Count} cells at {root}, engine {(engine != null ? "placed" : "missing")}, raid {(done ? "arrived" : "failed")}";
+                    lastReport = $"{design.source} {design.cells.Count} cells (aimed at {TargetCells(parms.points)}) at {root}, engine {(engine != null ? "placed" : "missing")}, raid {(done ? "arrived" : "failed")}";
                     if (!done)
                     {
                         Log.Warning("[Yuudong2Mod] enemy gravship landed but the raid could not be generated: " + parms);

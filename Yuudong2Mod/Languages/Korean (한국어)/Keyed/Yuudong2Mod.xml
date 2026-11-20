@@ -332,7 +332,7 @@
   <Yuudong2.Feature.RealRuinsBases>남이 만든 기지 (Real Ruins)</Yuudong2.Feature.RealRuinsBases>
   <Yuudong2.Feature.RealRuinsBases.Desc>Real Ruins 모드가 켜져 있으면, 다른 세력 정착지를 Real Ruins가 받아 둔 다른 플레이어의 실제 기지로 망가뜨리지 않고 짓습니다. 받아 둔 기지 중 큰 쪽 절반에서, 가치가 내 정착지와 비슷한 것을 무작위로 고르고 방어 병력은 따로 넣습니다. 쓸 만한 기지가 없으면 바닐라 방식으로 짓습니다. 다른 세력 정착지 맵에는 Real Ruins가 따로 뿌리는 폐허를 깔지 않습니다.</Yuudong2.Feature.RealRuinsBases.Desc>
   <Yuudong2.Feature.EnemyGravship>적 중력선 습격</Yuudong2.Feature.EnemyGravship>
-  <Yuudong2.Feature.EnemyGravship.Desc>산업 시대 이상 세력의 습격이 일정 확률로 중력선을 타고 옵니다. 다른 플레이어가 실제로 만든 중력선이 정착지 옆(우주에서는 내 배 옆)에 착륙하고, 안에서 습격대가 나옵니다. 배는 Real Ruins가 받아 둔 설계도에서 가져오므로 Real Ruins의 설계도 보관함이 있어야 합니다. 싸움이 끝나면 배는 중력 엔진까지 그대로 남고, 점유하면 내 것이 됩니다. 배 안의 물건은 가져오지 않습니다.</Yuudong2.Feature.EnemyGravship.Desc>
+  <Yuudong2.Feature.EnemyGravship.Desc>산업 시대 이상 세력의 습격이 일정 확률로 중력선을 타고 옵니다. 다른 플레이어가 실제로 만든 중력선이 정착지 옆(우주에서는 내 배 옆)에 착륙하고, 안에서 습격대가 나옵니다. 습격이 셀수록 큰 배가 오고, 놓을 자리가 없으면 더 작은 배가 옵니다. 배는 Real Ruins가 받아 둔 설계도에서 가져오므로 Real Ruins의 설계도 보관함이 있어야 합니다. 싸움이 끝나면 배는 중력 엔진까지 그대로 남고, 점유하면 내 것이 됩니다. 배 안의 물건은 가져오지 않습니다.</Yuudong2.Feature.EnemyGravship.Desc>
   <Yuudong2.EnemyGravship.Chance>습격이 중력선으로 올 확률: {0}%</Yuudong2.EnemyGravship.Chance>
   <Yuudong2.EnemyGravship.Chance.Desc>내 정착지에 오는 일반 적 습격마다 이 확률로 중력선 습격으로 바뀝니다. 퀘스트 습격과 부족·기계·곤충 습격은 바뀌지 않습니다.</Yuudong2.EnemyGravship.Chance.Desc>
   <Yuudong2.EnemyGravship.Cutscene>착륙 장면 보기</Yuudong2.EnemyGravship.Cutscene>
