@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using HarmonyLib;
 using RimWorld;
 using UnityEngine;
 using Verse;
@@ -373,6 +374,8 @@ namespace Yuudong2Mod
         public ApparelRepairState State => state;
 
         public Pawn User => user;
+
+        public IReadOnlyList<Apparel> Repairing => repairing;
 
         public float Progress => workTotal > 0f ? Mathf.Clamp01(1f - workLeft / workTotal) : 0f;
 
@@ -1014,6 +1017,51 @@ namespace Yuudong2Mod
             dress.defaultCompleteMode = ToilCompleteMode.Never;
             dress.WithProgressBar(BenchInd, () => phaseTicksTotal > 0 ? 1f - (float)phaseTicksLeft / phaseTicksTotal : 1f);
             yield return dress;
+        }
+    }
+
+    // 수선을 맡긴 옷은 재봉대 안에 들어가 있어서, "착용 중인 것도 세기"로 개수를 맞추는 작업이 그 옷을 없는 것으로 보고 더 만든다.
+    // 수선 중인 옷도 주인이 입고 있는 것으로 센다.
+    [HarmonyPatchCategory(Features.BenchApparelRepair)]
+    [HarmonyPatch(typeof(RecipeWorkerCounter), nameof(RecipeWorkerCounter.CountProducts))]
+    internal static class RecipeWorkerCounter_CountProducts_ApparelRepair_Patch
+    {
+        private static void Postfix(RecipeWorkerCounter __instance, Bill_Production bill, ref int __result)
+        {
+            Map map = bill.Map;
+            if (!bill.includeEquipped || map == null || !__instance.CanCountProducts(bill))
+            {
+                return;
+            }
+
+            ThingDef def = __instance.recipe.products[0].thingDef;
+            if (!def.IsApparel)
+            {
+                return;
+            }
+
+            List<ThingDef> benchDefs = ApparelRepairUtility.BenchDefs;
+            for (int i = 0; i < benchDefs.Count; i++)
+            {
+                List<Thing> benches = map.listerThings.ThingsOfDef(benchDefs[i]);
+                for (int j = 0; j < benches.Count; j++)
+                {
+                    CompApparelRepair comp = benches[j].TryGetComp<CompApparelRepair>();
+                    if (comp == null || comp.State == ApparelRepairState.Idle)
+                    {
+                        continue;
+                    }
+
+                    IReadOnlyList<Apparel> repairing = comp.Repairing;
+                    for (int k = 0; k < repairing.Count; k++)
+                    {
+                        if (__instance.CountValidThing(repairing[k], bill, def))
+                        {
+                            __result++;
+                        }
+                    }
+                }
+            }
         }
     }
 }
