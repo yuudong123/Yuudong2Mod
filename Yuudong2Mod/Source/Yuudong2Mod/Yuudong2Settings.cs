@@ -228,6 +228,7 @@ namespace Yuudong2Mod
         public float factionWarIntensity = 1f;
         public int factionWarMaxArmies = 8;
         public int factionWarMaxFactions = 20;
+        public int factionWarRuinDays = 15;
         public bool factionWarAttackPlayer = true;
         public bool factionWarReplaceRaids = true;
 
@@ -349,6 +350,7 @@ namespace Yuudong2Mod
             Scribe_Values.Look(ref factionWarIntensity, "factionWarIntensity", 1f);
             Scribe_Values.Look(ref factionWarMaxArmies, "factionWarMaxArmies", 8);
             Scribe_Values.Look(ref factionWarMaxFactions, "factionWarMaxFactions", 20);
+            Scribe_Values.Look(ref factionWarRuinDays, "factionWarRuinDays", 15);
             Scribe_Values.Look(ref factionWarAttackPlayer, "factionWarAttackPlayer", true);
             Scribe_Values.Look(ref factionWarReplaceRaids, "factionWarReplaceRaids", true);
 

@@ -672,6 +672,29 @@ namespace Yuudong2Test
                 Current.Game.DeinitAndRemoveMap(battleMap, false);
             }
 
+            PlanetTile ruinTile = TileFinder.RandomSettlementTileFor(Find.WorldGrid.Surface, null);
+            if (ruinTile.Valid)
+            {
+                DestroyedSettlement oldRuins = (DestroyedSettlement)WorldObjectMaker.MakeWorldObject(ruinTile.LayerDef.DestroyedSettlementWorldObjectDef);
+                oldRuins.Tile = ruinTile;
+                Find.WorldObjects.Add(oldRuins);
+                int ruinDays = Mathf.Max(1, Yuudong2Settings.Current.factionWarRuinDays);
+                oldRuins.creationGameTicks = Find.TickManager.TicksGame - ruinDays * GenDate.TicksPerDay + 10;
+                int removedEarly = comp.RemoveOldRuins(ruinDays);
+                Check(!oldRuins.Destroyed, $"destroyed settlement younger than {ruinDays} days stays ({removedEarly} older ones removed)");
+                oldRuins.creationGameTicks -= 10;
+                comp.RemoveOldRuins(ruinDays);
+                Check(oldRuins.Destroyed && !Find.WorldObjects.DestroyedSettlements.Contains(oldRuins), $"destroyed settlement is removed after {ruinDays} days");
+                if (!oldRuins.Destroyed)
+                {
+                    oldRuins.Destroy();
+                }
+            }
+            else
+            {
+                sb.AppendLine("no free tile for the destroyed settlement check");
+            }
+
             int lettersBefore = Find.LetterStack.LettersListForReading.Count;
             comp.DailyUpdate();
             Letter last = Find.LetterStack.LettersListForReading.LastOrDefault();

@@ -62,6 +62,8 @@ namespace Yuudong2Mod
             s.factionWarMaxArmies = Mathf.RoundToInt(listing.Slider(s.factionWarMaxArmies, 1f, 20f));
             listing.Label("Yuudong2.FactionWar.MaxFactions".Translate(s.factionWarMaxFactions), -1f, "Yuudong2.FactionWar.MaxFactions.Desc".Translate());
             s.factionWarMaxFactions = Mathf.RoundToInt(listing.Slider(s.factionWarMaxFactions, 0f, 40f));
+            listing.Label("Yuudong2.FactionWar.RuinDays".Translate(s.factionWarRuinDays), -1f, "Yuudong2.FactionWar.RuinDays.Desc".Translate());
+            s.factionWarRuinDays = Mathf.RoundToInt(listing.Slider(s.factionWarRuinDays, 0f, 60f));
             listing.Gap();
             listing.CheckboxLabeled("Yuudong2.FactionWar.AttackPlayer".Translate(), ref s.factionWarAttackPlayer, "Yuudong2.FactionWar.AttackPlayer.Desc".Translate());
             listing.CheckboxLabeled("Yuudong2.FactionWar.ReplaceRaids".Translate(), ref s.factionWarReplaceRaids, "Yuudong2.FactionWar.ReplaceRaids.Desc".Translate());
@@ -385,7 +387,25 @@ namespace Yuudong2Mod
                 }
             }
 
+            RemoveOldRuins(settings.factionWarRuinDays);
             FlushNews();
+        }
+
+        // 맵이 열려 있지 않은 파괴된 정착지는 생긴 지 days일이 지나면 세계 지도에서 지운다. 0이면 지우지 않는다.
+        public int RemoveOldRuins(int days)
+        {
+            if (days <= 0)
+            {
+                return 0;
+            }
+            int newest = Find.TickManager.TicksGame - days * GenDate.TicksPerDay;
+            List<DestroyedSettlement> old = Find.WorldObjects.DestroyedSettlements
+                .Where(x => x.GetType() == typeof(DestroyedSettlement) && !x.HasMap && x.creationGameTicks <= newest).ToList();
+            foreach (DestroyedSettlement ruins in old)
+            {
+                ruins.Destroy();
+            }
+            return old.Count;
         }
 
         // 지금 전쟁에 끼는 세력을 정리하고, 처음 보는 세력에는 힘을 준다.

@@ -324,6 +324,8 @@
   <Yuudong2.FactionWar.MaxArmies.Desc>세계 지도에 동시에 있을 수 있는 군대 수입니다.</Yuudong2.FactionWar.MaxArmies.Desc>
   <Yuudong2.FactionWar.MaxFactions>새 세력이 나타나는 한도: 세력 {0}개</Yuudong2.FactionWar.MaxFactions>
   <Yuudong2.FactionWar.MaxFactions.Desc>살아 있는 세력(숨은 세력과 플레이어 제외)이 이 수보다 적을 때만 새 세력이 나타납니다. 0이면 나타나지 않습니다.</Yuudong2.FactionWar.MaxFactions.Desc>
+  <Yuudong2.FactionWar.RuinDays>파괴된 정착지: {0}일 뒤 사라짐</Yuudong2.FactionWar.RuinDays>
+  <Yuudong2.FactionWar.RuinDays.Desc>점령되지 않고 파괴된 정착지의 흔적이 세계 지도에 남아 있는 날 수입니다. 맵이 열려 있는 곳은 지우지 않습니다. 0이면 사라지지 않습니다.</Yuudong2.FactionWar.RuinDays.Desc>
   <Yuudong2.FactionWar.AttackPlayer>적대 세력의 군대가 내 정착지도 공격</Yuudong2.FactionWar.AttackPlayer>
   <Yuudong2.FactionWar.AttackPlayer.Desc>나와 적대인 세력의 군대가 내 정착지를 목표로 삼을 수 있습니다. 도착하면 지금 습격 포인트와 같은 규모의 습격이 됩니다. 적대가 아닌 세력은 오지 않습니다.</Yuudong2.FactionWar.AttackPlayer.Desc>
   <Yuudong2.FactionWar.ReplaceRaids>전쟁 습격이 스토리텔러 습격을 대체</Yuudong2.FactionWar.ReplaceRaids>

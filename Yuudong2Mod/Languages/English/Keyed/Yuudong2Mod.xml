@@ -324,6 +324,8 @@
   <Yuudong2.FactionWar.MaxArmies.Desc>How many armies can be on the world map at once.</Yuudong2.FactionWar.MaxArmies.Desc>
   <Yuudong2.FactionWar.MaxFactions>New factions appear below: {0} factions</Yuudong2.FactionWar.MaxFactions>
   <Yuudong2.FactionWar.MaxFactions.Desc>New factions appear only while fewer living factions exist (hidden factions and the player not counted). 0 disables new factions.</Yuudong2.FactionWar.MaxFactions.Desc>
+  <Yuudong2.FactionWar.RuinDays>Destroyed settlements: gone after {0} days</Yuudong2.FactionWar.RuinDays>
+  <Yuudong2.FactionWar.RuinDays.Desc>How many days the remains of a settlement that was destroyed, not captured, stay on the world map. Places with an open map are kept. 0 keeps them forever.</Yuudong2.FactionWar.RuinDays.Desc>
   <Yuudong2.FactionWar.AttackPlayer>Hostile armies also attack my settlements</Yuudong2.FactionWar.AttackPlayer>
   <Yuudong2.FactionWar.AttackPlayer.Desc>Armies of factions hostile to you can target your settlements. On arrival they become a raid of your current raid points. Non-hostile factions never come.</Yuudong2.FactionWar.AttackPlayer.Desc>
   <Yuudong2.FactionWar.ReplaceRaids>War raids replace storyteller raids</Yuudong2.FactionWar.ReplaceRaids>
