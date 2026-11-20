@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+
+  <!-- Real Ruins에는 한국어 번역이 없어서 폐허 탐색 작업의 문구를 여기서 채운다. -->
+  <RealRuins_RuinsScan_Records.label>기록에서 폐허 찾기</RealRuins_RuinsScan_Records.label>
+  <RealRuins_RuinsScan_Records.description>연구원이 오래된 책, 지도, 일지, 거래 장부를 뒤져 봉인된 고대 폐허의 흔적을 찾습니다. 지능 {0} 이상이 필요합니다.\n\n얼마나 걸릴지는 알 수 없습니다. 숙련된 연구원은 평균 {1}일쯤, 초보자는 {2}일쯤 연구하면 실마리를 찾습니다. 같은 기록이 다른 곳에도 남아 있어서, 폐허를 찾아내면 다른 이들도 찾아옵니다.</RealRuins_RuinsScan_Records.description>
+  <RealRuins_RuinsScan_Records.foundMessage>{PAWN_nameDef}(이)가 {BUILDING}에서 오래된 기록을 살피다 봉인된 폐허에 관한 내용을 찾았습니다. 위치를 알아내는 중...</RealRuins_RuinsScan_Records.foundMessage>
+
+  <RealRuins_RuinsScan_Radio.label>전파로 폐허 찾기</RealRuins_RuinsScan_Radio.label>
+  <RealRuins_RuinsScan_Radio.description>연구원이 오래된 주파수를 훑고, 잠든 응답기에 신호를 보내고, 버려진 중계기에 침투해 봉인된 고대 폐허의 위치를 찾습니다. 지능 {0} 이상이 필요합니다.\n\n얼마나 걸릴지는 알 수 없습니다. 숙련된 통신사는 평균 {1}일쯤, 초보자는 {2}일쯤 탐지하면 무언가를 찾습니다. 신호를 쏘는 일은 조용할 수 없어서, 폐허를 찾아내면 다른 이들도 찾아옵니다.</RealRuins_RuinsScan_Radio.description>
+  <RealRuins_RuinsScan_Radio.foundMessage>{PAWN_nameDef}(이)가 {BUILDING}에서 신호를 잡았습니다. 위치를 삼각 측량하는 중...</RealRuins_RuinsScan_Radio.foundMessage>
+
+</LanguageData>

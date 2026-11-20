@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+
+  <!-- 우선 작업 메뉴는 "우선 (대상)(gerund)"로 띄어쓰기 없이 이어 붙는다. -->
+  <RealRuins_SearchRecordsForRuins.label>기록에서 폐허 찾기</RealRuins_SearchRecordsForRuins.label>
+  <RealRuins_SearchRecordsForRuins.verb>기록으로 폐허 찾기</RealRuins_SearchRecordsForRuins.verb>
+  <RealRuins_SearchRecordsForRuins.gerund>에서 기록으로 폐허 찾기</RealRuins_SearchRecordsForRuins.gerund>
+
+  <RealRuins_RadioLocateRuins.label>전파로 폐허 찾기</RealRuins_RadioLocateRuins.label>
+  <RealRuins_RadioLocateRuins.verb>전파로 폐허 찾기</RealRuins_RadioLocateRuins.verb>
+  <RealRuins_RadioLocateRuins.gerund>에서 전파로 폐허 찾기</RealRuins_RadioLocateRuins.gerund>
+
+</LanguageData>
