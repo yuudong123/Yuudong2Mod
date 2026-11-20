@@ -28,6 +28,7 @@ namespace Yuudong2Test
             ("egg sac targeting", EggSacTargeting),
             ("bench apparel repair", BenchApparelRepair),
             ("litter decay", LitterDecay),
+            ("multi haul", MultiHaul),
             ("enemy bases", EnemyBases),
             ("faction war", FactionWar),
             // 맵을 바꾸므로 항상 마지막에 둔다.
@@ -839,6 +840,138 @@ namespace Yuudong2Test
                     thing.Destroy();
                 }
             }
+            sb.AppendLine(bad == 0 ? "PASS" : $"FAIL: {bad}");
+        }
+
+        // 임시 저장 구역과 소총 다섯 자루를 놓고, 정착민 한 명에게 운반을 시켜 게임 틱으로 끝까지 돌려 본다.
+        private static void MultiHaul(StringBuilder sb)
+        {
+            if (!Yuudong2Mod.Yuudong2Mod.AppliedFeatures.Contains(Features.MultiHaul))
+            {
+                sb.AppendLine("skipped: feature not applied");
+                return;
+            }
+
+            int bad = 0;
+            void Check(bool ok, string text)
+            {
+                bad += ok ? 0 : 1;
+                sb.AppendLine($"{(ok ? "ok  " : "FAIL")} {text}");
+            }
+
+            Check(MultiHaulDefOf.Yuudong2_HaulBatch != null && MultiHaulDefOf.Yuudong2_UnloadHauled != null, "job defs exist");
+            ThingDef rifleDef = DefDatabase<ThingDef>.GetNamedSilentFail("Gun_BoltActionRifle");
+            Map map = Find.AnyPlayerHomeMap;
+            Pawn pawn = map?.mapPawns.FreeColonistsSpawned.Where(p => !p.Downed && !p.Drafted && p.Awake() && !p.InMentalState && MultiHaulUtility.CanBatch(p)
+                && p.health.capacities.CapableOf(PawnCapacityDefOf.Manipulation) && p.health.capacities.CapableOf(PawnCapacityDefOf.Moving))
+                .OrderByDescending(p => MassUtility.FreeSpace(p)).FirstOrDefault();
+            if (rifleDef == null || pawn == null)
+            {
+                sb.AppendLine("skipped run: no rifle def or no free colonist");
+                sb.AppendLine(bad == 0 ? "PASS" : $"FAIL: {bad}");
+                return;
+            }
+
+            const int Rifles = 5;
+            bool Free(IntVec3 c)
+            {
+                return c.InBounds(map) && c.Standable(map) && !c.Fogged(map) && c.GetFirstItem(map) == null && map.zoneManager.ZoneAt(c) == null
+                    && map.haulDestinationManager.SlotGroupAt(c) == null && c.GetEdifice(map) == null;
+            }
+            bool GoodCorner(IntVec3 c)
+            {
+                Room room = c.GetRoom(map);
+                if (room == null || !pawn.CanReach(c, PathEndMode.OnCell, Danger.Deadly))
+                {
+                    return false;
+                }
+                foreach (IntVec3 cell in new CellRect(c.x, c.z, Rifles, 4))
+                {
+                    if (!Free(cell) || cell.GetRoom(map) != room)
+                    {
+                        return false;
+                    }
+                }
+                return true;
+            }
+            if (!CellFinder.TryFindRandomCellNear(pawn.Position, map, 40, GoodCorner, out IntVec3 corner))
+            {
+                sb.AppendLine("skipped run: no free 5x4 area near the colonist");
+                sb.AppendLine(bad == 0 ? "PASS" : $"FAIL: {bad}");
+                return;
+            }
+
+            int errorsBefore = TestRunner.TickErrors.Count;
+            Zone_Stockpile zone = new Zone_Stockpile(StorageSettingsPreset.DefaultStockpile, map.zoneManager);
+            map.zoneManager.RegisterZone(zone);
+            zone.settings.filter.SetDisallowAll();
+            zone.settings.filter.SetAllow(ThingCategoryDefOf.Weapons, true);
+            zone.settings.Priority = StoragePriority.Critical;
+            for (int i = 0; i < Rifles; i++)
+            {
+                zone.AddCell(new IntVec3(corner.x + i, 0, corner.z));
+            }
+
+            List<Thing> rifles = new List<Thing>();
+            for (int i = 0; i < Rifles; i++)
+            {
+                Thing rifle = ThingMaker.MakeThing(rifleDef);
+                rifle.TryGetComp<CompQuality>()?.SetQuality(QualityCategory.Normal, null);
+                rifles.Add(GenSpawn.Spawn(rifle, new IntVec3(corner.x + i, 0, corner.z + 3), map));
+                rifle.SetForbidden(false, false);
+            }
+
+            float free = MassUtility.FreeSpace(pawn);
+            float rifleMass = rifles[0].GetStatValue(StatDefOf.Mass);
+            int expectedExtras = Mathf.Min(Rifles - 1, Mathf.FloorToInt(free / rifleMass));
+            sb.AppendLine($"{pawn.LabelShort}: free carry mass {free:F1} kg of {MassUtility.Capacity(pawn):F1}, rifle {rifleMass:F1} kg, expecting {expectedExtras} in the inventory plus 1 in hand");
+
+            pawn.jobs.StopAll();
+            pawn.Position = new IntVec3(corner.x, 0, corner.z + 2);
+            pawn.Notify_Teleported();
+            Job job = HaulAIUtility.HaulToStorageJob(pawn, rifles[0], false);
+            Check(job != null && job.def == MultiHaulDefOf.Yuudong2_HaulBatch, $"haul job is the batch job: {job?.def?.defName ?? "none"}");
+            if (job != null)
+            {
+                pawn.jobs.StartJob(job, JobCondition.InterruptForced);
+                int peak = 0, ticks = 0, tripTicks = -1;
+                bool unloadSeen = false;
+                bool AllStored() => rifles.All(r => r.Spawned && zone.ContainsCell(r.Position));
+                for (; ticks < 3000 && !AllStored(); ticks++)
+                {
+                    Find.TickManager.DoSingleTick();
+                    peak = Mathf.Max(peak, rifles.Count(r => pawn.inventory.innerContainer.Contains(r)));
+                    unloadSeen |= pawn.CurJobDef == MultiHaulDefOf.Yuudong2_UnloadHauled;
+                    if (tripTicks < 0 && rifles.Any(r => r.Spawned && zone.ContainsCell(r.Position)))
+                    {
+                        tripTicks = ticks;
+                    }
+                }
+                Check(peak == expectedExtras, $"rifles in the inventory at once: {peak} (expected {expectedExtras})");
+                Check(AllStored(), $"all {Rifles} rifles stored after {ticks} ticks (first one after {tripTicks}): {rifles.Count(r => r.Spawned && zone.ContainsCell(r.Position))} in the stockpile");
+                Check(expectedExtras == 0 || unloadSeen, "unload job ran after the trip");
+                Check(!rifles.Any(r => pawn.inventory.innerContainer.Contains(r)) && !pawn.inventory.UnloadEverything, "nothing left in the inventory");
+            }
+
+            foreach (Thing rifle in rifles)
+            {
+                if (pawn.inventory.innerContainer.Contains(rifle))
+                {
+                    pawn.inventory.innerContainer.Remove(rifle);
+                }
+                if (!rifle.Destroyed)
+                {
+                    rifle.Destroy();
+                }
+            }
+            zone.Delete();
+
+            List<string> errors = TestRunner.TickErrors.Skip(errorsBefore).ToList();
+            foreach (IGrouping<string, string> group in errors.GroupBy(m => m.Split('\n')[0]).Take(10))
+            {
+                sb.AppendLine($"error x{group.Count()}: {group.Key}");
+            }
+            bad += errors.Count;
             sb.AppendLine(bad == 0 ? "PASS" : $"FAIL: {bad}");
         }
 

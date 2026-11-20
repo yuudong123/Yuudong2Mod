@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+
+  <!-- 여러 개 한 번에 운반: 바닐라 HaulToCell을 대신하는 일과, 소지품에 담아 온 물건을 내려놓는 일(Source/MultiHaul.cs). -->
+  <JobDef>
+    <defName>Yuudong2_HaulBatch</defName>
+    <driverClass>Yuudong2Mod.JobDriver_HaulBatch</driverClass>
+    <reportString>hauling TargetA.</reportString>
+    <suspendable>false</suspendable>
+    <allowOpportunisticPrefix>true</allowOpportunisticPrefix>
+  </JobDef>
+
+  <JobDef>
+    <defName>Yuudong2_UnloadHauled</defName>
+    <driverClass>Yuudong2Mod.JobDriver_UnloadHauled</driverClass>
+    <reportString>unloading hauled items.</reportString>
+    <suspendable>false</suspendable>
+    <allowOpportunisticPrefix>true</allowOpportunisticPrefix>
+  </JobDef>
+
+</Defs>

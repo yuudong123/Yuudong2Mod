@@ -304,6 +304,8 @@
   <Yuudong2.LitterDecay.Days>Abandoned gear is gone after: {0} days</Yuudong2.LitterDecay.Days>
   <Yuudong2.LitterDecay.Days.Desc>How many days gear at full hit points takes to wear away. Gear that is already worn goes sooner.</Yuudong2.LitterDecay.Days.Desc>
   <Yuudong2.LitterDecay.Reason>abandoned gear</Yuudong2.LitterDecay.Reason>
+  <Yuudong2.Feature.MultiHaul>Haul several items at once</Yuudong2.Feature.MultiHaul>
+  <Yuudong2.Feature.MultiHaul.Desc>When hauling to storage, a pawn carries the first item in hand and puts other nearby haulable items (within 12 cells, same room) into their inventory until their carry mass is full, then hauls everything in one trip and unloads it at the stockpile one by one. Colonists, slaves and mechanoids do this. Deliveries to construction sites and workbenches are unchanged.</Yuudong2.Feature.MultiHaul.Desc>
   <Yuudong2.Feature.BenchApparelRepair>Apparel repair at tailoring benches</Yuudong2.Feature.BenchApparelRepair>
   <Yuudong2.Feature.BenchApparelRepair.Desc>When a worn piece of apparel drops below 80% durability, the colonist goes to a tailoring bench on their own: they load the materials, take the apparel off, repair it at the bench and put it back on. Materials are the apparel's crafting cost (without components and advanced components) times the fraction of durability lost. Quality doesn't change, and the colonist gains Crafting experience while repairing. Works at hand and electric tailoring benches and at tailoring-type benches from other mods.</Yuudong2.Feature.BenchApparelRepair.Desc>
   <Yuudong2.ApparelRepair.Eject>Eject repair contents</Yuudong2.ApparelRepair.Eject>
