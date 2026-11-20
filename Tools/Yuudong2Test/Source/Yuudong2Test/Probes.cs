@@ -585,11 +585,11 @@ namespace Yuudong2Test
                 PlanetTile at = marching.Tile;
                 WorldObject_ArmyBattle fight = ArmyAttackUtility.StartBattle(marching, at);
                 TestRunner.ticking = false;
-                Map field = GetOrGenerateMapUtility.GetOrGenerateMap(fight.Tile, new IntVec3(ArmyAttackUtility.CaravanMapSize, 1, ArmyAttackUtility.CaravanMapSize), null);
+                Map field = GetOrGenerateMapUtility.GetOrGenerateMap(fight.Tile, ArmyAttackUtility.MapSize, null);
                 TestRunner.ticking = true;
                 List<Pawn> soldiers = field.mapPawns.SpawnedPawnsInFaction(ambushed).ToList();
-                Check(field.Parent == fight && soldiers.Count > 0 && fight.initialEnemies == soldiers.Count && soldiers.All(p => Verse.AI.Group.LordUtility.GetLord(p) != null),
-                    $"battle map {field.Size.x}x{field.Size.z} for {fight.points:F0} points: {soldiers.Count} soldiers, lord {(soldiers.Count > 0 ? Verse.AI.Group.LordUtility.GetLord(soldiers[0]) : null)?.LordJob.GetType().Name}");
+                Check(field.Parent == fight && soldiers.Count == Mathf.RoundToInt(strength) && fight.initialEnemies == soldiers.Count && soldiers.All(p => Verse.AI.Group.LordUtility.GetLord(p) != null),
+                    $"battle map {field.Size.x}x{field.Size.z}: {soldiers.Count} soldiers for an army showing strength {Mathf.RoundToInt(strength)}, lord {(soldiers.Count > 0 ? Verse.AI.Group.LordUtility.GetLord(soldiers[0]) : null)?.LordJob.GetType().Name}");
                 Pawn scout = PawnGenerator.GeneratePawn(PawnKindDefOf.Colonist, Faction.OfPlayer);
                 GenSpawn.Spawn(scout, CellFinder.RandomEdgeCell(field), field);
                 int tileBefore = marching.pathIndex;
@@ -619,7 +619,7 @@ namespace Yuudong2Test
                 {
                     WorldObject_ArmyBattle second = ArmyAttackUtility.StartBattle(marching, marching.Tile);
                     TestRunner.ticking = false;
-                    Map field2 = GetOrGenerateMapUtility.GetOrGenerateMap(second.Tile, new IntVec3(ArmyAttackUtility.CaravanMapSize, 1, ArmyAttackUtility.CaravanMapSize), null);
+                    Map field2 = GetOrGenerateMapUtility.GetOrGenerateMap(second.Tile, ArmyAttackUtility.MapSize, null);
                     TestRunner.ticking = true;
                     Pawn witness = PawnGenerator.GeneratePawn(PawnKindDefOf.Colonist, Faction.OfPlayer);
                     GenSpawn.Spawn(witness, CellFinder.RandomEdgeCell(field2), field2);

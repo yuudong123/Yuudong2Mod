@@ -25,7 +25,8 @@ namespace Yuudong2Mod
     public class WorldObject_ArmyBattle : MapParent
     {
         public WorldObject_WarArmy army;
-        public float points;
+        // 전투에 나오는 병사 수. 세계 지도에서 군대에 적힌 병력과 같다.
+        public int soldiers;
         public int initialEnemies;
         public bool won;
 
@@ -37,7 +38,7 @@ namespace Yuudong2Mod
         {
             base.ExposeData();
             Scribe_References.Look(ref army, "army");
-            Scribe_Values.Look(ref points, "points", 0f);
+            Scribe_Values.Look(ref soldiers, "soldiers", 0);
             Scribe_Values.Look(ref initialEnemies, "initialEnemies", 0);
             Scribe_Values.Look(ref won, "won", false);
         }
@@ -57,21 +58,16 @@ namespace Yuudong2Mod
                 return;
             }
 
-            List<Pawn> pawns = PawnGroupMakerUtility.GeneratePawns(new PawnGroupMakerParms
-            {
-                groupKind = PawnGroupKindDefOf.Combat,
-                tile = Tile,
-                faction = faction,
-                points = points,
-            }).ToList();
+            List<Pawn> pawns = ArmyAttackUtility.GenerateSoldiers(faction, Tile, soldiers);
             if (!RCellFinder.TryFindRandomCellNearTheCenterOfTheMapWith(c => c.Standable(map) && !c.Fogged(map), map, out IntVec3 camp))
             {
                 camp = map.Center;
             }
 
+            int campRadius = Mathf.CeilToInt(Mathf.Sqrt(pawns.Count)) + 6;
             foreach (Pawn pawn in pawns)
             {
-                GenSpawn.Spawn(pawn, CellFinder.RandomSpawnCellForPawnNear(camp, map), map, Rot4.Random);
+                GenSpawn.Spawn(pawn, CellFinder.RandomClosewalkCellNear(camp, map, campRadius), map, Rot4.Random);
             }
 
             initialEnemies = pawns.Count;
@@ -158,11 +154,7 @@ namespace Yuudong2Mod
 
     public static class ArmyAttackUtility
     {
-        public const int CaravanMapSize = 120;
-        public const float MinPoints = 300f;
-
-        // 임시 전투 맵은 작아서, 정착지 방어 병력처럼 포인트를 끝없이 키우지 않는다.
-        public const float MaxPoints = 10000f;
+        private const int MaxGroupRounds = 40;
         public const int DefeatGoodwill = 10;
         public const int HoldTicks = GenDate.TicksPerDay;
 
@@ -172,9 +164,39 @@ namespace Yuudong2Mod
 
         public static Texture2D AttackTex => attackTex ?? (attackTex = ContentFinder<Texture2D>.Get("UI/Commands/AttackSettlement"));
 
-        public static float PointsFor(WorldObject_WarArmy army)
+        public static IntVec3 MapSize => Find.World.info.initialMapSize;
+
+        public static int SoldiersOf(WorldObject_WarArmy army) => Mathf.Max(1, Mathf.RoundToInt(army.strength));
+
+        // 그 세력의 습격 편성으로 정확히 count명을 만든다. 편성은 포인트 단위로만 뽑히므로 모자라면 더 뽑고 남으면 버린다.
+        public static List<Pawn> GenerateSoldiers(Faction faction, PlanetTile tile, int count)
         {
-            return Mathf.Max(MinPoints, Mathf.Min(MaxPoints, WorldComponent_FactionWar.DefenderPoints) * army.sizeFactor);
+            List<Pawn> pawns = new List<Pawn>();
+            float cost = WorldComponent_FactionWar.AverageRaidPawnCost(faction);
+            float minPoints = faction.def.MinPointsToGeneratePawnGroup(PawnGroupKindDefOf.Combat);
+            for (int round = 0; round < MaxGroupRounds && pawns.Count < count; round++)
+            {
+                PawnGroupMakerParms parms = new PawnGroupMakerParms
+                {
+                    groupKind = PawnGroupKindDefOf.Combat,
+                    tile = tile,
+                    faction = faction,
+                    points = Mathf.Max(minPoints, (count - pawns.Count) * cost),
+                };
+                foreach (Pawn pawn in PawnGroupMakerUtility.GeneratePawns(parms))
+                {
+                    if (pawns.Count < count)
+                    {
+                        pawns.Add(pawn);
+                    }
+                    else
+                    {
+                        Find.WorldPawns.PassToWorld(pawn, PawnDiscardDecideMode.Discard);
+                    }
+                }
+            }
+
+            return pawns;
         }
 
         // 상단 둘을 합칠 수 있는 거리와 같은 기준: 같은 타일이거나 타일 반 칸 안.
@@ -259,7 +281,7 @@ namespace Yuudong2Mod
             battle.Tile = tile;
             battle.SetFaction(army.Faction);
             battle.army = army;
-            battle.points = PointsFor(army);
+            battle.soldiers = SoldiersOf(army);
             Find.WorldObjects.Add(battle);
             army.battle = battle;
             return battle;
@@ -281,7 +303,7 @@ namespace Yuudong2Mod
                     return;
                 }
 
-                Map map = GetOrGenerateMapUtility.GetOrGenerateMap(battle.Tile, new IntVec3(CaravanMapSize, 1, CaravanMapSize), null);
+                Map map = GetOrGenerateMapUtility.GetOrGenerateMap(battle.Tile, MapSize, null);
                 Pawn first = caravans[0].PawnsListForReading.FirstOrDefault();
                 foreach (Caravan caravan in caravans)
                 {
@@ -398,7 +420,7 @@ namespace Yuudong2Mod
                 return;
             }
 
-            Map map = GetOrGenerateMapUtility.GetOrGenerateMap(battle.Tile, new IntVec3(ArmyAttackUtility.CaravanMapSize, 1, ArmyAttackUtility.CaravanMapSize), null);
+            Map map = GetOrGenerateMapUtility.GetOrGenerateMap(battle.Tile, ArmyAttackUtility.MapSize, null);
             Messages.Message((transporters.IsShuttle() ? "MessageShuttleArrived" : "MessageTransportPodsArrived").Translate(), lookTarget, MessageTypeDefOf.TaskCompletion);
             arrivalMode.Worker.TravellingTransportersArrived(transporters, map);
         }
