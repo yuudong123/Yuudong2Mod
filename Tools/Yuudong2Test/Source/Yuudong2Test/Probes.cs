@@ -667,10 +667,34 @@ namespace Yuudong2Test
                 }
                 int lettersAtCapture = Find.LetterStack.LettersListForReading.Count;
                 SettlementDefeatUtility.CheckDefeated(enemyBase);
-                Check(!enemyBase.Destroyed && enemyBase.Faction == ally && Find.WorldObjects.DestroyedSettlementAt(baseTile) == null
-                    && Find.LetterStack.LettersListForReading.Count == lettersAtCapture + 1, $"defenders gone: settlement captured by the ally, owner now {enemyBase.Faction?.Name}");
-                SettlementDefeatUtility.CheckDefeated(enemyBase);
-                Check(!enemyBase.Destroyed && enemyBase.Faction == ally && Find.LetterStack.LettersListForReading.Count == lettersAtCapture + 1, "captured settlement is left alone afterwards");
+                if (!Yuudong2Mod.Yuudong2Mod.AppliedFeatures.Contains(Features.SettlementConquest))
+                {
+                    Check(!enemyBase.Destroyed && enemyBase.Faction == ally && Find.WorldObjects.DestroyedSettlementAt(baseTile) == null
+                        && Find.LetterStack.LettersListForReading.Count == lettersAtCapture + 1, $"defenders gone: settlement captured by the ally, owner now {enemyBase.Faction?.Name}");
+                    SettlementDefeatUtility.CheckDefeated(enemyBase);
+                    Check(!enemyBase.Destroyed && enemyBase.Faction == ally && Find.LetterStack.LettersListForReading.Count == lettersAtCapture + 1, "captured settlement is left alone afterwards");
+                }
+                else
+                {
+                    ChoiceLetter_SettlementDefeated letter = Find.LetterStack.LettersListForReading.LastOrDefault() as ChoiceLetter_SettlementDefeated;
+                    Check(enemyBase.Destroyed && battleMap.Parent is DestroyedSettlement && letter != null && letter.ally == ally
+                        && Find.LetterStack.LettersListForReading.Count == lettersAtCapture + 1, "defenders gone: settlement destroyed, one choice letter with the ally option");
+                    if (letter != null)
+                    {
+                        sb.AppendLine($"--- {letter.Label}");
+                        sb.AppendLine(letter.Text.ToString());
+                        sb.AppendLine("options: " + string.Join(" | ", letter.Choices.Select(DescribeOption)));
+                        sb.AppendLine("---");
+                        Settlement given = SettlementConquestUtility.GiveToAlly(letter);
+                        Check(given != null && given.Faction == ally && battleMap.Parent == given && Find.WorldObjects.DestroyedSettlementAt(baseTile) == null
+                            && !Find.LetterStack.LettersListForReading.Contains(letter), $"handed over: {given?.Label} now belongs to {given?.Faction?.Name}");
+                        if (given != null)
+                        {
+                            SettlementDefeatUtility.CheckDefeated(given);
+                            Check(!given.Destroyed && given.Faction == ally, "handed-over settlement is left alone afterwards");
+                        }
+                    }
+                }
                 Current.Game.DeinitAndRemoveMap(battleMap, false);
             }
 
@@ -687,6 +711,21 @@ namespace Yuudong2Test
                 oldRuins.creationGameTicks -= 10;
                 comp.RemoveOldRuins(ruinDays);
                 Check(oldRuins.Destroyed && !Find.WorldObjects.DestroyedSettlements.Contains(oldRuins), $"destroyed settlement is removed after {ruinDays} days");
+
+                AbandonedSettlement abandoned = (AbandonedSettlement)WorldObjectMaker.MakeWorldObject(WorldObjectDefOf.AbandonedSettlement);
+                abandoned.Tile = ruinTile;
+                abandoned.SetFaction(Faction.OfPlayer);
+                Find.WorldObjects.Add(abandoned);
+                abandoned.creationGameTicks = Find.TickManager.TicksGame - ruinDays * GenDate.TicksPerDay + 10;
+                comp.RemoveOldRuins(ruinDays);
+                bool keptYoung = !abandoned.Destroyed;
+                abandoned.creationGameTicks -= 10;
+                comp.RemoveOldRuins(ruinDays);
+                Check(keptYoung && abandoned.Destroyed, $"abandoned settlement stays before {ruinDays} days and is removed after");
+                if (!abandoned.Destroyed)
+                {
+                    abandoned.Destroy();
+                }
                 if (!oldRuins.Destroyed)
                 {
                     oldRuins.Destroy();
@@ -975,6 +1014,13 @@ namespace Yuudong2Test
             sb.AppendLine(bad == 0 ? "PASS" : $"FAIL: {bad}");
         }
 
+        private static string DescribeOption(DiaOption option)
+        {
+            Traverse traverse = Traverse.Create(option);
+            string text = traverse.Field("text").GetValue<string>();
+            return traverse.Field("disabled").GetValue<bool>() ? $"{text} (disabled: {traverse.Field("disabledReason").GetValue<string>()})" : text;
+        }
+
         // 적대 정착지 맵을 실제로 하나 만들어 보고 지운다.
         private static void EnemyBases(StringBuilder sb)
         {
@@ -1003,6 +1049,7 @@ namespace Yuudong2Test
             int errorsBefore = TestRunner.TickErrors.Count, warningsBefore = TestRunner.TickWarnings.Count;
             string placedBefore = RealRuinsBridge.LastPlacedFile;
             int skippedBefore = RealRuinsBridge.SkippedRuinScatters;
+            Settlement conquered = null;
             TestRunner.ticking = true;
             Map map = null;
             int bad = 0;
@@ -1062,12 +1109,57 @@ namespace Yuudong2Test
                 bad++;
                 sb.AppendLine("FAIL: " + e);
             }
+
+            try
+            {
+                if (map != null && Yuudong2Mod.Yuudong2Mod.AppliedFeatures.Contains(Features.SettlementConquest))
+                {
+                    Faction defender = settlement.Faction;
+                    foreach (Pawn pawn in map.mapPawns.SpawnedPawnsInFaction(defender).ToList())
+                    {
+                        pawn.Destroy();
+                    }
+                    int lettersBefore = Find.LetterStack.LettersListForReading.Count;
+                    // 바닐라는 함락 때 그 맵의 정착민 한 명으로 이야기를 기록한다. 이 맵에는 정착민이 없어서 나는 오류는 세지 않는다.
+                    TestRunner.ticking = false;
+                    SettlementDefeatUtility.CheckDefeated(settlement);
+                    TestRunner.ticking = true;
+                    ChoiceLetter_SettlementDefeated letter = Find.LetterStack.LettersListForReading.LastOrDefault() as ChoiceLetter_SettlementDefeated;
+                    bool ok = settlement.Destroyed && map.Parent is DestroyedSettlement && letter != null && letter.ally == null
+                        && Find.LetterStack.LettersListForReading.Count == lettersBefore + 1;
+                    bad += ok ? 0 : 1;
+                    sb.AppendLine($"{(ok ? "ok  " : "FAIL")} settlement defeated: one choice letter instead of the vanilla one");
+                    if (letter != null)
+                    {
+                        sb.AppendLine($"--- {letter.Label}");
+                        sb.AppendLine(letter.Text.ToString());
+                        sb.AppendLine("options: " + string.Join(" | ", letter.Choices.Select(DescribeOption)));
+                        sb.AppendLine("---");
+                        int before = Find.WorldObjects.Settlements.Count(s => s.Faction == Faction.OfPlayer);
+                        conquered = SettlementConquestUtility.Settle(letter);
+                        int after = Find.WorldObjects.Settlements.Count(s => s.Faction == Faction.OfPlayer);
+                        ok = conquered != null && conquered.Faction == Faction.OfPlayer && map.Parent == conquered && map.IsPlayerHome && after == before + 1
+                            && !Find.LetterStack.LettersListForReading.Contains(letter);
+                        bad += ok ? 0 : 1;
+                        sb.AppendLine($"{(ok ? "ok  " : "FAIL")} settled in the defeated settlement: player settlements {before} -> {after} with a game limit of {Prefs.MaxNumberOfPlayerSettlements}");
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                bad++;
+                sb.AppendLine("FAIL: " + e);
+            }
             finally
             {
                 TestRunner.ticking = false;
                 if (map != null)
                 {
                     Current.Game.DeinitAndRemoveMap(map, false);
+                }
+                if (conquered != null && !conquered.Destroyed)
+                {
+                    conquered.Destroy();
                 }
             }
 

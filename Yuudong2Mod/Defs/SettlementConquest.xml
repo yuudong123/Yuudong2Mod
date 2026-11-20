@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+
+  <!-- 정착지 파괴 편지에 점령 선택지를 단다(Source/SettlementConquest.cs). -->
+  <LetterDef ParentName="PositiveEvent">
+    <defName>Yuudong2_SettlementDefeated</defName>
+    <letterClass>Yuudong2Mod.ChoiceLetter_SettlementDefeated</letterClass>
+  </LetterDef>
+
+</Defs>

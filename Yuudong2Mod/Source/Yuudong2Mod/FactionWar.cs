@@ -391,7 +391,7 @@ namespace Yuudong2Mod
             FlushNews();
         }
 
-        // 맵이 열려 있지 않은 파괴된 정착지는 생긴 지 days일이 지나면 세계 지도에서 지운다. 0이면 지우지 않는다.
+        // 맵이 열려 있지 않은 파괴된 정착지와 버려진 정착지 표시는 생긴 지 days일이 지나면 세계 지도에서 지운다. 0이면 지우지 않는다.
         public int RemoveOldRuins(int days)
         {
             if (days <= 0)
@@ -405,7 +405,13 @@ namespace Yuudong2Mod
             {
                 ruins.Destroy();
             }
-            return old.Count;
+            List<AbandonedSettlement> abandoned = Find.WorldObjects.AllWorldObjects.OfType<AbandonedSettlement>()
+                .Where(x => x.GetType() == typeof(AbandonedSettlement) && x.creationGameTicks <= newest).ToList();
+            foreach (AbandonedSettlement site in abandoned)
+            {
+                site.Destroy();
+            }
+            return old.Count + abandoned.Count;
         }
 
         // 지금 전쟁에 끼는 세력을 정리하고, 처음 보는 세력에는 힘을 준다.
@@ -820,7 +826,7 @@ namespace Yuudong2Mod
 
         // 바닐라 함락 판정 대신: 동맹이 합세한 정착지의 방어 병력을 다 물리치면 정착지를 부수지 않고 그 동맹에게 넘긴다.
         // true를 돌려주면 바닐라 판정을 건너뛴다.
-        public bool TryAllyCapture(Settlement settlement)
+        public bool TryAllyCapture(Settlement settlement, bool autoCapture)
         {
             if (!assists.TryGetValue(settlement, out Faction ally))
             {
@@ -829,6 +835,10 @@ namespace Yuudong2Mod
             if (settlement.Faction == ally)
             {
                 return true;
+            }
+            if (!autoCapture)
+            {
+                return false;
             }
             Faction defender = settlement.Faction;
             Map map = settlement.Map;
@@ -880,6 +890,37 @@ namespace Yuudong2Mod
             AddNews("Yuudong2.FactionWar.News.CapturedWithUs".Translate(ally.Name, defender.Name, place));
             SyncFactions();
             return true;
+        }
+
+        // 함께 싸우고 있는 동맹. 정착지 파괴 편지의 "동맹에게 넘기기" 선택지에 쓴다.
+        public Faction AssistingAlly(Settlement settlement)
+        {
+            return assists.TryGetValue(settlement, out Faction ally) && ally != null && !ally.defeated && settlement.Faction != ally
+                && FactionWarUtility.CanJoinPlayer(ally, settlement.Faction) ? ally : null;
+        }
+
+        // 플레이어가 이미 파괴한 정착지(맵이 열려 있는 폐허)를 동맹의 새 정착지로 바꾼다.
+        public Settlement GiveRuinsToAlly(MapParent ruins, Faction ally, Faction defender, string name)
+        {
+            Map map = ruins?.Map;
+            if (map == null || ally == null || ally.defeated)
+            {
+                return null;
+            }
+            Settlement settlement = (Settlement)WorldObjectMaker.MakeWorldObject(WorldObjectDefOf.Settlement);
+            settlement.SetFaction(ally);
+            settlement.Tile = ruins.Tile;
+            settlement.Name = name.NullOrEmpty() ? SettlementNameGenerator.GenerateSettlementName(settlement) : name;
+            Find.WorldObjects.Add(settlement);
+            map.info.parent = settlement;
+            ruins.Destroy();
+            assists[settlement] = ally;
+
+            Faction.OfPlayer.TryAffectGoodwillWith(ally, AllyCaptureGoodwill, canSendMessage: false, canSendHostilityLetter: false, HistoryEventDefOf.DestroyedEnemyBase);
+            Messages.Message("Yuudong2.Conquest.GivenToAlly".Translate(settlement.Label, ally.Name, AllyCaptureGoodwill.ToStringWithSign()), settlement, MessageTypeDefOf.PositiveEvent, false);
+            AddNews("Yuudong2.FactionWar.News.CapturedWithUs".Translate(ally.Name, defender?.Name ?? "?", settlement.Label));
+            SyncFactions();
+            return settlement;
         }
 
         private static void CaptureSettlement(Settlement settlement, Faction newOwner)
@@ -1040,6 +1081,7 @@ namespace Yuudong2Mod
     }
 
     // 동맹이 합세한 정착지는 함락되면 파괴되지 않고 그 동맹 것이 된다(WorldComponent_FactionWar.TryAllyCapture).
+    // 정착지 점령 선택 기능이 켜져 있으면 자동으로 넘기지 않고 파괴 편지에서 고르게 한다. 이미 동맹 것이 된 정착지를 바닐라 판정에서 지키는 일은 그대로 한다.
     [HarmonyPatchCategory(Features.FactionWar)]
     [HarmonyPatch(typeof(SettlementDefeatUtility), nameof(SettlementDefeatUtility.CheckDefeated))]
     internal static class SettlementDefeatUtility_CheckDefeated_FactionWar_Patch
@@ -1047,7 +1089,7 @@ namespace Yuudong2Mod
         private static bool Prefix(Settlement factionBase)
         {
             WorldComponent_FactionWar comp = FactionWarUtility.Comp;
-            return comp == null || !comp.TryAllyCapture(factionBase);
+            return comp == null || !comp.TryAllyCapture(factionBase, !Yuudong2Mod.AppliedFeatures.Contains(Features.SettlementConquest));
         }
     }
 
