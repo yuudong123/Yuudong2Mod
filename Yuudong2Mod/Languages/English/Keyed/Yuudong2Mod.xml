@@ -299,6 +299,11 @@
   <Yuudong2.Feature.NoFloorInfestation.Desc>Insect hives don't emerge or spread on cells with a built floor (tiles, carpets, bridges, substructure and so on). Smoothed stone doesn't count as a floor.</Yuudong2.Feature.NoFloorInfestation.Desc>
   <Yuudong2.Feature.EggSacTargeting>Auto-attack egg sacs</Yuudong2.Feature.EggSacTargeting>
   <Yuudong2.Feature.EggSacTargeting.Desc>Colonists and turrets target egg sacs launched by hostile insects on their own, like hives. Egg sacs from wild or colony queens are left alone. (Odyssey)</Yuudong2.Feature.EggSacTargeting.Desc>
+  <Yuudong2.Feature.LitterDecay>Abandoned gear wears away fast</Yuudong2.Feature.LitterDecay>
+  <Yuudong2.Feature.LitterDecay.Desc>Weapons, apparel and armor that lie forbidden outside stockpiles and shelves wear away within a few days, roofed or not. Gear dropped by enemies falls under this. Allowing the item or storing it stops the wear. Masterwork and legendary items, weapons dropped by downed colonists and bonded weapons are spared. Only on your own settlement maps.</Yuudong2.Feature.LitterDecay.Desc>
+  <Yuudong2.LitterDecay.Days>Abandoned gear is gone after: {0} days</Yuudong2.LitterDecay.Days>
+  <Yuudong2.LitterDecay.Days.Desc>How many days gear at full hit points takes to wear away. Gear that is already worn goes sooner.</Yuudong2.LitterDecay.Days.Desc>
+  <Yuudong2.LitterDecay.Reason>abandoned gear</Yuudong2.LitterDecay.Reason>
   <Yuudong2.Feature.BenchApparelRepair>Apparel repair at tailoring benches</Yuudong2.Feature.BenchApparelRepair>
   <Yuudong2.Feature.BenchApparelRepair.Desc>When a worn piece of apparel drops below 80% durability, the colonist goes to a tailoring bench on their own: they load the materials, take the apparel off, repair it at the bench and put it back on. Materials are the apparel's crafting cost (without components and advanced components) times the fraction of durability lost. Quality doesn't change, and the colonist gains Crafting experience while repairing. Works at hand and electric tailoring benches and at tailoring-type benches from other mods.</Yuudong2.Feature.BenchApparelRepair.Desc>
   <Yuudong2.ApparelRepair.Eject>Eject repair contents</Yuudong2.ApparelRepair.Eject>

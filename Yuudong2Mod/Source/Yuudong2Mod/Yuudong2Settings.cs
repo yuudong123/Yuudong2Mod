@@ -60,6 +60,7 @@ namespace Yuudong2Mod
         public const string NoFloorInfestation = "NoFloorInfestation";
         public const string EggSacTargeting = "EggSacTargeting";
         public const string BenchApparelRepair = "BenchApparelRepair";
+        public const string LitterDecay = "LitterDecay";
         public const string EnemyBaseScaling = "EnemyBaseScaling";
         public const string RealRuinsBases = "RealRuinsBases";
         public const string FactionWar = "FactionWar";
@@ -98,7 +99,7 @@ namespace Yuudong2Mod
         public static readonly FeatureGroup[] Groups =
         {
             new FeatureGroup("Romance", AlwaysAcceptProposal, NoBreakup, SameBedLovin, NoRandomRelations, RomanceTweaks, ConsensualIncest),
-            new FeatureGroup("Colony", ShelfNoSlowdown, ShelfAcceptAll, NoMapEdgeLimit, CustomMapSize, PowerOnDemand, ReplaceStuff, GloomyWallReplace, RoomFood, MeatOptimization, SinglePlantTexture, RoofedScanning, NoFloorInfestation, EggSacTargeting, BenchApparelRepair, RealisticRooms, BetterWorkbench, GeneRipper, MultiReinstall, MultiCopy, RebuildBills, InstalledPartsCount, WorkRouteOrder, SurgeryManager),
+            new FeatureGroup("Colony", ShelfNoSlowdown, ShelfAcceptAll, NoMapEdgeLimit, CustomMapSize, PowerOnDemand, ReplaceStuff, GloomyWallReplace, RoomFood, MeatOptimization, SinglePlantTexture, RoofedScanning, NoFloorInfestation, EggSacTargeting, BenchApparelRepair, LitterDecay, RealisticRooms, BetterWorkbench, GeneRipper, MultiReinstall, MultiCopy, RebuildBills, InstalledPartsCount, WorkRouteOrder, SurgeryManager),
             new FeatureGroup("Interface", MessagePlacement, HealthCardSorting, DamageIndicators, LetterStackCleaner, SmartSpeed, TpsDisplay, SaveHotkey, DragSelect, GeneAssistant, TechprintTradeHighlight),
             new FeatureGroup("Pawn", HairUnderHats, HiddenBionicEyes, EquipmentDurability, EndlessGrowth, NoGrowthNickname, RpgLevelUp, BirthAgeByLifespan, CalmMoveSpeed, BetterHearing, SleepLimits, ImplantsOnAddedParts),
             new FeatureGroup("Ideology", AllSpecialistsCanWork, RolesUntiedToMemes, NoIdeologyLimits, AutoCastSpecialistCommands, FasterBiosculpter),
@@ -111,7 +112,7 @@ namespace Yuudong2Mod
         public static readonly HashSet<string> WithDetails = new HashSet<string>
         {
             HairUnderHats, CustomMapSize, NoIdeologyLimits, RoomFood, MeatOptimization, DamageIndicators, LetterStackCleaner,
-            SmartSpeed, EndlessGrowth, AutoCastSpecialistCommands, RomanceTweaks, RpgLevelUp, GeneAssistant, RealisticRooms, BetterWorkbench, GeneRipper, TradeStockBoost, FactionWar,
+            SmartSpeed, EndlessGrowth, AutoCastSpecialistCommands, RomanceTweaks, RpgLevelUp, GeneAssistant, RealisticRooms, BetterWorkbench, GeneRipper, TradeStockBoost, FactionWar, LitterDecay,
         };
 
         public static bool Enabled(string feature)
@@ -229,6 +230,8 @@ namespace Yuudong2Mod
         public int factionWarMaxArmies = 8;
         public int factionWarMaxFactions = 20;
         public int factionWarRuinDays = 15;
+
+        public int litterDecayDays = 3;
         public bool factionWarAttackPlayer = true;
         public bool factionWarReplaceRaids = true;
 
@@ -351,6 +354,7 @@ namespace Yuudong2Mod
             Scribe_Values.Look(ref factionWarMaxArmies, "factionWarMaxArmies", 8);
             Scribe_Values.Look(ref factionWarMaxFactions, "factionWarMaxFactions", 20);
             Scribe_Values.Look(ref factionWarRuinDays, "factionWarRuinDays", 15);
+            Scribe_Values.Look(ref litterDecayDays, "litterDecayDays", 3);
             Scribe_Values.Look(ref factionWarAttackPlayer, "factionWarAttackPlayer", true);
             Scribe_Values.Look(ref factionWarReplaceRaids, "factionWarReplaceRaids", true);
 
@@ -597,6 +601,9 @@ namespace Yuudong2Mod
                     break;
                 case Features.FactionWar:
                     FactionWarUtility.DrawSettings(body, settings);
+                    break;
+                case Features.LitterDecay:
+                    LitterDecayUtility.DrawSettings(body, settings);
                     break;
             }
         }

@@ -27,6 +27,7 @@ namespace Yuudong2Test
             ("no floor infestation", FloorInfestation),
             ("egg sac targeting", EggSacTargeting),
             ("bench apparel repair", BenchApparelRepair),
+            ("litter decay", LitterDecay),
             ("enemy bases", EnemyBases),
             ("faction war", FactionWar),
             // 맵을 바꾸므로 항상 마지막에 둔다.
@@ -713,6 +714,131 @@ namespace Yuudong2Test
                 sb.AppendLine($"error x{group.Count()}: {group.Key}");
             }
             bad += errors.Count;
+            sb.AppendLine(bad == 0 ? "PASS" : $"FAIL: {bad}");
+        }
+
+        // 금지된 장비를 저장 구역 밖에 놓고, 바닐라 부패 처리를 하루 치씩 돌려 본다.
+        private static void LitterDecay(StringBuilder sb)
+        {
+            if (!Yuudong2Mod.Yuudong2Mod.AppliedFeatures.Contains(Features.LitterDecay))
+            {
+                sb.AppendLine("skipped: feature not applied");
+                return;
+            }
+
+            int bad = 0;
+            void Check(bool ok, string text)
+            {
+                bad += ok ? 0 : 1;
+                sb.AppendLine($"{(ok ? "ok  " : "FAIL")} {text}");
+            }
+
+            Map map = Find.AnyPlayerHomeMap;
+            MethodInfo tryDeteriorate = AccessTools.Method(typeof(SteadyEnvironmentEffects), "TryDoDeteriorate");
+            Check(map != null && tryDeteriorate != null, "home map and vanilla deterioration method exist");
+            if (map == null || tryDeteriorate == null)
+            {
+                sb.AppendLine($"FAIL: {bad}");
+                return;
+            }
+
+            List<Thing> spawned = new List<Thing>();
+            Thing Place(string defName, QualityCategory quality, bool forbidden)
+            {
+                ThingDef def = DefDatabase<ThingDef>.GetNamedSilentFail(defName);
+                if (def == null || !CellFinder.TryFindRandomCellNear(map.Center, map, 60,
+                    c => c.Standable(map) && !c.Fogged(map) && c.GetFirstItem(map) == null && map.haulDestinationManager.SlotGroupAt(c) == null, out IntVec3 cell))
+                {
+                    return null;
+                }
+                Thing thing = ThingMaker.MakeThing(def, def.MadeFromStuff ? GenStuff.DefaultStuffFor(def) : null);
+                thing.TryGetComp<CompQuality>()?.SetQuality(quality, null);
+                thing = GenSpawn.Spawn(thing, cell, map);
+                thing.SetForbidden(forbidden, false);
+                spawned.Add(thing);
+                return thing;
+            }
+            void Visit(Thing thing, float days)
+            {
+                int visits = Mathf.CeilToInt(days * LitterDecayUtility.VisitsPerDay);
+                for (int i = 0; i < visits && !thing.Destroyed; i++)
+                {
+                    tryDeteriorate.Invoke(map.steadyEnvironmentEffects, new object[] { thing, thing.Position.Roofed(map), false, thing.Position.GetTerrain(map) });
+                }
+            }
+
+            int days = LitterDecayUtility.Days;
+            Thing rifle = Place("Gun_BoltActionRifle", QualityCategory.Normal, true);
+            Thing parka = Place("Apparel_Parka", QualityCategory.Normal, true);
+            Thing allowed = Place("Gun_BoltActionRifle", QualityCategory.Normal, false);
+            Thing masterwork = Place("Gun_BoltActionRifle", QualityCategory.Masterwork, true);
+            Thing dropped = Place("Gun_BoltActionRifle", QualityCategory.Normal, true);
+            if (rifle == null || parka == null || allowed == null || masterwork == null || dropped == null)
+            {
+                Check(false, "test gear placed outside storage");
+            }
+            else
+            {
+                Check(spawned.All(x => !x.IsInAnyStorage()), "test gear placed outside storage");
+                float rate = SteadyEnvironmentEffects.FinalDeteriorationRate(rifle);
+                Check(LitterDecayUtility.IsLitter(rifle) && Mathf.Approximately(rate, (float)rifle.MaxHitPoints / days),
+                    $"forbidden rifle outside storage counts as abandoned: {rate:F1} hit points a day of {rifle.MaxHitPoints} (roofed: {rifle.Position.Roofed(map)})");
+                string inspect = rifle.GetInspectStringLowPriority();
+                Check(!inspect.NullOrEmpty() && inspect.Contains("Yuudong2.LitterDecay.Reason".Translate()), $"inspect line: {inspect}");
+
+                Visit(rifle, days * 0.5f);
+                float left = rifle.Destroyed ? 0f : (float)rifle.HitPoints / rifle.MaxHitPoints;
+                Check(left > 0.35f && left < 0.65f, $"rifle after {days * 0.5f:F1} days: {left:P0} hit points left");
+                Visit(rifle, days * 0.75f);
+                Check(rifle.Destroyed, $"rifle is gone within {days * 1.25f:F2} days");
+
+                Check(LitterDecayUtility.IsLitter(parka), "forbidden parka outside storage counts as abandoned");
+                Visit(parka, days * 1.25f);
+                Check(parka.Destroyed, $"parka is gone within {days * 1.25f:F2} days");
+
+                Check(!LitterDecayUtility.IsLitter(allowed), "allowed rifle is not abandoned");
+                if (Yuudong2Mod.Yuudong2Mod.AppliedFeatures.Contains(Features.EquipmentDurability))
+                {
+                    Visit(allowed, days * 2f);
+                    Check(!allowed.Destroyed && allowed.HitPoints == allowed.MaxHitPoints, "allowed rifle keeps its hit points");
+                }
+
+                Check(!LitterDecayUtility.IsLitter(masterwork), "forbidden masterwork rifle is spared");
+
+                Pawn colonist = map.mapPawns.FreeColonists.FirstOrDefault(p => p.mindState != null && p.mindState.droppedWeapon == null);
+                if (colonist != null)
+                {
+                    Check(LitterDecayUtility.IsLitter(dropped), "forbidden rifle nobody owns counts as abandoned");
+                    colonist.mindState.droppedWeapon = dropped;
+                    Check(!LitterDecayUtility.IsLitter(dropped), "weapon dropped by a downed colonist is spared");
+                    colonist.mindState.droppedWeapon = null;
+                }
+                else
+                {
+                    sb.AppendLine("no colonist without a remembered weapon: dropped weapon check skipped");
+                }
+
+                dropped.SetForbidden(true, false);
+                ISlotGroupParent storage = map.haulDestinationManager.AllGroupsListForReading.Select(g => g.parent).FirstOrDefault(p => p.AllSlotCells().Any(c => c.GetFirstItem(map) == null && c.Standable(map)));
+                if (storage != null)
+                {
+                    IntVec3 slot = storage.AllSlotCells().First(c => c.GetFirstItem(map) == null && c.Standable(map));
+                    dropped.Position = slot;
+                    Check(dropped.IsInAnyStorage() && !LitterDecayUtility.IsLitter(dropped), "forbidden rifle inside storage is not abandoned");
+                }
+                else
+                {
+                    sb.AppendLine("no free storage cell: storage check skipped");
+                }
+            }
+
+            foreach (Thing thing in spawned)
+            {
+                if (!thing.Destroyed)
+                {
+                    thing.Destroy();
+                }
+            }
             sb.AppendLine(bad == 0 ? "PASS" : $"FAIL: {bad}");
         }
 
