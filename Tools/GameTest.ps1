@@ -3,6 +3,7 @@
 #   save: also load a save (a copy, as autostart), run ticks with the Yuudong2Test mod and print its report.
 # The game runs with its own save data folder (.gametest/data), so the real config, saves and Player.log are untouched.
 # Usage: powershell -File Tools/GameTest.ps1 [-Mode boot|save] [-Save <name>] [-Ticks 5000] [-TimeoutSec 900] [-AllowRunning] [-Windowed]
+#   -DisableFeatures A,B,...: turn these Yuudong2Mod features off for this run only ("all" for every feature), to compare TPS with and without them.
 #   -Windowed: show the game window. Needed for checks that render, such as the enemy gravship landing cutscene.
 param(
     [ValidateSet("boot", "save")] [string]$Mode = "boot",
@@ -10,7 +11,8 @@ param(
     [int]$Ticks = 5000,
     [int]$TimeoutSec = 900,
     [switch]$AllowRunning,
-    [switch]$Windowed
+    [switch]$Windowed,
+    [string]$DisableFeatures = ""
 )
 
 $ErrorActionPreference = "Stop"
@@ -35,6 +37,17 @@ $prefs = $prefs -replace '<resetModsConfigOnCrash>True', '<resetModsConfigOnCras
 # Dev mode on in both modes: the game runs def config error checks only in dev mode, and it loads Saves/autostart.rws.
 $prefs = $prefs -replace '<devMode>\w+</devMode>', '<devMode>True</devMode>'
 [IO.File]::WriteAllText($prefsPath, $prefs)
+if ($DisableFeatures) {
+    $names = if ($DisableFeatures -eq "all") {
+        [regex]::Matches([IO.File]::ReadAllText((Join-Path $repo "Yuudong2Mod\Source\Yuudong2Mod\Yuudong2Settings.cs")), 'public const string \w+ = "(\w+)";') | ForEach-Object { $_.Groups[1].Value }
+    } else { $DisableFeatures -split "," }
+    $settingsPath = Join-Path $data "Config\Mod_Yuudong2Mod_Yuudong2ModSettingsMod.xml"
+    $settings = [IO.File]::ReadAllText($settingsPath)
+    $list = "<disabledFeatures>" + (($names | ForEach-Object { "<li>$_</li>" }) -join "") + "</disabledFeatures>"
+    $settings = [regex]::Replace($settings, '<disabledFeatures\s*/>|<disabledFeatures>.*?</disabledFeatures>', $list, "Singleline")
+    [IO.File]::WriteAllText($settingsPath, $settings)
+    Write-Output "disabled features: $(@($names).Count)"
+}
 Get-ChildItem (Join-Path $data "Saves") -Filter *.rws | Remove-Item
 
 # Real Ruins keeps its downloaded bases under the save data folder. Bring them along so base placement can be tested.
