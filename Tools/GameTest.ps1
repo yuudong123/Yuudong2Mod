@@ -2,13 +2,15 @@
 #   boot: start the game without a window, quit once loading finishes, list errors and warnings from the log.
 #   save: also load a save (a copy, as autostart), run ticks with the Yuudong2Test mod and print its report.
 # The game runs with its own save data folder (.gametest/data), so the real config, saves and Player.log are untouched.
-# Usage: powershell -File Tools/GameTest.ps1 [-Mode boot|save] [-Save <name>] [-Ticks 5000] [-TimeoutSec 900] [-AllowRunning]
+# Usage: powershell -File Tools/GameTest.ps1 [-Mode boot|save] [-Save <name>] [-Ticks 5000] [-TimeoutSec 900] [-AllowRunning] [-Windowed]
+#   -Windowed: show the game window. Needed for checks that render, such as the enemy gravship landing cutscene.
 param(
     [ValidateSet("boot", "save")] [string]$Mode = "boot",
     [string]$Save = "",
     [int]$Ticks = 5000,
     [int]$TimeoutSec = 900,
-    [switch]$AllowRunning
+    [switch]$AllowRunning,
+    [switch]$Windowed
 )
 
 $ErrorActionPreference = "Stop"
@@ -66,11 +68,12 @@ if ($Mode -eq "save") {
 }
 
 Remove-Item $logFile, $report -ErrorAction SilentlyContinue
-$gameArgs = @("-headless", "-NoFileLog", "-NoCrashDialog", "-savedatafolder=$data")
+$gameArgs = @("-NoFileLog", "-NoCrashDialog", "-savedatafolder=$data")
+if (-not $Windowed) { $gameArgs = @("-headless") + $gameArgs }
 if ($Mode -eq "boot") { $gameArgs += "-QuitAfterBoot" } else { $gameArgs += @("-y2test", "-y2ticks=$Ticks", "-y2report=$report") }
 
 $timer = [Diagnostics.Stopwatch]::StartNew()
-$proc = Start-Process (Join-Path $game "RimWorld.exe") -ArgumentList $gameArgs -WorkingDirectory $game -PassThru -WindowStyle Hidden -RedirectStandardOutput $logFile -RedirectStandardError "$logFile.err"
+$proc = Start-Process (Join-Path $game "RimWorld.exe") -ArgumentList $gameArgs -WorkingDirectory $game -PassThru -WindowStyle $(if ($Windowed) { "Normal" } else { "Hidden" }) -RedirectStandardOutput $logFile -RedirectStandardError "$logFile.err"
 $null = $proc.Handle  # keep the handle so ExitCode is available after exit
 if (-not $proc.WaitForExit($TimeoutSec * 1000)) {
     Stop-Process $proc -Force

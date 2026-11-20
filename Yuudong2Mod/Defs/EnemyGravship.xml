@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+
+  <!-- 적 중력선 습격의 도착 방식(Source/EnemyGravship.cs). 가중치가 0이라 바닐라가 직접 고르지 않는다. -->
+  <PawnsArrivalModeDef>
+    <defName>Yuudong2_GravshipLanding</defName>
+    <workerClass>Yuudong2Mod.PawnsArrivalModeWorker_GravshipLanding</workerClass>
+    <selectionWeightCurve>
+      <points>
+        <li>(0, 0)</li>
+      </points>
+    </selectionWeightCurve>
+    <canBeBackup>false</canBeBackup>
+    <textEnemy>A group of {0} from {1} have landed a gravship right next to you.</textEnemy>
+    <textFriendly>A group of friendly {0} from {1} have landed a gravship nearby.</textFriendly>
+    <textWillArrive>{0_pawnsPluralDef} will arrive by gravship.</textWillArrive>
+  </PawnsArrivalModeDef>
+
+</Defs>

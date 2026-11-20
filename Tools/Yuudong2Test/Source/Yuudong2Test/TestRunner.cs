@@ -60,6 +60,9 @@ namespace Yuudong2Test
         private bool loaded;
         private bool finished;
         private int ticksDone;
+        private bool cutsceneStarted;
+        private bool cutsceneEnded;
+        private float cutsceneDeadline;
         private DateTime tickStart;
 
         public GameComponent_Yuudong2Test(Game game)
@@ -96,6 +99,27 @@ namespace Yuudong2Test
 
             if (ticksDone >= target)
             {
+                if (!cutsceneStarted)
+                {
+                    cutsceneStarted = true;
+                    cutsceneDeadline = UnityEngine.Time.realtimeSinceStartup + 90f;
+                    if (Probes.BeginGravshipCutscene())
+                    {
+                        return;
+                    }
+                }
+                else if (!cutsceneEnded)
+                {
+                    bool running = Yuudong2Mod.EnemyGravshipLanding.Active;
+                    if (running && UnityEngine.Time.realtimeSinceStartup < cutsceneDeadline)
+                    {
+                        return;
+                    }
+
+                    cutsceneEnded = true;
+                    Probes.EndGravshipCutscene(running);
+                }
+
                 finished = true;
                 TestRunner.ticking = false;
                 WriteReport((DateTime.UtcNow - tickStart).TotalSeconds);

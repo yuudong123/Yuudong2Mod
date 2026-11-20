@@ -30,6 +30,7 @@ namespace Yuudong2Test
             ("litter decay", LitterDecay),
             ("multi haul", MultiHaul),
             ("enemy bases", EnemyBases),
+            ("enemy gravship", EnemyGravship),
             ("faction war", FactionWar),
             // 맵을 바꾸므로 항상 마지막에 둔다.
             ("gravship replace stuff", GravshipReplace),
@@ -758,6 +759,141 @@ namespace Yuudong2Test
         }
 
         // 금지된 장비를 저장 구역 밖에 놓고, 바닐라 부패 처리를 하루 치씩 돌려 본다.
+        public static string cutsceneReport = "not run";
+        private static DateTime cutsceneStart;
+
+        private static Faction GravshipRaider()
+        {
+            return Find.FactionManager.AllFactionsVisible
+                .Where(f => !f.IsPlayer && !f.defeated && f.HostileTo(Faction.OfPlayer) && f.def.humanlikeFaction && (int)f.def.techLevel >= (int)TechLevel.Industrial)
+                .RandomElementWithFallback();
+        }
+
+        private static IncidentParms GravshipRaidParms(Map map, Faction faction)
+        {
+            IncidentParms parms = StorytellerUtility.DefaultParmsNow(IncidentCategoryDefOf.ThreatBig, map);
+            parms.faction = faction;
+            parms.points = 1500f;
+            return parms;
+        }
+
+        // 컷신은 여러 프레임에 걸쳐 진행되므로 러너가 시작과 끝을 따로 부른다.
+        public static bool BeginGravshipCutscene()
+        {
+            if (!EnemyGravshipUtility.Active)
+            {
+                cutsceneReport = "skipped: feature not applied";
+                return false;
+            }
+
+            if (GenCommandLine.CommandLineArgPassed("headless"))
+            {
+                cutsceneReport = "skipped: nothing renders without a window, run GameTest.ps1 -Windowed";
+                return false;
+            }
+
+            Map map = Find.AnyPlayerHomeMap;
+            Faction faction = GravshipRaider();
+            if (map == null || faction == null || !ShipLibrary.WaitForScan(180000))
+            {
+                cutsceneReport = $"skipped: home map {map != null}, hostile industrial faction {faction != null}, designs {ShipLibrary.Count}";
+                return false;
+            }
+
+            DebugViewSettings.saveGravshipRenders = true;
+            cutsceneStart = DateTime.UtcNow;
+            bool started = EnemyGravshipUtility.TryStartRaid((IncidentWorker_Raid)IncidentDefOf.RaidEnemy.Worker, GravshipRaidParms(map, faction), true);
+            cutsceneReport = started ? "started as " + EnemyGravshipLanding.lastMode + "; " + EnemyGravshipUtility.lastReport : "FAIL: could not start";
+            return started && EnemyGravshipLanding.Active;
+        }
+
+        public static void EndGravshipCutscene(bool timedOut)
+        {
+            DebugViewSettings.saveGravshipRenders = false;
+            cutsceneReport = $"{(timedOut ? "FAIL: still running; " : "")}mode {EnemyGravshipLanding.lastMode}, stage {EnemyGravshipLanding.stage}, took {(DateTime.UtcNow - cutsceneStart).TotalSeconds:F1}s, "
+                + $"cutscene flag {WorldComponent_GravshipController.CutsceneInProgress}, screenshot mode {Find.ScreenshotModeHandler.Active}, travelling {Find.GravshipController.IsGravshipTravelling}; {EnemyGravshipUtility.lastReport}";
+        }
+
+        private static void EnemyGravship(StringBuilder sb)
+        {
+            if (!EnemyGravshipUtility.Active)
+            {
+                sb.AppendLine("skipped: feature not applied");
+                return;
+            }
+
+            int bad = 0;
+            void Check(bool ok, string text)
+            {
+                bad += ok ? 0 : 1;
+                sb.AppendLine($"{(ok ? "ok  " : "FAIL")} {text}");
+            }
+
+            Check(!cutsceneReport.StartsWith("FAIL") && !WorldComponent_GravshipController.CutsceneInProgress && !Find.ScreenshotModeHandler.Active, "cutscene landing: " + cutsceneReport);
+            Check(ShipLibrary.WaitForScan(180000), $"design scan finished: {ShipLibrary.Count} files hold a gravship");
+            int sampled = 0;
+            List<string> shapes = new List<string>();
+            foreach (string file in ShipLibrary.Files.Take(40))
+            {
+                sampled++;
+                ShipDesign d = ShipLibrary.TryLoad(file);
+                if (d != null)
+                {
+                    shapes.Add($"{d.size.x}x{d.size.z} {d.cells.Count}c {d.things.Count}t {d.floors.Count}f");
+                }
+            }
+            Check(shapes.Count > 0, $"{shapes.Count} of {sampled} sampled files give a whole ship: {string.Join(", ", shapes.Take(14))}");
+
+            Map map = Find.AnyPlayerHomeMap;
+            Faction faction = GravshipRaider();
+            if (map == null || faction == null)
+            {
+                sb.AppendLine("info: no home map or no hostile industrial faction, raid check skipped");
+                sb.AppendLine($"FAIL: {bad}");
+                return;
+            }
+
+            int errorsBefore = TestRunner.TickErrors.Count;
+            TestRunner.ticking = true;
+            HashSet<Pawn> before = new HashSet<Pawn>(map.mapPawns.AllPawnsSpawned);
+            int lordsBefore = map.lordManager.lords.Count;
+            IncidentParms parms = GravshipRaidParms(map, faction);
+            bool started = EnemyGravshipUtility.TryStartRaid((IncidentWorker_Raid)IncidentDefOf.RaidEnemy.Worker, parms, false);
+            Check(started && EnemyGravshipLanding.lastMode == "instant", $"raid by {faction.Name} started without cutscene: {EnemyGravshipUtility.lastReport}");
+            if (started)
+            {
+                List<IntVec3> cells = EnemyGravshipUtility.lastShipCells;
+                HashSet<IntVec3> ship = new HashSet<IntVec3>(cells);
+                Building_GravEngine engine = cells.Select(c => c.GetEdifice(map)).OfType<Building_GravEngine>().FirstOrDefault();
+                Check(engine != null && engine.Faction == faction, $"grav engine aboard, owned by {engine?.Faction?.Name ?? "nobody"}");
+                Check(cells.All(c => map.terrainGrid.FoundationAt(c)?.IsSubstructure == true), $"all {cells.Count} ship cells have substructure");
+                List<Thing> buildings = cells.SelectMany(c => c.GetThingList(map)).Where(t => t is Building).Distinct().ToList();
+                Check(buildings.Count > 10 && buildings.Where(b => b.def.CanHaveFaction).All(b => b.Faction == faction),
+                    $"{buildings.Count} buildings aboard: {string.Join(", ", buildings.GroupBy(b => b.def.defName).OrderByDescending(g => g.Count()).Take(10).Select(g => g.Key + " x" + g.Count()))}");
+                Check(cells.All(c => c.GetFirstItem(map) == null), "no items aboard");
+                if (engine != null)
+                {
+                    sb.AppendLine($"info: engine supports {engine.ValidSubstructure.Count} of {cells.Count} cells, claimable by player: {engine.ClaimableBy(Faction.OfPlayer)}");
+                }
+
+                List<Pawn> raiders = map.mapPawns.AllPawnsSpawned.Where(p => !before.Contains(p) && p.Faction == faction).ToList();
+                Check(raiders.Count > 0 && raiders.All(p => ship.Contains(p.Position)), $"{raiders.Count} raiders spawned, {raiders.Count(p => ship.Contains(p.Position))} of them aboard");
+                Check(parms.raidArrivalMode == EnemyGravshipDefOf.Yuudong2_GravshipLanding && map.lordManager.lords.Count > lordsBefore,
+                    $"arrival mode {parms.raidArrivalMode?.defName}, lord {map.lordManager.lords.LastOrDefault()?.LordJob?.GetType().Name}");
+                for (int i = 0; i < 900; i++)
+                {
+                    Find.TickManager.DoSingleTick();
+                }
+                int outside = raiders.Count(p => p.Spawned && !ship.Contains(p.Position));
+                Check(outside > 0, $"after 900 ticks {outside} of {raiders.Count} raiders have left the ship ({raiders.Count(p => p.Dead)} dead)");
+            }
+
+            TestRunner.ticking = false;
+            List<string> errors = TestRunner.TickErrors.Skip(errorsBefore).ToList();
+            Check(errors.Count == 0, $"errors during the raid: {errors.Count}" + (errors.Count > 0 ? " - " + string.Join(" | ", errors.Take(4).Select(e => e.Split('\n')[0])) : ""));
+            sb.AppendLine($"FAIL: {bad}");
+        }
+
         private static void LitterDecay(StringBuilder sb)
         {
             if (!Yuudong2Mod.Yuudong2Mod.AppliedFeatures.Contains(Features.LitterDecay))

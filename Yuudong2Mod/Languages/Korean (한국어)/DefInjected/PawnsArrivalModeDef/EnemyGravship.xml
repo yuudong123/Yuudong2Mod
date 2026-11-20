@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+
+  <Yuudong2_GravshipLanding.textEnemy>{1}의 {0} 무리가 중력선을 타고 바로 옆에 착륙했습니다.</Yuudong2_GravshipLanding.textEnemy>
+  <Yuudong2_GravshipLanding.textFriendly>{1}의 우호적인 {0} 무리가 중력선을 타고 근처에 착륙했습니다.</Yuudong2_GravshipLanding.textFriendly>
+  <Yuudong2_GravshipLanding.textWillArrive>{0_pawnsPluralDef}(이)가 중력선을 타고 올 것입니다.</Yuudong2_GravshipLanding.textWillArrive>
+
+</LanguageData>
