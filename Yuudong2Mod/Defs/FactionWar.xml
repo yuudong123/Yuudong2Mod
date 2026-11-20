@@ -15,4 +15,24 @@
     <expandMore>true</expandMore>
   </WorldObjectDef>
 
+  <!-- 행군 중인 군대를 기습해서 열린 임시 전투 맵(Source/ArmyAttack.cs). -->
+  <WorldObjectDef ParentName="StaticWorldObjectBase">
+    <defName>Yuudong2_ArmyBattle</defName>
+    <label>army battle</label>
+    <description>A battle with an army ambushed on the march.</description>
+    <worldObjectClass>Yuudong2Mod.WorldObject_ArmyBattle</worldObjectClass>
+    <texture>World/WorldObjects/Ambush</texture>
+    <expandingIcon>true</expandingIcon>
+    <expandingIconTexture>World/WorldObjects/Expanding/Ambush</expandingIconTexture>
+    <expandingIconPriority>80</expandingIconPriority>
+    <expandMore>true</expandMore>
+    <isTempIncidentMapOwner>true</isTempIncidentMapOwner>
+    <IncidentTargetTags>
+      <li>Map_TempIncident</li>
+    </IncidentTargetTags>
+    <comps>
+      <li Class="WorldObjectCompProperties_FormCaravan" />
+    </comps>
+  </WorldObjectDef>
+
 </Defs>

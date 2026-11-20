@@ -562,6 +562,85 @@ namespace Yuudong2Test
             factions = comp.SyncFactions();
             sb.AppendLine($"info: peace made between two hostile factions: {comp.TryMakePeace(factions)}");
 
+            // 행군 중인 적 군대 기습: 전투 맵을 열고, 물러나면 군대가 줄고, 다 물리치면 군대가 사라진다.
+            Faction ambushed = factions.FirstOrDefault(f => f.HostileTo(Faction.OfPlayer) && comp.PowerOf(f) > 0f && f.def.humanlikeFaction);
+            Settlement ambushTarget = ambushed == null ? null : Find.WorldObjects.Settlements.FirstOrDefault(x => x.Faction != ambushed && !x.Faction.IsPlayer && x.Faction.HostileTo(ambushed) && FactionWarUtility.OnSurface(x));
+            WorldObject_WarArmy marching = ambushed == null || ambushTarget == null ? null : comp.TryLaunchArmy(ambushed, ambushTarget);
+            if (marching == null)
+            {
+                sb.AppendLine("info: no hostile army could be launched, ambush check skipped");
+            }
+            else
+            {
+                Check(!ArmyAttackUtility.CanAttack(marching, marching.Tile).Accepted && ArmyAttackUtility.StartBattle(marching, marching.Tile) == null, "no battle opens on the settlement tile the army starts from");
+                if (marching.path.Count > 2)
+                {
+                    marching.pathIndex = 1;
+                    marching.Tile = marching.path[1];
+                }
+                Gizmo command = marching.GetGizmos().OfType<Command_Action>().FirstOrDefault(g => g.icon == ArmyAttackUtility.AttackTex);
+                Check(command != null && command.Disabled && ArmyAttackUtility.CanAttack(marching, marching.Tile).Accepted,
+                    $"ambush command on {marching.Label}: {(command == null ? "missing" : command.Disabled ? "disabled - " + command.disabledReason : "enabled")}");
+                float strength = marching.strength;
+                PlanetTile at = marching.Tile;
+                WorldObject_ArmyBattle fight = ArmyAttackUtility.StartBattle(marching, at);
+                TestRunner.ticking = false;
+                Map field = GetOrGenerateMapUtility.GetOrGenerateMap(fight.Tile, new IntVec3(ArmyAttackUtility.CaravanMapSize, 1, ArmyAttackUtility.CaravanMapSize), null);
+                TestRunner.ticking = true;
+                List<Pawn> soldiers = field.mapPawns.SpawnedPawnsInFaction(ambushed).ToList();
+                Check(field.Parent == fight && soldiers.Count > 0 && fight.initialEnemies == soldiers.Count && soldiers.All(p => Verse.AI.Group.LordUtility.GetLord(p) != null),
+                    $"battle map {field.Size.x}x{field.Size.z} for {fight.points:F0} points: {soldiers.Count} soldiers, lord {(soldiers.Count > 0 ? Verse.AI.Group.LordUtility.GetLord(soldiers[0]) : null)?.LordJob.GetType().Name}");
+                Pawn scout = PawnGenerator.GeneratePawn(PawnKindDefOf.Colonist, Faction.OfPlayer);
+                GenSpawn.Spawn(scout, CellFinder.RandomEdgeCell(field), field);
+                int tileBefore = marching.pathIndex;
+                for (int i = 0; i < WorldObject_WarArmy.TicksPerTile + 100; i++)
+                {
+                    Find.TickManager.DoSingleTick();
+                }
+                Check(marching.Engaged && marching.pathIndex == tileBefore && !fight.won, $"army holds still during the battle (path index {marching.pathIndex}), battle not won while {soldiers.Count(p => !p.Downed && !p.Dead)} soldiers stand");
+                int half = soldiers.Count / 2;
+                foreach (Pawn p in soldiers.Take(half))
+                {
+                    p.Destroy();
+                }
+                foreach (Pawn p in soldiers.Skip(half))
+                {
+                    p.jobs.StopAll();
+                }
+                scout.Destroy();
+                for (int i = 0; i < 300 && !fight.Destroyed; i++)
+                {
+                    Find.TickManager.DoSingleTick();
+                }
+                Check(fight.Destroyed && !marching.Destroyed && marching.battle == null && marching.strength < strength && marching.strength > 0f,
+                    $"left without winning with {soldiers.Count - half} of {soldiers.Count} standing: battle removed {fight.Destroyed}, army strength {strength:F0} -> {marching.strength:F0}");
+
+                if (!marching.Destroyed)
+                {
+                    WorldObject_ArmyBattle second = ArmyAttackUtility.StartBattle(marching, marching.Tile);
+                    TestRunner.ticking = false;
+                    Map field2 = GetOrGenerateMapUtility.GetOrGenerateMap(second.Tile, new IntVec3(ArmyAttackUtility.CaravanMapSize, 1, ArmyAttackUtility.CaravanMapSize), null);
+                    TestRunner.ticking = true;
+                    Pawn witness = PawnGenerator.GeneratePawn(PawnKindDefOf.Colonist, Faction.OfPlayer);
+                    GenSpawn.Spawn(witness, CellFinder.RandomEdgeCell(field2), field2);
+                    foreach (Pawn p in field2.mapPawns.SpawnedPawnsInFaction(ambushed).ToList())
+                    {
+                        p.Destroy();
+                    }
+                    for (int i = 0; i < 120; i++)
+                    {
+                        Find.TickManager.DoSingleTick();
+                    }
+                    Check(second.won && marching.Destroyed, $"all soldiers gone with a colonist on the map: battle won {second.won}, army destroyed {marching.Destroyed}");
+                    witness.Destroy();
+                    for (int i = 0; i < 300 && !second.Destroyed; i++)
+                    {
+                        Find.TickManager.DoSingleTick();
+                    }
+                    sb.AppendLine($"info: battle site removed after the last colonist left: {second.Destroyed}");
+                }
+            }
+
             Settlement home = Find.WorldObjects.Settlements.FirstOrDefault(x => x.Faction == Faction.OfPlayer && x.HasMap && x.Map.IsPlayerHome && FactionWarUtility.OnSurface(x));
             WorldObject_WarArmy raidArmy = null;
             if (home != null)
@@ -749,7 +828,8 @@ namespace Yuudong2Test
             }
             sb.AppendLine($"armies on the map after the daily update: {comp.Armies.Count()}");
 
-            List<string> errors = TestRunner.TickErrors.Skip(errorsBefore).ToList();
+            // 앞선 검사가 남긴 정착지 맵에는 정착민이 없어서, 틱을 돌리면 바닐라 함락 판정이 이야기 기록에 쓸 정착민을 못 찾고 이 오류를 낸다.
+            List<string> errors = TestRunner.TickErrors.Skip(errorsBefore).Where(e => !e.StartsWith("Failed to create tale object CaravanAssaultSuccessful")).ToList();
             foreach (IGrouping<string, string> group in errors.GroupBy(m => m.Split('\n')[0]).Take(15))
             {
                 sb.AppendLine($"error x{group.Count()}: {group.Key}");

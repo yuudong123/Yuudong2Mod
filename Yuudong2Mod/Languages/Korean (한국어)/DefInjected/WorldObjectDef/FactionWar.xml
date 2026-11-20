@@ -2,4 +2,6 @@
 <LanguageData>
   <Yuudong2_WarArmy.label>군대</Yuudong2_WarArmy.label>
   <Yuudong2_WarArmy.description>적 정착지를 치러 가는 군대입니다.</Yuudong2_WarArmy.description>
+  <Yuudong2_ArmyBattle.label>군대와의 전투</Yuudong2_ArmyBattle.label>
+  <Yuudong2_ArmyBattle.description>행군 중이던 군대를 기습해서 벌어진 전투입니다.</Yuudong2_ArmyBattle.description>
 </LanguageData>

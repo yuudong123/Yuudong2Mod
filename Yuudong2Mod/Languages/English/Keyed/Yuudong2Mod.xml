@@ -341,7 +341,7 @@
   <Yuudong2.EnemyGravship.Scanning>Still looking for gravship designs, or there is no Real Ruins design cache.</Yuudong2.EnemyGravship.Scanning>
   <Yuudong2.EnemyGravship.NoSite>No landing site or usable gravship design was found.</Yuudong2.EnemyGravship.NoSite>
   <Yuudong2.Feature.FactionWar>Faction wars</Yuudong2.Feature.FactionWar>
-  <Yuudong2.Feature.FactionWar.Desc>Factions declare war and make peace, and send armies across the world map to capture or raze each other's settlements. New factions appear during the game. Armies of factions hostile to you also march on your settlements and raid them. If you attack a settlement an allied army is marching on, that army joins your battle, and on victory the ally takes the settlement. News arrives once a day as a single summary letter. Everything is computed once a day.</Yuudong2.Feature.FactionWar.Desc>
+  <Yuudong2.Feature.FactionWar.Desc>Factions declare war and make peace, and send armies across the world map to capture or raze each other's settlements. New factions appear during the game. Armies of factions hostile to you also march on your settlements and raid them. A hostile army on the march can be ambushed with a caravan, transport pods, a shuttle or a gravship. If you attack a settlement an allied army is marching on, that army joins your battle, and on victory the ally takes the settlement. News arrives once a day as a single summary letter. Everything is computed once a day.</Yuudong2.Feature.FactionWar.Desc>
   <Yuudong2.Feature.NoFactionLimit>No faction count limit</Yuudong2.Feature.NoFactionLimit>
   <Yuudong2.Feature.NoFactionLimit.Desc>Removes the limit of 12 factions when creating a world. Per-type maximums stay.</Yuudong2.Feature.NoFactionLimit.Desc>
   <Yuudong2.FactionWar.Intensity>War frequency: x{0}</Yuudong2.FactionWar.Intensity>
@@ -356,6 +356,20 @@
   <Yuudong2.FactionWar.AttackPlayer.Desc>Armies of factions hostile to you can target your settlements. On arrival they become a raid of your current raid points. Non-hostile factions never come.</Yuudong2.FactionWar.AttackPlayer.Desc>
   <Yuudong2.FactionWar.ReplaceRaids>War raids replace storyteller raids</Yuudong2.FactionWar.ReplaceRaids>
   <Yuudong2.FactionWar.ReplaceRaids.Desc>Each time a war army raids your settlement, the next enemy raid chosen by the storyteller is skipped. When off, war raids are simply added. Quest raids are untouched.</Yuudong2.FactionWar.ReplaceRaids.Desc>
+  <Yuudong2.ArmyAttack.Command>Ambush</Yuudong2.ArmyAttack.Command>
+  <Yuudong2.ArmyAttack.CommandDesc>Ambush this army with your caravans right next to it. A temporary battle map opens at once and the army stops until the battle is over. Defeat everyone and the army is gone; withdraw and it marches on with whatever is left. You can also ambush it by picking it as the destination of transport pods, a shuttle or a gravship.</Yuudong2.ArmyAttack.CommandDesc>
+  <Yuudong2.ArmyAttack.NoCaravan>One of your caravans must be close enough to merge with this army.</Yuudong2.ArmyAttack.NoCaravan>
+  <Yuudong2.ArmyAttack.NotHostile>Only armies of hostile factions can be ambushed.</Yuudong2.ArmyAttack.NotHostile>
+  <Yuudong2.ArmyAttack.NoRoom>Another place already occupies this tile, so no battle can open here.</Yuudong2.ArmyAttack.NoRoom>
+  <Yuudong2.ArmyAttack.DropEdge>Ambush {0}: land at the edge</Yuudong2.ArmyAttack.DropEdge>
+  <Yuudong2.ArmyAttack.DropCenter>Ambush {0}: land in the center</Yuudong2.ArmyAttack.DropCenter>
+  <Yuudong2.ArmyAttack.BattleLabel>Battle with the army of {0}</Yuudong2.ArmyAttack.BattleLabel>
+  <Yuudong2.ArmyAttack.LetterLabel>Army ambushed</Yuudong2.ArmyAttack.LetterLabel>
+  <Yuudong2.ArmyAttack.LetterText>You ambushed the marching army of {0}. It has {1} soldiers, who will gather for a moment and then strike back.\n\nDefeat them all and this army is gone. Withdraw and it marches on with whatever is left.</Yuudong2.ArmyAttack.LetterText>
+  <Yuudong2.ArmyAttack.WonLabel>Army defeated</Yuudong2.ArmyAttack.WonLabel>
+  <Yuudong2.ArmyAttack.WonText>You defeated the army of {0}. It will march no further.</Yuudong2.ArmyAttack.WonText>
+  <Yuudong2.ArmyAttack.Withdrew>The army of {0} marches on with {1} of its soldiers left.</Yuudong2.ArmyAttack.Withdrew>
+  <Yuudong2.FactionWar.News.ArmyDefeated>We ambushed and defeated the army of {0}.</Yuudong2.FactionWar.News.ArmyDefeated>
   <Yuudong2.FactionWar.ArmyLabel>army of {0}</Yuudong2.FactionWar.ArmyLabel>
   <Yuudong2.FactionWar.ArmyStrength>Strength: {0}</Yuudong2.FactionWar.ArmyStrength>
   <Yuudong2.FactionWar.ArmyTarget>Target: {0} ({1})</Yuudong2.FactionWar.ArmyTarget>

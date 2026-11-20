@@ -96,6 +96,14 @@ namespace Yuudong2Mod
         // 출발할 때 자기 세력의 정착지 한 곳 몫에 견준 군대 크기. 내 전투에 합세할 때 병력 규모가 된다.
         public float sizeFactor = DefaultSizeFactor;
 
+        // 내가 기습해서 열린 전투. 전투가 끝날 때까지 군대는 멈춰 있다(Source/ArmyAttack.cs).
+        public WorldObject_ArmyBattle battle;
+
+        // 중력선이 이 군대를 노리고 날아오는 동안 붙잡아 두는 시한.
+        public int heldUntilTick;
+
+        public bool Engaged => (battle != null && !battle.Destroyed) || Find.TickManager.TicksGame < heldUntilTick;
+
         private const float DefaultSizeFactor = 0.7f;
 
         private Material cachedMat;
@@ -145,6 +153,8 @@ namespace Yuudong2Mod
             Scribe_Values.Look(ref waitedTicks, "waitedTicks", 0);
             Scribe_Values.Look(ref strength, "strength", 0f);
             Scribe_Values.Look(ref sizeFactor, "sizeFactor", DefaultSizeFactor);
+            Scribe_References.Look(ref battle, "battle");
+            Scribe_Values.Look(ref heldUntilTick, "heldUntilTick", 0);
             if (Scribe.mode == LoadSaveMode.PostLoadInit)
             {
                 path ??= new List<PlanetTile>();
@@ -158,6 +168,11 @@ namespace Yuudong2Mod
             if (comp == null)
             {
                 Destroy();
+                return;
+            }
+
+            if (Engaged)
+            {
                 return;
             }
 
@@ -183,6 +198,65 @@ namespace Yuudong2Mod
                 waitedTicks += ticksOnTile;
                 ticksOnTile = 0;
                 comp.ArmyArrived(this);
+            }
+        }
+
+        public override IEnumerable<Gizmo> GetGizmos()
+        {
+            foreach (Gizmo gizmo in base.GetGizmos())
+            {
+                yield return gizmo;
+            }
+
+            if (Faction == null || !Faction.HostileTo(Faction.OfPlayer))
+            {
+                yield break;
+            }
+
+            List<Caravan> caravans = ArmyAttackUtility.CaravansInReach(this);
+            Command_Action attack = new Command_Action
+            {
+                defaultLabel = "Yuudong2.ArmyAttack.Command".Translate(),
+                defaultDesc = "Yuudong2.ArmyAttack.CommandDesc".Translate(),
+                icon = ArmyAttackUtility.AttackTex,
+                action = () => ArmyAttackUtility.AttackWithCaravans(this, caravans),
+            };
+            AcceptanceReport report = ArmyAttackUtility.CanAttack(this, ArmyAttackUtility.BattleTile(this, caravans));
+            if (!report.Accepted)
+            {
+                attack.Disable(report.Reason);
+            }
+            else if (caravans.Count == 0)
+            {
+                attack.Disable("Yuudong2.ArmyAttack.NoCaravan".Translate());
+            }
+
+            yield return attack;
+        }
+
+        public override IEnumerable<FloatMenuOption> GetTransportersFloatMenuOptions(IEnumerable<IThingHolder> pods, System.Action<PlanetTile, TransportersArrivalAction> launchAction)
+        {
+            foreach (FloatMenuOption option in base.GetTransportersFloatMenuOptions(pods, launchAction))
+            {
+                yield return option;
+            }
+
+            foreach (FloatMenuOption option in ArmyAttackUtility.TransporterOptions(this, pods, launchAction))
+            {
+                yield return option;
+            }
+        }
+
+        public override IEnumerable<FloatMenuOption> GetShuttleFloatMenuOptions(IEnumerable<IThingHolder> pods, System.Action<PlanetTile, TransportersArrivalAction> launchAction)
+        {
+            foreach (FloatMenuOption option in base.GetShuttleFloatMenuOptions(pods, launchAction))
+            {
+                yield return option;
+            }
+
+            foreach (FloatMenuOption option in ArmyAttackUtility.TransporterOptions(this, pods, launchAction))
+            {
+                yield return option;
             }
         }
 
@@ -310,6 +384,7 @@ namespace Yuudong2Mod
             Scribe_Collections.Look(ref lastSettlements, "lastSettlements", LookMode.Reference, LookMode.Value, ref tmpCountKeys, ref tmpCountValues);
             Scribe_Collections.Look(ref news, "news", LookMode.Value);
             Scribe_Values.Look(ref newsThreat, "newsThreat", false);
+            Scribe_References.Look(ref gravshipTarget, "gravshipTarget");
             Scribe_Values.Look(ref lastDay, "lastDay", -1);
             Scribe_Values.Look(ref raidCredit, "raidCredit", 0);
             Scribe_Values.Look(ref lastPlayerAttackTick, "lastPlayerAttackTick", -9999999);
@@ -680,6 +755,15 @@ namespace Yuudong2Mod
                 : FactionWarUtility.CanJoinPlayer(faction, target.Faction) ? "Yuudong2.FactionWar.News.MarchAlly" : "Yuudong2.FactionWar.News.March";
             AddNews(marchKey.Translate(faction.Name, origin.Label, target.Label, target.Faction.Name, army.TicksToArrival.ToStringTicksToPeriod()), atPlayer);
             return army;
+        }
+
+        // 중력선이 목적지로 고른 타일에 있던 적 군대. 도착하면 그 군대와 전투가 열린다.
+        public WorldObject_WarArmy gravshipTarget;
+
+        public void ArmyDefeatedByPlayer(WorldObject_WarArmy army)
+        {
+            AddNews("Yuudong2.FactionWar.News.ArmyDefeated".Translate(army.Faction?.Name ?? "?"));
+            army.Destroy();
         }
 
         private void Retreat(WorldObject_WarArmy army)
