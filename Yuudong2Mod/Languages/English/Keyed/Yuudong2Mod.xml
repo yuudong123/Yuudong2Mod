@@ -41,6 +41,16 @@
   <Yuudong2.Feature.NoMapEdgeLimit.Desc>Allows building and zoning at the map edge. (Change map edge limit)</Yuudong2.Feature.NoMapEdgeLimit.Desc>
   <Yuudong2.Feature.PowerOnDemand>Power on demand</Yuudong2.Feature.PowerOnDemand>
   <Yuudong2.Feature.PowerOnDemand.Desc>Workbenches, TVs, research benches and similar buildings draw full power only while in use and 1 W while idle. (Turn It On and Off)</Yuudong2.Feature.PowerOnDemand.Desc>
+  <Yuudong2.Feature.WeaponPair>Carry a melee and a ranged weapon</Yuudong2.Feature.WeaponPair>
+  <Yuudong2.Feature.WeaponPair.Desc>Colonists carry one melee and one ranged weapon together. Equipping the other kind while holding one puts the held weapon into the inventory instead of dropping it. They draw the melee weapon when an enemy is adjacent and the ranged one when none is. A button on the selected colonist locks them to one of the two. The stowed weapon can be dropped from the gear tab.</Yuudong2.Feature.WeaponPair.Desc>
+  <Yuudong2.WeaponPair.Command>Weapon: {0}</Yuudong2.WeaponPair.Command>
+  <Yuudong2.WeaponPair.CommandDesc>In hand: {0}
+Stowed: {1}
+
+On automatic, the melee weapon is drawn when an enemy is adjacent and the ranged one when none is. Locked to one, the weapons are not switched.</Yuudong2.WeaponPair.CommandDesc>
+  <Yuudong2.WeaponPair.Mode.Auto>automatic</Yuudong2.WeaponPair.Mode.Auto>
+  <Yuudong2.WeaponPair.Mode.Melee>melee only</Yuudong2.WeaponPair.Mode.Melee>
+  <Yuudong2.WeaponPair.Mode.Ranged>ranged only</Yuudong2.WeaponPair.Mode.Ranged>
   <Yuudong2.Feature.EquipmentDurability>Weapons only damaged by fire</Yuudong2.Feature.EquipmentDurability>
   <Yuudong2.Feature.EquipmentDurability.Desc>Weapons lose hit points only when burning. Equipped or lying on the ground, they take no wear, hit, weather deterioration or explosion damage. Apparel and armor wear out as in vanilla. Hit points already lost stay lost.</Yuudong2.Feature.EquipmentDurability.Desc>
   <Yuudong2.Feature.AllSpecialistsCanWork>Specialists can work</Yuudong2.Feature.AllSpecialistsCanWork>
@@ -555,6 +565,8 @@
   <Yuudong2.Feature.TechprintTradeHighlight.Desc>Colors techprint rows in the trade window: green if already researched or the applied and owned techprints are enough, yellow if partly applied or owned, red if none. Hover to see applied and owned counts. Uses the gene assistant colors.</Yuudong2.Feature.TechprintTradeHighlight.Desc>
   <Yuudong2.Techprint.Finished>{0}: already researched. This techprint is not needed.</Yuudong2.Techprint.Finished>
   <Yuudong2.Techprint.Status>{0}\nTechprints applied: {1}/{2}\nTechprints in your colony: {3}</Yuudong2.Techprint.Status>
+  <Yuudong2.Feature.RatkinShieldAnyWeapon>Ratkin shields with any weapon</Yuudong2.Feature.RatkinShieldAnyWeapon>
+  <Yuudong2.Feature.RatkinShieldAnyWeapon.Desc>NewRatkinPlus shields refuse weapons that do not match their grip type. This removes the limit so any weapon can be held with a shield.</Yuudong2.Feature.RatkinShieldAnyWeapon.Desc>
   <Yuudong2.Feature.RatkinDrawScaleFix>Ratkin pawn rendering fix</Yuudong2.Feature.RatkinDrawScaleFix>
   <Yuudong2.Feature.RatkinDrawScaleFix.Desc>Prevents NewRatkinPlus's gene draw-scale cache from being corrupted by concurrent render threads, which made every pawn invisible. Uses a thread-safe cache for the same calculation. Does nothing without NewRatkinPlus.</Yuudong2.Feature.RatkinDrawScaleFix.Desc>
   <Yuudong2.Feature.TpsDisplay>TPS display</Yuudong2.Feature.TpsDisplay>

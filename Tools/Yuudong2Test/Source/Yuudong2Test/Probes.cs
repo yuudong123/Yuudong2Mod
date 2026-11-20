@@ -29,6 +29,9 @@ namespace Yuudong2Test
             ("bench apparel repair", BenchApparelRepair),
             ("litter decay", LitterDecay),
             ("multi haul", MultiHaul),
+            ("repair bill count", RepairBillCount),
+            ("weapon pair", WeaponPair),
+            ("ratkin shield", RatkinShield),
             ("enemy bases", EnemyBases),
             ("enemy gravship", EnemyGravship),
             ("faction war", FactionWar),
@@ -980,6 +983,252 @@ namespace Yuudong2Test
             List<string> errors = TestRunner.TickErrors.Skip(errorsBefore).ToList();
             Check(errors.Count == 0, $"errors during the raid: {errors.Count}" + (errors.Count > 0 ? " - " + string.Join(" | ", errors.Take(4).Select(e => e.Split('\n')[0])) : ""));
             sb.AppendLine($"FAIL: {bad}");
+        }
+
+        private static void WeaponPair(StringBuilder sb)
+        {
+            if (!WeaponPairUtility.Active)
+            {
+                sb.AppendLine("skipped: feature not applied");
+                return;
+            }
+
+            int bad = 0;
+            void Check(bool ok, string text)
+            {
+                bad += ok ? 0 : 1;
+                sb.AppendLine($"{(ok ? "ok  " : "FAIL")} {text}");
+            }
+
+            Map map = Find.AnyPlayerHomeMap;
+            Pawn pawn = map?.mapPawns.FreeColonistsSpawned.FirstOrDefault(p => !p.Downed && !p.Drafted && !p.WorkTagIsDisabled(WorkTags.Violent)
+                && WeaponPairUtility.Stowed(p, true) == null && WeaponPairUtility.Stowed(p, false) == null);
+            ThingDef rifleDef = DefDatabase<ThingDef>.GetNamedSilentFail("Gun_BoltActionRifle");
+            ThingDef swordDef = DefDatabase<ThingDef>.GetNamedSilentFail("MeleeWeapon_LongSword");
+            if (pawn == null || rifleDef == null || swordDef == null)
+            {
+                sb.AppendLine("skipped: no free colonist or test weapons");
+                return;
+            }
+
+            int errorsBefore = TestRunner.TickErrors.Count;
+            TestRunner.ticking = true;
+            ThingWithComps original = pawn.equipment.Primary;
+            if (original != null)
+            {
+                pawn.equipment.Remove(original);
+            }
+
+            ThingWithComps rifle = (ThingWithComps)ThingMaker.MakeThing(rifleDef);
+            ThingWithComps sword = (ThingWithComps)ThingMaker.MakeThing(swordDef, ThingDefOf.Steel);
+            pawn.equipment.AddEquipment(rifle);
+            pawn.equipment.MakeRoomFor(sword);
+            pawn.equipment.AddEquipment(sword);
+            Check(pawn.equipment.Primary == sword && pawn.inventory.innerContainer.Contains(rifle) && !rifle.Spawned,
+                $"{pawn.LabelShort} equips a sword while holding a rifle: in hand {pawn.equipment.Primary?.def.defName}, rifle stowed {pawn.inventory.innerContainer.Contains(rifle)}, dropped on the ground {rifle.Spawned}");
+
+            void Wait()
+            {
+                for (int i = 0; i < 35; i++)
+                {
+                    Find.TickManager.DoSingleTick();
+                }
+            }
+
+            pawn.jobs.StopAll();
+            Check(WeaponPairUtility.DrawRanged(pawn, null) && pawn.equipment.Primary == rifle && pawn.inventory.innerContainer.Contains(sword), "no enemy adjacent: draws the rifle, sword stowed");
+            Check(!WeaponPairUtility.DrawMelee(pawn) && pawn.equipment.Primary == rifle, "no second switch within the cooldown");
+            Wait();
+
+            pawn.inventory.UnloadEverything = true;
+            Thing unload = pawn.inventory.FirstUnloadableThing.Thing;
+            pawn.inventory.UnloadEverything = false;
+            Check(unload != sword, $"the stowed sword is not offered for unloading (offered: {unload?.def.defName ?? "nothing"})");
+
+            Faction hostile = Find.FactionManager.AllFactionsVisible.FirstOrDefault(f => !f.IsPlayer && f.HostileTo(Faction.OfPlayer) && f.def.humanlikeFaction);
+            IntVec3 beside = GenAdj.CellsAdjacent8Way(pawn).FirstOrDefault(c => c.InBounds(map) && c.Standable(map) && c.GetFirstPawn(map) == null);
+            if (hostile != null && beside.IsValid && pawn.Spawned)
+            {
+                Pawn enemy = PawnGenerator.GeneratePawn(hostile.RandomPawnKind(), hostile);
+                GenSpawn.Spawn(enemy, beside, map);
+                pawn.stances.CancelBusyStanceHard();
+                bool attacked = pawn.meleeVerbs.TryMeleeAttack(enemy);
+                Check(attacked && pawn.equipment.Primary == sword && pawn.inventory.innerContainer.Contains(rifle), $"melee attack on an adjacent enemy: attacked {attacked}, in hand {pawn.equipment.Primary?.def.defName}");
+                Wait();
+                pawn.stances.CancelBusyStanceHard();
+                pawn.TryGetAttackVerb(enemy);
+                Check(pawn.equipment.Primary == sword, $"enemy still adjacent: keeps the sword (in hand {pawn.equipment.Primary?.def.defName})");
+                enemy.Destroy();
+                pawn.stances.CancelBusyStanceHard();
+                Verb verb = pawn.TryGetAttackVerb(null);
+                Check(pawn.equipment.Primary == rifle && verb != null && !verb.IsMeleeAttack, $"enemy gone: back to the rifle (in hand {pawn.equipment.Primary?.def.defName})");
+            }
+            else
+            {
+                sb.AppendLine("info: no hostile faction or free cell beside the colonist, combat check skipped");
+            }
+
+            Wait();
+            pawn.stances.CancelBusyStanceHard();
+            WeaponPairUtility.SetMode(pawn, WeaponPairMode.Melee);
+            Check(pawn.equipment.Primary == sword && !WeaponPairUtility.DrawRanged(pawn, null) && pawn.equipment.Primary == sword, "locked to melee: holds the sword and does not draw the rifle");
+            WeaponPairUtility.SetMode(pawn, WeaponPairMode.Ranged);
+            Check(pawn.equipment.Primary == rifle && !WeaponPairUtility.DrawMelee(pawn) && pawn.equipment.Primary == rifle, "locked to ranged: holds the rifle and does not draw the sword");
+            List<Gizmo> gizmos = WeaponPairUtility.Gizmos(pawn).ToList();
+            Check(gizmos.Count == 1, $"lock button shown: {(gizmos.Count == 1 ? ((Command)gizmos[0]).defaultLabel : "none")}");
+            WeaponPairUtility.SetMode(pawn, WeaponPairMode.Auto);
+
+            if (pawn.equipment.Primary != null)
+            {
+                pawn.equipment.Remove(pawn.equipment.Primary);
+            }
+            pawn.inventory.innerContainer.Remove(rifle);
+            pawn.inventory.innerContainer.Remove(sword);
+            if (!rifle.Destroyed)
+            {
+                rifle.Destroy();
+            }
+            if (!sword.Destroyed)
+            {
+                sword.Destroy();
+            }
+            if (original != null)
+            {
+                pawn.equipment.AddEquipment(original);
+            }
+
+            TestRunner.ticking = false;
+            List<string> errors = TestRunner.TickErrors.Skip(errorsBefore).ToList();
+            Check(errors.Count == 0, $"errors: {errors.Count}" + (errors.Count > 0 ? " - " + string.Join(" | ", errors.Take(4).Select(e => e.Split('\n')[0])) : ""));
+            sb.AppendLine(bad == 0 ? "PASS" : $"FAIL: {bad}");
+        }
+
+        private static void RatkinShield(StringBuilder sb)
+        {
+            Type filter = AccessTools.TypeByName("NewRatkin.CompGripTypeFilter");
+            if (filter == null || !Yuudong2Mod.Yuudong2Mod.AppliedFeatures.Contains(Features.RatkinShieldAnyWeapon))
+            {
+                sb.AppendLine("skipped: NewRatkinPlus not loaded or feature not applied");
+                return;
+            }
+
+            MethodInfo allowed = AccessTools.Method(filter, "TryIsWeaponAllowed");
+            List<ThingDef> shields = DefDatabase<ThingDef>.AllDefsListForReading.Where(d => d.comps != null && d.comps.Any(c => c.compClass != null && filter.IsAssignableFrom(c.compClass))).ToList();
+            List<ThingDef> weapons = DefDatabase<ThingDef>.AllDefsListForReading.Where(d => d.IsWeapon && d.equipmentType == EquipmentType.Primary).ToList();
+            int refused = 0;
+            foreach (ThingDef shieldDef in shields)
+            {
+                ThingWithComps shield = (ThingWithComps)ThingMaker.MakeThing(shieldDef, shieldDef.MadeFromStuff ? GenStuff.DefaultStuffFor(shieldDef) : null);
+                ThingComp comp = shield.AllComps.First(c => filter.IsInstanceOfType(c));
+                foreach (ThingDef weapon in weapons)
+                {
+                    if (!(bool)allowed.Invoke(comp, new object[] { weapon, null }))
+                    {
+                        refused++;
+                    }
+                }
+                shield.Destroy();
+            }
+
+            bool ok = shields.Count > 0 && refused == 0;
+            sb.AppendLine($"{(ok ? "ok  " : "FAIL")} {shields.Count} grip-limited apparel ({string.Join(", ", shields.Take(6).Select(d => d.defName))}) x {weapons.Count} weapons: {refused} refused");
+            sb.AppendLine(ok ? "PASS" : "FAIL: 1");
+        }
+
+        private static void RepairBillCount(StringBuilder sb)
+        {
+            if (!Yuudong2Mod.Yuudong2Mod.AppliedFeatures.Contains(Features.BenchApparelRepair))
+            {
+                sb.AppendLine("skipped: feature not applied");
+                return;
+            }
+
+            // 세이브에 실제로 수선 중인 재봉대가 있으면 그 옷으로 확인한다.
+            foreach (Map map in Find.Maps.Where(m => m.IsPlayerHome))
+            {
+                foreach (ThingDef benchDef in ApparelRepairUtility.BenchDefs)
+                {
+                    foreach (Thing bench in map.listerThings.ThingsOfDef(benchDef))
+                    {
+                        CompApparelRepair comp = bench.TryGetComp<CompApparelRepair>();
+                        if (comp == null || comp.State == ApparelRepairState.Idle || !(bench is IBillGiver giver))
+                        {
+                            continue;
+                        }
+
+                        foreach (Apparel apparel in comp.Repairing.ToList())
+                        {
+                            RecipeDef recipe = DefDatabase<RecipeDef>.AllDefsListForReading.FirstOrDefault(r => r.products != null && r.products.Count == 1 && r.products[0].thingDef == apparel.def && r.specialProducts == null);
+                            if (recipe == null)
+                            {
+                                continue;
+                            }
+
+                            Bill_Production bill = new Bill_Production(recipe) { includeEquipped = true, includeTainted = true, hpRange = FloatRange.ZeroToOne, qualityRange = QualityRange.All };
+                            bill.billStack = giver.BillStack;
+                            int counted = recipe.WorkerCounter.CountProducts(bill);
+                            List<Apparel> list = Traverse.Create(comp).Field("repairing").GetValue<List<Apparel>>();
+                            int index = list.IndexOf(apparel);
+                            list.RemoveAt(index);
+                            int without = recipe.WorkerCounter.CountProducts(bill);
+                            list.Insert(index, apparel);
+                            bool ok = counted == without + 1;
+                            sb.AppendLine($"{(ok ? "ok  " : "FAIL")} {apparel.def.defName} being repaired for {comp.User?.LabelShort} at {bench.def.defName}: a bill that counts worn apparel sees {counted} (would see {without} if the repaired one were left out)");
+                            sb.AppendLine(ok ? "PASS" : "FAIL: 1");
+                            return;
+                        }
+                    }
+                }
+            }
+
+            foreach (Map map in Find.Maps.Where(m => m.IsPlayerHome))
+            {
+                foreach (ThingDef benchDef in ApparelRepairUtility.BenchDefs)
+                {
+                    foreach (Thing bench in map.listerThings.ThingsOfDef(benchDef))
+                    {
+                        CompApparelRepair comp = bench.TryGetComp<CompApparelRepair>();
+                        if (comp == null || comp.State != ApparelRepairState.Idle || !(bench is IBillGiver giver))
+                        {
+                            continue;
+                        }
+
+                        foreach (Pawn pawn in map.mapPawns.FreeColonistsSpawned)
+                        {
+                            foreach (Apparel apparel in pawn.apparel.WornApparel.ToList())
+                            {
+                                RecipeDef recipe = DefDatabase<RecipeDef>.AllDefsListForReading.FirstOrDefault(r => r.products != null && r.products.Count == 1 && r.products[0].thingDef == apparel.def && r.specialProducts == null);
+                                if (recipe == null)
+                                {
+                                    continue;
+                                }
+
+                                Bill_Production bill = new Bill_Production(recipe) { includeEquipped = true, includeTainted = true, hpRange = FloatRange.ZeroToOne, qualityRange = QualityRange.All };
+                                bill.billStack = giver.BillStack;
+                                int worn = recipe.WorkerCounter.CountProducts(bill);
+                                Traverse fields = Traverse.Create(comp);
+                                pawn.apparel.Remove(apparel);
+                                comp.GetDirectlyHeldThings().TryAdd(apparel, false);
+                                fields.Field("state").SetValue(ApparelRepairState.Working);
+                                fields.Field("user").SetValue(pawn);
+                                fields.Field("repairing").GetValue<List<Apparel>>().Add(apparel);
+                                int repairing = recipe.WorkerCounter.CountProducts(bill);
+                                fields.Field("repairing").GetValue<List<Apparel>>().Remove(apparel);
+                                fields.Field("user").SetValue(null);
+                                fields.Field("state").SetValue(ApparelRepairState.Idle);
+                                comp.GetDirectlyHeldThings().Remove(apparel);
+                                pawn.apparel.Wear(apparel, false);
+                                bool ok = worn > 0 && repairing == worn;
+                                sb.AppendLine($"{(ok ? "ok  " : "FAIL")} bill counting worn {apparel.def.defName}: {worn} while {pawn.LabelShort} wears it, {repairing} while it is in {bench.def.defName} for repair");
+                                sb.AppendLine(ok ? "PASS" : "FAIL: 1");
+                                return;
+                            }
+                        }
+                    }
+                }
+            }
+
+            sb.AppendLine("skipped: no idle repair bench with a colonist wearing craftable apparel");
         }
 
         private static void LitterDecay(StringBuilder sb)

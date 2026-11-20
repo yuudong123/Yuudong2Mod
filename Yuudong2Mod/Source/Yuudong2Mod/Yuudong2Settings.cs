@@ -23,6 +23,7 @@ namespace Yuudong2Mod
 
         public const string HairUnderHats = "HairUnderHats";
         public const string EquipmentDurability = "EquipmentDurability";
+        public const string WeaponPair = "WeaponPair";
 
         public const string AllSpecialistsCanWork = "AllSpecialistsCanWork";
         public const string NoIdeologyLimits = "NoIdeologyLimits";
@@ -98,17 +99,18 @@ namespace Yuudong2Mod
         public const string DragonianGenes = "DragonianGenes";
         public const string DragonianHealing = "DragonianHealing";
         public const string RatkinDrawScaleFix = "RatkinDrawScaleFix";
+        public const string RatkinShieldAnyWeapon = "RatkinShieldAnyWeapon";
 
         public static readonly FeatureGroup[] Groups =
         {
             new FeatureGroup("Romance", AlwaysAcceptProposal, NoBreakup, SameBedLovin, NoRandomRelations, RomanceTweaks, ConsensualIncest),
             new FeatureGroup("Colony", ShelfNoSlowdown, ShelfAcceptAll, NoMapEdgeLimit, CustomMapSize, PowerOnDemand, ReplaceStuff, GloomyWallReplace, RoomFood, MeatOptimization, SinglePlantTexture, RoofedScanning, NoFloorInfestation, EggSacTargeting, BenchApparelRepair, LitterDecay, MultiHaul, RealisticRooms, BetterWorkbench, GeneRipper, MultiReinstall, MultiCopy, RebuildBills, InstalledPartsCount, WorkRouteOrder, SurgeryManager),
             new FeatureGroup("Interface", MessagePlacement, HealthCardSorting, DamageIndicators, LetterStackCleaner, SmartSpeed, TpsDisplay, SaveHotkey, DragSelect, GeneAssistant, TechprintTradeHighlight),
-            new FeatureGroup("Pawn", HairUnderHats, HiddenBionicEyes, EquipmentDurability, EndlessGrowth, NoGrowthNickname, RpgLevelUp, BirthAgeByLifespan, CalmMoveSpeed, BetterHearing, SleepLimits, ImplantsOnAddedParts),
+            new FeatureGroup("Pawn", HairUnderHats, HiddenBionicEyes, EquipmentDurability, WeaponPair, EndlessGrowth, NoGrowthNickname, RpgLevelUp, BirthAgeByLifespan, CalmMoveSpeed, BetterHearing, SleepLimits, ImplantsOnAddedParts),
             new FeatureGroup("Ideology", AllSpecialistsCanWork, RolesUntiedToMemes, NoIdeologyLimits, AutoCastSpecialistCommands, FasterBiosculpter),
             new FeatureGroup("Trade", CaravanArrivalSpot, TradeShipDropSpot, MapWideTradeBeacon, TradeStockBoost, OrbitalTraderFrequency, InsultFaction, EmpireGoodwillFix, EnemyBaseScaling, RealRuinsBases, EnemyGravship, FactionWar, SettlementConquest, NoFactionLimit),
             new FeatureGroup("Performance", WorldPawnSleep, FastTickInterval, FastMoodThoughts, IdleMissingParts, PlantSwayPerFrame, IdleIceChecks, DoorReachabilityCache),
-            new FeatureGroup("Compatibility", EpoeAiCore, DragonianGenes, DragonianHealing, DragonianMix, GloomyFurnitureFix, RatkinDrawScaleFix),
+            new FeatureGroup("Compatibility", EpoeAiCore, DragonianGenes, DragonianHealing, DragonianMix, GloomyFurnitureFix, RatkinDrawScaleFix, RatkinShieldAnyWeapon),
         };
 
         // 세부 설정 창이 있는 기능. 세부 설정은 재시작 없이 바로 적용된다.
