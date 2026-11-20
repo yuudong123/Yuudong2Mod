@@ -320,7 +320,7 @@
   <Yuudong2.Feature.EnemyBaseScaling>적 기지 강화</Yuudong2.Feature.EnemyBaseScaling>
   <Yuudong2.Feature.EnemyBaseScaling.Desc>다른 세력 정착지의 방어 병력을 내 정착지에 오는 습격과 같은 포인트(난이도 위협 배율 포함)로 맞추고, 그만큼 기지도 넓힙니다. 바닐라는 내 수준과 상관없이 1150~1600 포인트로 고정입니다.</Yuudong2.Feature.EnemyBaseScaling.Desc>
   <Yuudong2.Feature.RealRuinsBases>남이 만든 기지 (Real Ruins)</Yuudong2.Feature.RealRuinsBases>
-  <Yuudong2.Feature.RealRuinsBases.Desc>Real Ruins 모드가 켜져 있으면, 다른 세력 정착지를 Real Ruins가 받아 둔 다른 플레이어의 실제 기지로 망가뜨리지 않고 짓습니다. 받아 둔 기지 중 큰 쪽 절반에서, 가치가 내 정착지와 비슷한 것을 무작위로 고르고 방어 병력은 따로 넣습니다. 쓸 만한 기지가 없으면 바닐라 방식으로 짓습니다.</Yuudong2.Feature.RealRuinsBases.Desc>
+  <Yuudong2.Feature.RealRuinsBases.Desc>Real Ruins 모드가 켜져 있으면, 다른 세력 정착지를 Real Ruins가 받아 둔 다른 플레이어의 실제 기지로 망가뜨리지 않고 짓습니다. 받아 둔 기지 중 큰 쪽 절반에서, 가치가 내 정착지와 비슷한 것을 무작위로 고르고 방어 병력은 따로 넣습니다. 쓸 만한 기지가 없으면 바닐라 방식으로 짓습니다. 다른 세력 정착지 맵에는 Real Ruins가 따로 뿌리는 폐허를 깔지 않습니다.</Yuudong2.Feature.RealRuinsBases.Desc>
   <Yuudong2.Feature.FactionWar>세력 전쟁</Yuudong2.Feature.FactionWar>
   <Yuudong2.Feature.FactionWar.Desc>세력끼리 전쟁을 선포하고 화해하며, 세계 지도 위로 군대를 보내 서로의 정착지를 점령하거나 파괴합니다. 게임 도중 새 세력이 나타납니다. 적대 세력의 군대는 내 정착지로도 와서 습격합니다. 동맹의 군대가 치러 가는 정착지를 내가 같이 공격하면 동맹군이 전투에 합세하고, 이기면 그 정착지는 동맹이 차지합니다. 소식은 하루에 한 번 편지 한 통으로 요약됩니다. 계산은 하루에 한 번만 합니다.</Yuudong2.Feature.FactionWar.Desc>
   <Yuudong2.Feature.NoFactionLimit>세력 수 제한 해제</Yuudong2.Feature.NoFactionLimit>

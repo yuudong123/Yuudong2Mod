@@ -1002,6 +1002,7 @@ namespace Yuudong2Test
 
             int errorsBefore = TestRunner.TickErrors.Count, warningsBefore = TestRunner.TickWarnings.Count;
             string placedBefore = RealRuinsBridge.LastPlacedFile;
+            int skippedBefore = RealRuinsBridge.SkippedRuinScatters;
             TestRunner.ticking = true;
             Map map = null;
             int bad = 0;
@@ -1043,6 +1044,17 @@ namespace Yuudong2Test
                 else if (ruins)
                 {
                     sb.AppendLine("--   real ruins base not expected: mod inactive or no downloaded blueprints");
+                }
+
+                if (ruins && RealRuinsBridge.Available)
+                {
+                    bool ok = RealRuinsBridge.SkippedRuinScatters == skippedBefore + 1;
+                    bad += ok ? 0 : 1;
+                    CellRect baseRect = MapGenerator.TryGetVar(GenStep_Settlement.RectVarName, out CellRect settlementRect) ? settlementRect : RealRuinsBridge.LastPlacedRect;
+                    CellRect around = baseRect.ExpandedBy(5);
+                    int outside = map.listerThings.AllThings.Count(t => t.def.category == ThingCategory.Building && t.def.building != null && !t.def.building.isNaturalRock
+                        && t.def.IsEdifice() && !around.Contains(t.Position));
+                    sb.AppendLine($"{(ok ? "ok  " : "FAIL")} real ruins scatter skipped on the settlement map ({RealRuinsBridge.SkippedRuinScatters - skippedBefore} time), built edifices outside the base area: {outside}");
                 }
             }
             catch (Exception e)

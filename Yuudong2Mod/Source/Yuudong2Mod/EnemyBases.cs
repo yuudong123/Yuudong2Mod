@@ -38,6 +38,11 @@ namespace Yuudong2Mod
                 && step.postProcessSettlementParams == null;
         }
 
+        public static bool IsEnemySettlementMap(Map map)
+        {
+            return map.Parent is Settlement && map.ParentFaction != null && map.ParentFaction != Faction.OfPlayer;
+        }
+
         private static IIncidentTarget RichestPlayerTarget()
         {
             Map best = null;
@@ -209,6 +214,48 @@ namespace Yuudong2Mod
         }
     }
 
+    // Real Ruins는 모든 맵에 자기 폐허를 따로 뿌린다. 정착지가 있는 타일에서는 가장 크고 많이 뿌려서 기지와 뒤섞이고 기지를 덮기도 한다.
+    // 다른 세력 정착지 맵에서는 그 단계를 건너뛴다.
+    [HarmonyPatchCategory(Features.RealRuinsBases)]
+    [HarmonyPatch]
+    internal static class RealRuins_ScatterRealRuins_SettlementMap_Patch
+    {
+        private const string StepTypeName = "RealRuins.GenStep_ScatterRealRuins";
+
+        private static MethodBase target;
+
+        private static bool Prepare()
+        {
+            if (!ModsConfig.IsActive(RealRuinsBridge.PackageId))
+            {
+                return false;
+            }
+            Type type = AccessTools.TypeByName(StepTypeName);
+            target = type == null ? null : AccessTools.Method(type, nameof(GenStep.Generate));
+            if (target == null)
+            {
+                Log.Error($"[Yuudong2Mod] RealRuinsBases: {StepTypeName}.Generate를 찾지 못해 정착지 맵에도 Real Ruins 폐허가 깔립니다. Real Ruins의 폐허 생성 단계 이름이 바뀌었는지 확인하세요.");
+                return false;
+            }
+            return true;
+        }
+
+        private static MethodBase TargetMethod()
+        {
+            return target;
+        }
+
+        private static bool Prefix(Map map)
+        {
+            if (!EnemyBaseUtility.IsEnemySettlementMap(map))
+            {
+                return true;
+            }
+            RealRuinsBridge.SkippedRuinScatters++;
+            return false;
+        }
+    }
+
     // Real Ruins의 내부 형식을 리플렉션으로 부른다. Real Ruins는 선택 모드라 컴파일할 때 참조하지 않는다.
     public static class RealRuinsBridge
     {
@@ -228,6 +275,9 @@ namespace Yuudong2Mod
         // 마지막으로 지은 기지의 파일 이름과 자리. 검사와 문제 추적에 쓴다.
         public static string LastPlacedFile { get; private set; }
         public static CellRect LastPlacedRect { get; private set; }
+
+        // 정착지 맵에서 Real Ruins의 폐허 뿌리기를 건너뛴 횟수. 검사에 쓴다.
+        public static int SkippedRuinScatters;
 
         private static bool initialized;
         private static bool ready;
