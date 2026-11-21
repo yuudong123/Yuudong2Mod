@@ -317,6 +317,24 @@ namespace Yuudong2Mod
             }
         }
 
+        // 근접·원거리로 나눠 적고, 지금 손에 든 쪽을 표시한다.
+        private static string CommandDesc(Thing primary, Thing other)
+        {
+            Thing melee = primary != null && primary.def.IsMeleeWeapon ? primary : (other.def.IsMeleeWeapon ? other : null);
+            Thing ranged = primary != null && primary.def.IsRangedWeapon ? primary : (other.def.IsRangedWeapon ? other : null);
+            return "Yuudong2.WeaponPair.CommandDesc".Translate(WeaponLine(melee, primary), WeaponLine(ranged, primary));
+        }
+
+        private static string WeaponLine(Thing weapon, Thing primary)
+        {
+            if (weapon == null)
+            {
+                return "-";
+            }
+
+            return weapon == primary ? "Yuudong2.WeaponPair.InHand".Translate(weapon.LabelCap).ToString() : weapon.LabelCap;
+        }
+
         public static string ModeLabel(WeaponPairMode mode)
         {
             return ("Yuudong2.WeaponPair.Mode." + mode).Translate();
@@ -335,7 +353,7 @@ namespace Yuudong2Mod
             yield return new Command_Action
             {
                 defaultLabel = "Yuudong2.WeaponPair.Command".Translate(ModeLabel(mode)),
-                defaultDesc = "Yuudong2.WeaponPair.CommandDesc".Translate(primary?.LabelCap ?? "-", other.LabelCap),
+                defaultDesc = CommandDesc(primary, other),
                 icon = other.def.uiIcon,
                 iconAngle = other.def.uiIconAngle,
                 defaultIconColor = other.DrawColor,

@@ -439,7 +439,7 @@ namespace Yuudong2Mod
         private const float Oversize = 1.25f;
         private const float PointsPerCell = 5f;
         private const int VarietyPool = 10;
-        private const int RepeatRetries = 30;
+        private const int RepeatRetries = 300;
         private const float VarietySpread = 0.3f;
 
         private static readonly MethodInfo ResolveFaction = AccessTools.Method(typeof(IncidentWorker_Raid), "TryResolveRaidFaction");

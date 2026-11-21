@@ -59,6 +59,7 @@ namespace Yuudong2Mod
         public const string ConsensualIncest = "ConsensualIncest";
         public const string OrderTools = "OrderTools";
         public const string GravshipNoRange = "GravshipNoRange";
+        public const string NoBeaconAlert = "NoBeaconAlert";
         public const string RoofedScanning = "RoofedScanning";
         public const string NoFloorInfestation = "NoFloorInfestation";
         public const string EggSacTargeting = "EggSacTargeting";
@@ -107,7 +108,7 @@ namespace Yuudong2Mod
         {
             new FeatureGroup("Romance", AlwaysAcceptProposal, NoBreakup, SameBedLovin, NoRandomRelations, RomanceTweaks, ConsensualIncest),
             new FeatureGroup("Colony", ShelfNoSlowdown, ShelfAcceptAll, NoMapEdgeLimit, CustomMapSize, PowerOnDemand, ReplaceStuff, GloomyWallReplace, RoomFood, MeatOptimization, SinglePlantTexture, RoofedScanning, NoFloorInfestation, EggSacTargeting, BenchApparelRepair, LitterDecay, MultiHaul, RealisticRooms, BetterWorkbench, GeneRipper, MultiReinstall, MultiCopy, RebuildBills, InstalledPartsCount, WorkRouteOrder, SurgeryManager, GravshipNoRange),
-            new FeatureGroup("Interface", MessagePlacement, HealthCardSorting, DamageIndicators, LetterStackCleaner, SmartSpeed, TpsDisplay, SaveHotkey, DragSelect, GeneAssistant, TechprintTradeHighlight, OrderTools),
+            new FeatureGroup("Interface", MessagePlacement, HealthCardSorting, DamageIndicators, LetterStackCleaner, SmartSpeed, TpsDisplay, SaveHotkey, DragSelect, GeneAssistant, TechprintTradeHighlight, OrderTools, NoBeaconAlert),
             new FeatureGroup("Pawn", HairUnderHats, HiddenBionicEyes, EquipmentDurability, WeaponPair, EndlessGrowth, NoGrowthNickname, RpgLevelUp, BirthAgeByLifespan, CalmMoveSpeed, BetterHearing, SleepLimits, ImplantsOnAddedParts),
             new FeatureGroup("Ideology", AllSpecialistsCanWork, RolesUntiedToMemes, NoIdeologyLimits, AutoCastSpecialistCommands, FasterBiosculpter),
             new FeatureGroup("Trade", CaravanArrivalSpot, TradeShipDropSpot, MapWideTradeBeacon, TradeStockBoost, OrbitalTraderFrequency, InsultFaction, EmpireGoodwillFix, EnemyBaseScaling, RealRuinsBases, EnemyGravship, FactionWar, SettlementConquest, NoFactionLimit),

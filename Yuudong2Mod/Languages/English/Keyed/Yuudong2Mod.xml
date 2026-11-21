@@ -44,10 +44,11 @@
   <Yuudong2.Feature.WeaponPair>Carry a melee and a ranged weapon</Yuudong2.Feature.WeaponPair>
   <Yuudong2.Feature.WeaponPair.Desc>Colonists carry one melee and one ranged weapon together. Equipping the other kind while holding one puts the held weapon into the inventory instead of dropping it. They draw the melee weapon when an enemy is adjacent and the ranged one when none is. A button on the selected colonist locks them to one of the two. A colonist holding only one weapon fetches the best available weapon of the other kind when idle. The stowed weapon can be dropped from the gear tab; a colonist whose sidearm was dropped that way stops fetching one until you equip one by hand again.</Yuudong2.Feature.WeaponPair.Desc>
   <Yuudong2.WeaponPair.Command>Weapon: {0}</Yuudong2.WeaponPair.Command>
-  <Yuudong2.WeaponPair.CommandDesc>In hand: {0}
-Stowed: {1}
+  <Yuudong2.WeaponPair.CommandDesc>Melee: {0}
+Ranged: {1}
 
 On automatic, the melee weapon is drawn when an enemy is adjacent and the ranged one when none is. Locked to one, the weapons are not switched.</Yuudong2.WeaponPair.CommandDesc>
+  <Yuudong2.WeaponPair.InHand>{0} (in hand)</Yuudong2.WeaponPair.InHand>
   <Yuudong2.WeaponPair.Mode.Auto>automatic</Yuudong2.WeaponPair.Mode.Auto>
   <Yuudong2.WeaponPair.Mode.Melee>melee only</Yuudong2.WeaponPair.Mode.Melee>
   <Yuudong2.WeaponPair.Mode.Ranged>ranged only</Yuudong2.WeaponPair.Mode.Ranged>
@@ -641,6 +642,8 @@ On automatic, the melee weapon is drawn when an enemy is adjacent and the ranged
   <Yuudong2.OrderTools.Mine.None>No connected ores. Select an ore or designate one first.</Yuudong2.OrderTools.Mine.None>
   <Yuudong2.Feature.GravshipNoRange>No gravship range limits</Yuudong2.Feature.GravshipNoRange>
   <Yuudong2.Feature.GravshipNoRange.Desc>Removes the circular range of the grav engine and grav field extenders. Substructure can go anywhere as long as it connects to the engine, and extenders can be placed and linked far from the engine. Ship size is limited only by substructure support.</Yuudong2.Feature.GravshipNoRange.Desc>
+  <Yuudong2.Feature.NoBeaconAlert>Hide the unusable beacon alert</Yuudong2.Feature.NoBeaconAlert>
+  <Yuudong2.Feature.NoBeaconAlert.Desc>Does not show the "ship landing beacon unusable" alert when landing beacons do not form a landing area.</Yuudong2.Feature.NoBeaconAlert.Desc>
   <Yuudong2.Surgery.Tab.Plans>Implant plans</Yuudong2.Surgery.Tab.Plans>
   <Yuudong2.Surgery.Tab.Health>Health overview</Yuudong2.Surgery.Tab.Health>
   <Yuudong2.Health.OnlyProblems>Only colonists with problems</Yuudong2.Health.OnlyProblems>

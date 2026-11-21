@@ -40,6 +40,7 @@ namespace Yuudong2Test
             ("enemy bases", EnemyBases),
             ("enemy gravship", EnemyGravship),
             ("two gravships", TwoGravships),
+            ("no beacon alert", NoBeaconAlert),
             ("faction war", FactionWar),
             // 맵을 바꾸므로 항상 마지막에 둔다.
             ("gravship replace stuff", GravshipReplace),
@@ -1009,6 +1010,24 @@ namespace Yuudong2Test
         }
 
         // 플레이어 소유 배 두 척을 한 맵에 놓고, 시설이 자기 배의 엔진에만 연결되고 켜지는지 본다.
+        private static void NoBeaconAlert(StringBuilder sb)
+        {
+            int bad = 0;
+            void Check(bool ok, string text)
+            {
+                sb.AppendLine((ok ? "ok   " : "FAIL ") + text);
+                if (!ok)
+                {
+                    bad++;
+                }
+            }
+
+            bool patched = HarmonyLib.Harmony.GetPatchInfo(HarmonyLib.AccessTools.Method(typeof(Alert_ShuttleLandingBeaconUnusable), "GetReport"))?.Prefixes.Any(x => x.owner.Contains("uudong")) == true;
+            bool active = new Alert_ShuttleLandingBeaconUnusable().GetReport().active;
+            Check(patched && !active, $"unusable beacon alert: patched {patched}, active {active}");
+            sb.AppendLine(bad == 0 ? "PASS" : $"FAIL: {bad}");
+        }
+
         private static void TwoGravships(StringBuilder sb)
         {
             if (!EnemyGravshipUtility.Active)
