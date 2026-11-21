@@ -340,6 +340,52 @@ namespace Yuudong2Mod
             return true;
         }
 
+        private static readonly List<Thing> gearTabEquipment = new List<Thing>();
+
+        private static readonly List<Thing> gearTabInventory = new List<Thing>();
+
+        private static bool ShownAsEquipment(Pawn pawn, Thing thing)
+        {
+            GameComponent_WeaponPair tracker = GameComponent_WeaponPair.Instance;
+            return tracker != null && IsWeapon(thing) && tracker.IsSidearmOf(pawn, thing);
+        }
+
+        // 장비 탭: 보조 무기는 소지품이 아니라 장비 칸에 보여 준다.
+        public static List<Thing> EquipmentForGearTab(Pawn_EquipmentTracker equipment)
+        {
+            gearTabEquipment.Clear();
+            gearTabEquipment.AddRange(equipment.AllEquipmentListForReading);
+            Pawn pawn = equipment.pawn;
+            if (Eligible(pawn))
+            {
+                foreach (Thing thing in pawn.inventory.innerContainer)
+                {
+                    if (ShownAsEquipment(pawn, thing))
+                    {
+                        gearTabEquipment.Add(thing);
+                    }
+                }
+            }
+
+            return gearTabEquipment;
+        }
+
+        public static List<Thing> InventoryForGearTab(Pawn_InventoryTracker inventory)
+        {
+            gearTabInventory.Clear();
+            Pawn pawn = inventory.pawn;
+            bool eligible = Eligible(pawn);
+            foreach (Thing thing in inventory.innerContainer)
+            {
+                if (!eligible || !ShownAsEquipment(pawn, thing))
+                {
+                    gearTabInventory.Add(thing);
+                }
+            }
+
+            return gearTabInventory;
+        }
+
         // 지키는 보조 무기가 "내려놓을 물건"으로 뽑혔으면 잠깐 빼고 다시 물어 다음 물건을 받는다.
         public static void SkipSidearm(Pawn_InventoryTracker inventory, ref ThingCount result)
         {
@@ -452,6 +498,41 @@ namespace Yuudong2Mod
                 {
                     yield return gizmo;
                 }
+            }
+        }
+    }
+
+    [HarmonyPatchCategory(Features.WeaponPair)]
+    [HarmonyPatch(typeof(ITab_Pawn_Gear), "FillTab")]
+    internal static class ITab_Pawn_Gear_FillTab_WeaponPair_Patch
+    {
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+        {
+            MethodInfo equipmentList = AccessTools.PropertyGetter(typeof(Pawn_EquipmentTracker), nameof(Pawn_EquipmentTracker.AllEquipmentListForReading));
+            FieldInfo inventoryList = AccessTools.Field(typeof(Pawn_InventoryTracker), nameof(Pawn_InventoryTracker.innerContainer));
+            bool equipmentDone = false;
+            bool inventoryDone = false;
+            foreach (CodeInstruction instruction in instructions)
+            {
+                if (instruction.Calls(equipmentList))
+                {
+                    instruction.opcode = System.Reflection.Emit.OpCodes.Call;
+                    instruction.operand = AccessTools.Method(typeof(WeaponPairUtility), nameof(WeaponPairUtility.EquipmentForGearTab));
+                    equipmentDone = true;
+                }
+                else if (instruction.LoadsField(inventoryList))
+                {
+                    instruction.opcode = System.Reflection.Emit.OpCodes.Call;
+                    instruction.operand = AccessTools.Method(typeof(WeaponPairUtility), nameof(WeaponPairUtility.InventoryForGearTab));
+                    inventoryDone = true;
+                }
+
+                yield return instruction;
+            }
+
+            if (!equipmentDone || !inventoryDone)
+            {
+                Log.Error("[Yuudong2Mod] 무기 2개 착용: 장비 탭(ITab_Pawn_Gear.FillTab)에서 장비 목록이나 소지품 목록을 읽는 곳을 찾지 못해 보조 무기를 장비 칸에 보여 주지 못합니다. FillTab이 바뀌었는지 확인하세요.");
             }
         }
     }

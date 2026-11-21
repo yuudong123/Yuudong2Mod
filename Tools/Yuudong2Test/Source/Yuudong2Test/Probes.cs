@@ -1185,6 +1185,12 @@ namespace Yuudong2Test
             pawn.jobs.StopAll();
             Check(WeaponPairUtility.DrawRanged(pawn, null) && pawn.equipment.Primary == rifle && pawn.inventory.innerContainer.Contains(sword), "no enemy adjacent: draws the rifle, sword stowed");
             Check(!WeaponPairUtility.DrawMelee(pawn) && pawn.equipment.Primary == rifle, "no second switch within the cooldown");
+            List<Thing> shownEquipment = WeaponPairUtility.EquipmentForGearTab(pawn.equipment);
+            List<Thing> shownInventory = WeaponPairUtility.InventoryForGearTab(pawn.inventory);
+            Check(shownEquipment.Contains(rifle) && shownEquipment.Contains(sword) && !shownInventory.Contains(sword),
+                "gear tab lists the stowed sword under equipment, not inventory");
+            Check(HarmonyLib.Harmony.GetPatchInfo(HarmonyLib.AccessTools.Method(typeof(ITab_Pawn_Gear), "FillTab"))?.Transpilers.Any(x => x.owner.Contains("uudong")) == true,
+                "gear tab patch applied");
             Wait();
 
             pawn.inventory.UnloadEverything = true;
