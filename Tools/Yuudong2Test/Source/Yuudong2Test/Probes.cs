@@ -29,11 +29,13 @@ namespace Yuudong2Test
             ("bench apparel repair", BenchApparelRepair),
             ("litter decay", LitterDecay),
             ("multi haul", MultiHaul),
+            ("multi load", MultiLoad),
             ("repair bill count", RepairBillCount),
             ("weapon pair", WeaponPair),
             ("ratkin shield", RatkinShield),
             ("enemy bases", EnemyBases),
             ("enemy gravship", EnemyGravship),
+            ("two gravships", TwoGravships),
             ("faction war", FactionWar),
             // 맵을 바꾸므로 항상 마지막에 둔다.
             ("gravship replace stuff", GravshipReplace),
@@ -595,6 +597,11 @@ namespace Yuudong2Test
                     $"battle map {field.Size.x}x{field.Size.z}: {soldiers.Count} soldiers for an army showing strength {Mathf.RoundToInt(strength)}, lord {(soldiers.Count > 0 ? Verse.AI.Group.LordUtility.GetLord(soldiers[0]) : null)?.LordJob.GetType().Name}");
                 Pawn scout = PawnGenerator.GeneratePawn(PawnKindDefOf.Colonist, Faction.OfPlayer);
                 GenSpawn.Spawn(scout, CellFinder.RandomEdgeCell(field), field);
+                // 병사들이 정찰병을 잡아 전투가 먼저 끝나면 군대가 다시 움직여서, 이 확인 동안은 병사들을 묶어 둔다.
+                foreach (Pawn soldier in soldiers)
+                {
+                    soldier.stances.stunner.StunFor(WorldObject_WarArmy.TicksPerTile + 200, null, false, false);
+                }
                 int tileBefore = marching.pathIndex;
                 for (int i = 0; i < WorldObject_WarArmy.TicksPerTile + 100; i++)
                 {
@@ -949,7 +956,7 @@ namespace Yuudong2Test
             int lordsBefore = map.lordManager.lords.Count;
             IncidentParms parms = GravshipRaidParms(map, faction);
             bool started = EnemyGravshipUtility.TryStartRaid((IncidentWorker_Raid)IncidentDefOf.RaidEnemy.Worker, parms, false);
-            Check(started && EnemyGravshipLanding.lastMode == "instant", $"raid by {faction.Name} started without cutscene: {EnemyGravshipUtility.lastReport}");
+            Check(started && EnemyGravshipLanding.lastMode.StartsWith("instant"), $"raid by {faction.Name} started without cutscene: {EnemyGravshipUtility.lastReport}");
             if (started)
             {
                 List<IntVec3> cells = EnemyGravshipUtility.lastShipCells;
@@ -983,6 +990,104 @@ namespace Yuudong2Test
             List<string> errors = TestRunner.TickErrors.Skip(errorsBefore).ToList();
             Check(errors.Count == 0, $"errors during the raid: {errors.Count}" + (errors.Count > 0 ? " - " + string.Join(" | ", errors.Take(4).Select(e => e.Split('\n')[0])) : ""));
             sb.AppendLine($"FAIL: {bad}");
+        }
+
+        // 플레이어 소유 배 두 척을 한 맵에 놓고, 시설이 자기 배의 엔진에만 연결되고 켜지는지 본다.
+        private static void TwoGravships(StringBuilder sb)
+        {
+            if (!EnemyGravshipUtility.Active)
+            {
+                sb.AppendLine("skipped: feature not applied");
+                return;
+            }
+
+            int bad = 0;
+            void Check(bool ok, string text)
+            {
+                bad += ok ? 0 : 1;
+                sb.AppendLine($"{(ok ? "ok  " : "FAIL")} {text}");
+            }
+
+            Map map = Find.AnyPlayerHomeMap;
+            if (map == null || !ShipLibrary.WaitForScan(60000))
+            {
+                sb.AppendLine("skipped: no home map or no ship designs");
+                return;
+            }
+
+            int errorsBefore = TestRunner.TickErrors.Count;
+            List<Building_GravEngine> engines = new List<Building_GravEngine>();
+            foreach (float points in new[] { 2500f, 1500f })
+            {
+                if (EnemyGravshipUtility.TryPlan(map, points, out ShipDesign design, out IntVec3 root))
+                {
+                    Building_GravEngine placed = EnemyGravshipUtility.Place(map, design, root, Faction.OfPlayer);
+                    if (placed != null)
+                    {
+                        engines.Add(placed);
+                    }
+                }
+            }
+            if (engines.Count < 2)
+            {
+                sb.AppendLine($"skipped: only {engines.Count} ship(s) fit on the map ({EnemyGravshipUtility.lastReport})");
+                return;
+            }
+            MultiGravshipUtility.Relink(map);
+            for (int i = 0; i < 5; i++)
+            {
+                Find.TickManager.DoSingleTick();
+            }
+
+            int total = map.listerThings.ThingsOfDef(ThingDefOf.GravEngine).Count;
+            sb.AppendLine($"info: {total} grav engines on the map, two placed {engines[0].Position.DistanceTo(engines[1].Position):F0} cells apart");
+            foreach (Building_GravEngine engine in engines)
+            {
+                HashSet<IntVec3> own = engine.AllConnectedSubstructure;
+                List<Thing> linked = engine.GetComp<CompAffectedByFacilities>().LinkedFacilitiesListForReading;
+                int strangers = linked.Count(f => !own.Contains(f.Position) && engines.Any(e => e != engine && e.AllConnectedSubstructure.Contains(f.Position)));
+                List<CompGravshipFacility> aboard = own.SelectMany(c => c.GetThingList(map)).Distinct().Select(t => t.TryGetComp<CompGravshipFacility>()).Where(c => c != null).ToList();
+                bool Powered(CompGravshipFacility c) => c.parent.TryGetComp<CompPowerTrader>()?.PowerOn ?? true;
+                bool Supported(CompGravshipFacility c) => c.parent.Position.InHorDistOf(engine.Position, c.Props.maxDistance)
+                    && (c.Props.onlyRequiresLooseConnection ? engine.LooselyConnectedToGravEngine(c.parent) : engine.OnValidSubstructure(c.parent));
+                int supported = aboard.Count(c => Powered(c) && Supported(c));
+                int active = aboard.Count(c => c.CanBeActive);
+                foreach (CompGravshipFacility c in aboard.Where(c => !c.CanBeActive || !linked.Contains(c.parent)))
+                {
+                    sb.AppendLine($"info: {c.parent.def.defName} at {c.parent.Position}: active {c.CanBeActive}, powered {Powered(c)}, supported {Supported(c)}, linked {linked.Contains(c.parent)}, can link {c.CanLink()}, in vanilla link range {CompAffectedByFacilities.CanPotentiallyLinkTo_Static(c.parent, engine.def, engine.Position, engine.Rotation, map)}, same kind linked {linked.Count(l => l.def == c.parent.def)} of {c.parent.def.GetCompProperties<CompProperties_Facility>().maxSimultaneous}");
+                }
+                int unlinked = aboard.Count(c => !linked.Contains(c.parent) && c.CanLink());
+                Check(strangers == 0, $"engine at {engine.Position}: {linked.Count} linked facilities, {strangers} of them stand on the other ship");
+                Check(active == supported, $"engine at {engine.Position}: {aboard.Count} gravship facilities aboard, {supported} on supported substructure, {active} active, {unlinked} not linked");
+                sb.AppendLine($"info: engine at {engine.Position} supports {engine.ValidSubstructure.Count} of {own.Count} cells (stat {engine.GetStatValue(StatDefOf.SubstructureSupport):F0})");
+            }
+
+            Building_GravEngine found = GravshipUtility.GetPlayerGravEngine_NewTemp(map);
+            Check(found != null && found.Faction == Faction.OfPlayer, $"player engine lookup returns a player engine: {found?.Position.ToString() ?? "none"}");
+            Pawn pawn = map.mapPawns.FreeColonistsSpawned.FirstOrDefault();
+            Building_GravEngine last = map.listerThings.ThingsOfDef(ThingDefOf.GravEngine).OfType<Building_GravEngine>().Last();
+            if (pawn != null)
+            {
+                last.pawnsToBoard = new HashSet<Pawn> { pawn };
+                Find.TickManager.DoSingleTick();
+                Check(MultiGravshipUtility.EngineFor(map.listerThings.ThingsOfDef(ThingDefOf.GravEngine), pawn) == last, "boarding follows the engine that listed the colonist");
+                Check(GravshipUtility.GetPlayerGravEngine_NewTemp(map) == last, "player engine lookup prefers the engine that is boarding");
+                last.pawnsToBoard = null;
+            }
+
+            Faction hostile = GravshipRaider();
+            if (hostile != null)
+            {
+                Building_GravEngine taken = engines[1];
+                taken.SetFaction(hostile);
+                Find.TickManager.DoSingleTick();
+                Check(GravshipUtility.GetPlayerGravEngine_NewTemp(map) != taken, "an engine held by a hostile faction is not the player's engine");
+                taken.SetFaction(Faction.OfPlayer);
+            }
+
+            List<string> errors = TestRunner.TickErrors.Skip(errorsBefore).ToList();
+            Check(errors.Count == 0, $"errors: {errors.Count}" + (errors.Count > 0 ? " - " + string.Join(" | ", errors.Take(4).Select(e => e.Split('\n')[0])) : ""));
+            sb.AppendLine(bad == 0 ? "PASS" : $"FAIL: {bad}");
         }
 
         private static void WeaponPair(StringBuilder sb)
@@ -1021,6 +1126,14 @@ namespace Yuudong2Test
 
             ThingWithComps rifle = (ThingWithComps)ThingMaker.MakeThing(rifleDef);
             ThingWithComps sword = (ThingWithComps)ThingMaker.MakeThing(swordDef, ThingDefOf.Steel);
+            ThingWithComps cargo = (ThingWithComps)ThingMaker.MakeThing(rifleDef);
+            pawn.equipment.AddEquipment(sword);
+            pawn.inventory.innerContainer.TryAdd(cargo, false);
+            Check(!WeaponPairUtility.DrawRanged(pawn, null) && pawn.equipment.Primary == sword && pawn.inventory.innerContainer.Contains(cargo),
+                $"a rifle carried as cargo is not drawn: in hand {pawn.equipment.Primary?.def.defName}");
+            pawn.inventory.innerContainer.Remove(cargo);
+            cargo.Destroy();
+            pawn.equipment.Remove(sword);
             pawn.equipment.AddEquipment(rifle);
             pawn.equipment.MakeRoomFor(sword);
             pawn.equipment.AddEquipment(sword);
@@ -1054,11 +1167,27 @@ namespace Yuudong2Test
                 pawn.stances.CancelBusyStanceHard();
                 bool attacked = pawn.meleeVerbs.TryMeleeAttack(enemy);
                 Check(attacked && pawn.equipment.Primary == sword && pawn.inventory.innerContainer.Contains(rifle), $"melee attack on an adjacent enemy: attacked {attacked}, in hand {pawn.equipment.Primary?.def.defName}");
+                enemy.stances.stunner.StunFor(600, null, false, false);
                 Wait();
+                if (enemy.Spawned && !enemy.Downed && !enemy.Position.AdjacentTo8Way(pawn.Position))
+                {
+                    enemy.Position = beside;
+                    enemy.Notify_Teleported();
+                }
                 pawn.stances.CancelBusyStanceHard();
                 pawn.TryGetAttackVerb(enemy);
-                Check(pawn.equipment.Primary == sword, $"enemy still adjacent: keeps the sword (in hand {pawn.equipment.Primary?.def.defName})");
-                enemy.Destroy();
+                if (enemy.Spawned && !enemy.Downed)
+                {
+                    Check(pawn.equipment.Primary == sword, $"enemy still adjacent: keeps the sword (in hand {pawn.equipment.Primary?.def.defName})");
+                }
+                else
+                {
+                    sb.AppendLine($"info: the test enemy went down (dead {enemy.Dead}, downed {enemy.Downed}), adjacent-enemy check skipped");
+                }
+                if (!enemy.Destroyed)
+                {
+                    enemy.Destroy();
+                }
                 pawn.stances.CancelBusyStanceHard();
                 Verb verb = pawn.TryGetAttackVerb(null);
                 Check(pawn.equipment.Primary == rifle && verb != null && !verb.IsMeleeAttack, $"enemy gone: back to the rifle (in hand {pawn.equipment.Primary?.def.defName})");
@@ -1462,6 +1591,10 @@ namespace Yuudong2Test
                 Check(peak == expectedExtras, $"rifles in the inventory at once: {peak} (expected {expectedExtras})");
                 Check(AllStored(), $"all {Rifles} rifles stored after {ticks} ticks (first one after {tripTicks}): {rifles.Count(r => r.Spawned && zone.ContainsCell(r.Position))} in the stockpile");
                 Check(expectedExtras == 0 || unloadSeen, "unload job ran after the trip");
+                foreach (Thing r in rifles.Where(r => !(r.Spawned && zone.ContainsCell(r.Position))))
+                {
+                    sb.AppendLine($"info: not stored: {r} spawned {r.Spawned} destroyed {r.Destroyed} at {r.PositionHeld} holder {r.ParentHolder} forbidden {(r.Spawned ? r.IsForbidden(pawn) : false)} hp {r.HitPoints}/{r.MaxHitPoints} reserved by {(r.Spawned ? map.reservationManager.FirstRespectedReserver(r, pawn)?.LabelShort : null) ?? "nobody"} haulable {(r.Spawned && map.listerHaulables.ThingsPotentiallyNeedingHauling().Contains(r))}");
+                }
                 Check(!rifles.Any(r => pawn.inventory.innerContainer.Contains(r)) && !pawn.inventory.UnloadEverything, "nothing left in the inventory");
             }
 
@@ -1477,6 +1610,146 @@ namespace Yuudong2Test
                 }
             }
             zone.Delete();
+
+            List<string> errors = TestRunner.TickErrors.Skip(errorsBefore).ToList();
+            foreach (IGrouping<string, string> group in errors.GroupBy(m => m.Split('\n')[0]).Take(10))
+            {
+                sb.AppendLine($"error x{group.Count()}: {group.Key}");
+            }
+            bad += errors.Count;
+            sb.AppendLine(bad == 0 ? "PASS" : $"FAIL: {bad}");
+        }
+
+        // 수송 포드 하나와 서로 다른 물건 네 더미를 놓고, 정착민 한 명에게 적재를 시켜 게임 틱으로 끝까지 돌려 본다.
+        private static void MultiLoad(StringBuilder sb)
+        {
+            if (!Yuudong2Mod.Yuudong2Mod.AppliedFeatures.Contains(Features.MultiHaul))
+            {
+                sb.AppendLine("skipped: feature not applied");
+                return;
+            }
+
+            int bad = 0;
+            void Check(bool ok, string text)
+            {
+                bad += ok ? 0 : 1;
+                sb.AppendLine($"{(ok ? "ok  " : "FAIL")} {text}");
+            }
+
+            Check(JobDefOf.HaulToTransporter.driverClass == typeof(JobDriver_LoadBatchTransporter), $"transporter loading driver: {JobDefOf.HaulToTransporter.driverClass}");
+            Check(JobDefOf.HaulToPortal == null || JobDefOf.HaulToPortal.driverClass == typeof(JobDriver_LoadBatchPortal), $"portal loading driver: {JobDefOf.HaulToPortal?.driverClass}");
+            Map map = Find.AnyPlayerHomeMap;
+            List<Pawn> pawns = map?.mapPawns.FreeColonistsSpawned.Where(p => !p.Downed && !p.Drafted && p.Awake() && !p.InMentalState && MultiHaulUtility.CanBatch(p)
+                && p.health.capacities.CapableOf(PawnCapacityDefOf.Manipulation) && p.health.capacities.CapableOf(PawnCapacityDefOf.Moving))
+                .OrderByDescending(p => MassUtility.FreeSpace(p)).ToList();
+            Pawn pawn = pawns?.FirstOrDefault();
+            if (pawn == null)
+            {
+                sb.AppendLine("skipped run: no free colonist");
+                sb.AppendLine(bad == 0 ? "PASS" : $"FAIL: {bad}");
+                return;
+            }
+
+            bool GoodCorner(IntVec3 c)
+            {
+                Room room = c.GetRoom(map);
+                if (room == null || !pawn.CanReach(c, PathEndMode.OnCell, Danger.Deadly))
+                {
+                    return false;
+                }
+                foreach (IntVec3 cell in new CellRect(c.x, c.z, 5, 5))
+                {
+                    if (!cell.InBounds(map) || !cell.Standable(map) || cell.Fogged(map) || cell.GetFirstItem(map) != null || cell.GetEdifice(map) != null
+                        || map.haulDestinationManager.SlotGroupAt(cell) != null || cell.GetRoom(map) != room)
+                    {
+                        return false;
+                    }
+                }
+                return true;
+            }
+            if (!CellFinder.TryFindRandomCellNear(pawn.Position, map, 40, GoodCorner, out IntVec3 corner))
+            {
+                sb.AppendLine("skipped run: no free 5x5 area near the colonist");
+                sb.AppendLine(bad == 0 ? "PASS" : $"FAIL: {bad}");
+                return;
+            }
+
+            int errorsBefore = TestRunner.TickErrors.Count;
+            Thing pod = GenSpawn.Spawn(ThingMaker.MakeThing(ThingDefOf.TransportPod), new IntVec3(corner.x + 2, 0, corner.z), map);
+            pod.SetFaction(Faction.OfPlayer);
+            CompTransporter comp = pod.TryGetComp<CompTransporter>();
+            comp.groupID = TransporterUtility.InitiateLoading(new[] { comp });
+            (ThingDef def, int count)[] loads = { (ThingDefOf.Steel, 10), (ThingDefOf.WoodLog, 10), (ThingDefOf.Silver, 100), (ThingDefOf.ComponentIndustrial, 3) };
+            List<Thing> items = new List<Thing>();
+            float extraMass = 0f;
+            for (int i = 0; i < loads.Length; i++)
+            {
+                Thing item = ThingMaker.MakeThing(loads[i].def);
+                item.stackCount = loads[i].count;
+                items.Add(GenSpawn.Spawn(item, new IntVec3(corner.x + i, 0, corner.z + 4), map));
+                item.SetForbidden(false, false);
+                TransferableOneWay transferable = new TransferableOneWay();
+                transferable.things.Add(item);
+                comp.AddToTheToLoadList(transferable, item.stackCount);
+                extraMass += i == 0 ? 0f : item.stackCount * item.GetStatValue(StatDefOf.Mass);
+            }
+
+            pawn.jobs.StopAll();
+            pawn.Position = new IntVec3(corner.x, 0, corner.z + 3);
+            pawn.Notify_Teleported();
+            float free = MassUtility.FreeSpace(pawn);
+            sb.AppendLine($"{pawn.LabelShort}: free carry mass {free:F1} kg, the three extra stacks weigh {extraMass:F1} kg");
+            Check(LoadTransportersJobUtility.HasJobOnTransporter(pawn, comp), "colonist has a loading job on the pod");
+            pawn.jobs.StartJob(LoadTransportersJobUtility.JobOnTransporter(pawn, comp), JobCondition.InterruptForced);
+            LoadBatch batch = (pawn.jobs.curDriver as ILoadBatchDriver)?.Batch;
+            Check(batch != null, $"loading runs on the batch driver: {pawn.jobs.curDriver?.GetType().Name ?? "none"}");
+
+            int peak = 0, ticks = 0, jobs = 1;
+            bool othersChecked = false;
+            Job last = pawn.CurJob;
+            for (; ticks < 3000 && comp.AnythingLeftToLoad; ticks++)
+            {
+                Find.TickManager.DoSingleTick();
+                if (pawn.CurJob != last)
+                {
+                    last = pawn.CurJob;
+                    jobs += last != null && last.def == JobDefOf.HaulToTransporter ? 1 : 0;
+                }
+                if (batch != null)
+                {
+                    peak = Mathf.Max(peak, batch.TakenCount);
+                    if (!othersChecked && batch.TakenCount > 0 && batch.Running && pawns.Count > 1 && free > extraMass + 1f)
+                    {
+                        othersChecked = true;
+                        ThingCount other = LoadTransportersJobUtility.FindThingToLoad(pawns[1], comp);
+                        Check(other.Thing == null, $"another colonist finds nothing left to fetch while the first carries it all: {other.Thing?.LabelCap ?? "nothing"}");
+                    }
+                }
+            }
+            ThingOwner loaded = comp.GetDirectlyHeldThings();
+            bool allIn = loads.All(l => loaded.Where(t => t.def == l.def).Sum(t => t.stackCount) == l.count);
+            Check(!comp.AnythingLeftToLoad && allIn, $"everything loaded after {ticks} ticks in {jobs} loading job(s): {string.Join(", ", loaded.Select(t => t.LabelCap))}");
+            Check(free <= extraMass + 1f || (peak == 3 && jobs == 1), $"stacks carried in the inventory at once: {peak}");
+            Check(!loads.Any(l => pawn.inventory.innerContainer.Any(t => t.def == l.def && items.Contains(t))) && !pawn.inventory.UnloadEverything, "nothing left in the inventory");
+
+            pawn.jobs.StopAll();
+            foreach (Thing item in items)
+            {
+                if (pawn.inventory.innerContainer.Contains(item))
+                {
+                    pawn.inventory.innerContainer.Remove(item);
+                }
+                if (!item.Destroyed)
+                {
+                    item.Destroy();
+                }
+            }
+            loaded.ClearAndDestroyContents();
+            comp.CancelLoad(map);
+            if (!pod.Destroyed)
+            {
+                pod.Destroy();
+            }
 
             List<string> errors = TestRunner.TickErrors.Skip(errorsBefore).ToList();
             foreach (IGrouping<string, string> group in errors.GroupBy(m => m.Split('\n')[0]).Take(10))
