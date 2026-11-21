@@ -63,6 +63,18 @@ namespace Yuudong2Mod
             {
                 engine.GetComp<CompAffectedByFacilities>()?.Notify_ThingChanged();
             }
+            // 확장기는 유효한 하부 구조 위에 있어야 켜지고, 유효 범위는 켜진 확장기로 넓어진다. 몇 번 되풀이해 자리를 잡게 한다.
+            for (int round = 0; round < 4; round++)
+            {
+                foreach (Building_GravEngine engine in tmpEngines)
+                {
+                    engine.ForceSubstructureDirty();
+                }
+                foreach (Building_GravEngine engine in tmpEngines)
+                {
+                    _ = engine.ValidSubstructureNoRegen;
+                }
+            }
             foreach (Building_GravEngine engine in tmpEngines)
             {
                 engine.ForceSubstructureDirty();
@@ -251,6 +263,191 @@ namespace Yuudong2Mod
         private static void Postfix(Map map)
         {
             MultiGravshipUtility.Relink(map);
+        }
+    }
+
+    // 하부 구조로 이어진 같은 세력의 엔진들은 한 척으로 친다. 지탱 칸 수와 이륙 거리를 합치고, 연료통·추진기 같은 시설을 함께 쓴다.
+    // 시설 하나는 묶음 안의 엔진 하나에만 연결되므로, 엔진이 늘면 시설 개수 한도도 그만큼 늘어난다.
+    public static class EngineGroupUtility
+    {
+        private static readonly List<Building_GravEngine> tmpPartners = new List<Building_GravEngine>();
+
+        private static readonly Dictionary<Building_GravEngine, List<CompGravshipFacility>> shared = new Dictionary<Building_GravEngine, List<CompGravshipFacility>>();
+
+        private static Game sharedGame;
+
+        public static void AddStatParts()
+        {
+            foreach (StatDef stat in new[] { StatDefOf.SubstructureSupport, StatDefOf.GravshipRange })
+            {
+                stat.parts = stat.parts ?? new List<StatPart>();
+                if (!stat.parts.Any(p => p is StatPart_EngineGroup))
+                {
+                    stat.parts.Add(new StatPart_EngineGroup { parentStat = stat });
+                }
+            }
+        }
+
+        public static bool SameShip(Building_GravEngine engine, Building_GravEngine other)
+        {
+            return OnDeck(engine, engine.AllConnectedSubstructureNoRegen, other);
+        }
+
+        private static bool OnDeck(Building_GravEngine engine, HashSet<IntVec3> deck, Building_GravEngine other)
+        {
+            return other != engine && other.Spawned && other.Faction == engine.Faction && deck.Contains(other.Position);
+        }
+
+        public static void Partners(Building_GravEngine engine, List<Building_GravEngine> result)
+        {
+            result.Clear();
+            if (!engine.Spawned || !MultiGravshipUtility.Several(engine.Map))
+            {
+                return;
+            }
+            // 하부 구조를 다시 계산하면 그 안에서 이 함수가 또 불린다. 계산을 먼저 끝낸 뒤에 목록을 채운다.
+            HashSet<IntVec3> deck = engine.AllConnectedSubstructureNoRegen;
+            result.Clear();
+            List<Thing> engines = engine.Map.listerThings.ThingsOfDef(ThingDefOf.GravEngine);
+            for (int i = 0; i < engines.Count; i++)
+            {
+                if (engines[i] is Building_GravEngine other && OnDeck(engine, deck, other))
+                {
+                    result.Add(other);
+                }
+            }
+        }
+
+        public static bool LinkedToPartner(Building_GravEngine engine, Thing facility)
+        {
+            List<Thing> linked = facility.TryGetComp<CompFacility>()?.LinkedBuildings;
+            if (linked == null || linked.Count == 0 || !MultiGravshipUtility.Several(engine.Map))
+            {
+                return false;
+            }
+            for (int i = 0; i < linked.Count; i++)
+            {
+                if (linked[i] is Building_GravEngine other && SameShip(engine, other))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public static List<CompGravshipFacility> SharedComponents(Building_GravEngine engine, List<CompGravshipFacility> own)
+        {
+            Partners(engine, tmpPartners);
+            if (tmpPartners.Count == 0)
+            {
+                return own;
+            }
+            if (sharedGame != Current.Game)
+            {
+                sharedGame = Current.Game;
+                shared.Clear();
+            }
+            if (!shared.TryGetValue(engine, out List<CompGravshipFacility> all))
+            {
+                all = new List<CompGravshipFacility>();
+                shared[engine] = all;
+            }
+            all.Clear();
+            all.AddRange(own);
+            for (int i = 0; i < tmpPartners.Count; i++)
+            {
+                List<Thing> linked = tmpPartners[i].AffectedByFacilities.LinkedFacilitiesListForReading;
+                for (int j = 0; j < linked.Count; j++)
+                {
+                    if (linked[j].TryGetComp(out CompGravshipFacility comp) && !all.Contains(comp))
+                    {
+                        all.Add(comp);
+                    }
+                }
+            }
+            return all;
+        }
+    }
+
+    public class StatPart_EngineGroup : StatPart
+    {
+        private static readonly List<Building_GravEngine> partners = new List<Building_GravEngine>();
+
+        private static bool summing;
+
+        private float FromPartners(StatRequest req)
+        {
+            if (summing || !(req.Thing is Building_GravEngine engine) || !engine.Spawned || !MultiGravshipUtility.Several(engine.Map))
+            {
+                return 0f;
+            }
+            EngineGroupUtility.Partners(engine, partners);
+            if (partners.Count == 0)
+            {
+                return 0f;
+            }
+            float sum = 0f;
+            summing = true;
+            try
+            {
+                for (int i = 0; i < partners.Count; i++)
+                {
+                    sum += partners[i].GetStatValue(parentStat);
+                }
+            }
+            finally
+            {
+                summing = false;
+            }
+            return sum;
+        }
+
+        public override void TransformValue(StatRequest req, ref float val)
+        {
+            val += FromPartners(req);
+        }
+
+        public override string ExplanationPart(StatRequest req)
+        {
+            float extra = FromPartners(req);
+            return extra == 0f ? null : "Yuudong2.EngineGroup.StatPart".Translate() + ": +" + parentStat.ValueToString(extra);
+        }
+    }
+
+    [HarmonyPatchCategory(Features.EnemyGravship)]
+    [HarmonyPatch(typeof(CompAffectedByFacilities), nameof(CompAffectedByFacilities.CanLinkTo))]
+    internal static class CompAffectedByFacilities_CanLinkTo_EngineGroup_Patch
+    {
+        private static void Postfix(CompAffectedByFacilities __instance, Thing facility, ref bool __result)
+        {
+            if (__result && __instance.parent is Building_GravEngine engine && EngineGroupUtility.LinkedToPartner(engine, facility))
+            {
+                __result = false;
+            }
+        }
+    }
+
+    [HarmonyPatchCategory(Features.EnemyGravship)]
+    [HarmonyPatch(typeof(Building_GravEngine), nameof(Building_GravEngine.GravshipComponents), MethodType.Getter)]
+    internal static class Building_GravEngine_GravshipComponents_EngineGroup_Patch
+    {
+        private static void Postfix(Building_GravEngine __instance, ref List<CompGravshipFacility> __result)
+        {
+            __result = EngineGroupUtility.SharedComponents(__instance, __result);
+        }
+    }
+
+    // 묶음 안 다른 엔진의 시설이 바뀌어도 빠진 부품 목록이 맞게, 엔진이 여럿인 맵에서는 매번 다시 센다.
+    [HarmonyPatchCategory(Features.EnemyGravship)]
+    [HarmonyPatch(typeof(Building_GravEngine), nameof(Building_GravEngine.MissingComponents), MethodType.Getter)]
+    internal static class Building_GravEngine_MissingComponents_EngineGroup_Patch
+    {
+        private static void Prefix(Building_GravEngine __instance, ref bool ___missingComponentsDirty)
+        {
+            if (__instance.Spawned && MultiGravshipUtility.Several(__instance.Map))
+            {
+                ___missingComponentsDirty = true;
+            }
         }
     }
 }

@@ -44,6 +44,7 @@ namespace Yuudong2Mod
             WhenEnabled(Features.EquipmentDurability, EquipmentDurabilityUtility.ApplyDefPatches);
             WhenEnabled(Features.BenchApparelRepair, ApparelRepairUtility.ApplyDefPatches);
             WhenEnabled(Features.MultiHaul, MultiLoadUtility.ApplyDriverClasses);
+            WhenEnabled(Features.EnemyGravship, EngineGroupUtility.AddStatParts);
 
             if (AppliedFeatures.Contains(Features.BetterWorkbench))
             {

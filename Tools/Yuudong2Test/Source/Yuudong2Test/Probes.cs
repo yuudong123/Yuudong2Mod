@@ -1085,6 +1085,39 @@ namespace Yuudong2Test
                 taken.SetFaction(Faction.OfPlayer);
             }
 
+            // 한 배에 엔진을 하나 더 올려 한 척으로 합쳐지는지 본다.
+            Building_GravEngine first = engines[0];
+            HashSet<IntVec3> deck = first.AllConnectedSubstructure;
+            IntVec3 spot = deck.FirstOrDefault(c => c.DistanceTo(first.Position) > 4f && CellRect.CenteredOn(c, 1).Cells.All(x => deck.Contains(x) && x.GetEdifice(map) == null && x.GetFirstItem(map) == null));
+            if (spot.IsValid && spot != default(IntVec3))
+            {
+                float alone = first.GetStatValue(StatDefOf.SubstructureSupport);
+                float rangeAlone = first.GetStatValue(StatDefOf.GravshipRange);
+                int componentsAlone = first.GravshipComponents.Count;
+                Building_GravEngine second = (Building_GravEngine)GenSpawn.Spawn(ThingMaker.MakeThing(ThingDefOf.GravEngine), spot, map);
+                second.SetFaction(Faction.OfPlayer);
+                MultiGravshipUtility.Relink(map);
+                Find.TickManager.DoSingleTick();
+                float a = first.GetStatValue(StatDefOf.SubstructureSupport);
+                float b = second.GetStatValue(StatDefOf.SubstructureSupport);
+                List<Thing> linkedA = first.GetComp<CompAffectedByFacilities>().LinkedFacilitiesListForReading;
+                List<Thing> linkedB = second.GetComp<CompAffectedByFacilities>().LinkedFacilitiesListForReading;
+                Check(Mathf.Approximately(a, b) && Mathf.Approximately(a, alone + 500f), $"two engines on one ship: support {alone:F0} alone -> {a:F0} and {b:F0}");
+                Check(!linkedA.Any(f => linkedB.Contains(f)), $"no facility is linked to both engines ({linkedA.Count} + {linkedB.Count})");
+                Check(first.GravshipComponents.Count == second.GravshipComponents.Count && first.GravshipComponents.Count >= componentsAlone,
+                    $"both engines see the same {first.GravshipComponents.Count} ship components (one engine alone saw {componentsAlone})");
+                Check(Mathf.Approximately(first.GetStatValue(StatDefOf.GravshipRange), second.GetStatValue(StatDefOf.GravshipRange)) && first.GetStatValue(StatDefOf.GravshipRange) >= rangeAlone,
+                    $"launch range {rangeAlone:F0} alone -> {first.GetStatValue(StatDefOf.GravshipRange):F0} and {second.GetStatValue(StatDefOf.GravshipRange):F0}");
+                Check(Mathf.Approximately(first.TotalFuel, second.TotalFuel) && first.ValidSubstructure.Count == second.ValidSubstructure.Count,
+                    $"fuel {first.TotalFuel:F0}/{second.TotalFuel:F0}, valid substructure {first.ValidSubstructure.Count}/{second.ValidSubstructure.Count} of {deck.Count}");
+                Building_GravEngine apart = engines[1];
+                Check(!EngineGroupUtility.SameShip(first, apart) && apart.GetStatValue(StatDefOf.SubstructureSupport) < a, $"the separate ship keeps its own support: {apart.GetStatValue(StatDefOf.SubstructureSupport):F0}");
+            }
+            else
+            {
+                sb.AppendLine("info: no free 3x3 spot aboard for a second engine, engine group check skipped");
+            }
+
             List<string> errors = TestRunner.TickErrors.Skip(errorsBefore).ToList();
             Check(errors.Count == 0, $"errors: {errors.Count}" + (errors.Count > 0 ? " - " + string.Join(" | ", errors.Take(4).Select(e => e.Split('\n')[0])) : ""));
             sb.AppendLine(bad == 0 ? "PASS" : $"FAIL: {bad}");
@@ -1593,7 +1626,7 @@ namespace Yuudong2Test
                 Check(expectedExtras == 0 || unloadSeen, "unload job ran after the trip");
                 foreach (Thing r in rifles.Where(r => !(r.Spawned && zone.ContainsCell(r.Position))))
                 {
-                    sb.AppendLine($"info: not stored: {r} spawned {r.Spawned} destroyed {r.Destroyed} at {r.PositionHeld} holder {r.ParentHolder} forbidden {(r.Spawned ? r.IsForbidden(pawn) : false)} hp {r.HitPoints}/{r.MaxHitPoints} reserved by {(r.Spawned ? map.reservationManager.FirstRespectedReserver(r, pawn)?.LabelShort : null) ?? "nobody"} haulable {(r.Spawned && map.listerHaulables.ThingsPotentiallyNeedingHauling().Contains(r))}");
+                    sb.AppendLine($"info: not stored: {r} spawned {r.Spawned} destroyed {r.Destroyed} at {r.PositionHeld} holder {r.ParentHolder} forbidden {(r.Spawned ? r.IsForbidden(pawn) : false)} hp {r.HitPoints}/{r.MaxHitPoints} reserved by {(r.Spawned ? map.reservationManager.FirstRespectedReserver(r, pawn)?.LabelShort : null) ?? "nobody"} haulable {(r.Spawned && map.listerHaulables.ThingsPotentiallyNeedingHauling().Contains(r))}, corner {corner}, pawn at {pawn.Position} doing {pawn.CurJobDef?.defName}, same room as pawn start {(r.Spawned && r.GetRoom() == new IntVec3(corner.x, 0, corner.z + 2).GetRoom(map))}, zone cells free {zone.Cells.Count(c => c.GetFirstItem(map) == null)}");
                 }
                 Check(!rifles.Any(r => pawn.inventory.innerContainer.Contains(r)) && !pawn.inventory.UnloadEverything, "nothing left in the inventory");
             }
