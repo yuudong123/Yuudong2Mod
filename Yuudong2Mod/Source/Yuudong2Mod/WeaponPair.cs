@@ -16,16 +16,62 @@ namespace Yuudong2Mod
         Ranged,
     }
 
-    // 정착민별 무기 고정 설정. 자동(기본)은 저장하지 않는다.
+    // 정착민별 무기 고정 설정(자동은 저장하지 않는다)과, 누가 어떤 무기를 보조 무기로 넣어 두었는지.
+    // 보조 무기를 따로 적어 두어야 운반하려고 소지품에 담은 무기를 꺼내 들지 않는다.
     public class GameComponent_WeaponPair : GameComponent
     {
         public static GameComponent_WeaponPair Instance;
 
         private Dictionary<string, int> modes = new Dictionary<string, int>();
 
+        private Dictionary<int, int> sidearmOwners = new Dictionary<int, int>();
+
+        private bool sidearmsTracked;
+
         public GameComponent_WeaponPair(Game game)
         {
             Instance = this;
+        }
+
+        public bool IsSidearmOf(Pawn pawn, Thing thing)
+        {
+            return sidearmOwners.TryGetValue(thing.thingIDNumber, out int owner) && owner == pawn.thingIDNumber;
+        }
+
+        public void MarkSidearm(Pawn pawn, Thing thing)
+        {
+            sidearmOwners[thing.thingIDNumber] = pawn.thingIDNumber;
+        }
+
+        public override void StartedNewGame()
+        {
+            sidearmsTracked = true;
+        }
+
+        // 이 기록이 없던 때의 세이브에서는 소지품 속 무기를 보조 무기로 본다.
+        public override void FinalizeInit()
+        {
+            if (sidearmsTracked)
+            {
+                return;
+            }
+
+            sidearmsTracked = true;
+            foreach (Pawn pawn in PawnsFinder.AllMapsCaravansAndTravellingTransporters_Alive_OfPlayerFaction)
+            {
+                if (pawn.inventory == null || !WeaponPairUtility.Eligible(pawn))
+                {
+                    continue;
+                }
+
+                foreach (Thing thing in pawn.inventory.innerContainer)
+                {
+                    if (WeaponPairUtility.IsWeapon(thing))
+                    {
+                        MarkSidearm(pawn, thing);
+                    }
+                }
+            }
         }
 
         public WeaponPairMode ModeOf(Pawn pawn)
@@ -49,7 +95,10 @@ namespace Yuudong2Mod
         {
             base.ExposeData();
             Scribe_Collections.Look(ref modes, "modes", LookMode.Value, LookMode.Value);
+            Scribe_Collections.Look(ref sidearmOwners, "sidearmOwners", LookMode.Value, LookMode.Value);
+            Scribe_Values.Look(ref sidearmsTracked, "sidearmsTracked");
             modes ??= new Dictionary<string, int>();
+            sidearmOwners ??= new Dictionary<int, int>();
         }
     }
 
@@ -78,11 +127,12 @@ namespace Yuudong2Mod
 
         public static ThingWithComps Stowed(Pawn pawn, bool ranged)
         {
+            GameComponent_WeaponPair tracker = GameComponent_WeaponPair.Instance;
             ThingOwner<Thing> held = pawn.inventory.innerContainer;
-            for (int i = 0; i < held.Count; i++)
+            for (int i = 0; tracker != null && i < held.Count; i++)
             {
                 Thing thing = held[i];
-                if (thing.def.IsRangedWeapon == ranged && IsWeapon(thing))
+                if (thing.def.IsRangedWeapon == ranged && IsWeapon(thing) && tracker.IsSidearmOf(pawn, thing))
                 {
                     return (ThingWithComps)thing;
                 }
@@ -130,6 +180,11 @@ namespace Yuudong2Mod
             if (current != null && !pawn.equipment.TryTransferEquipmentToContainer(current, pawn.inventory.innerContainer))
             {
                 return false;
+            }
+
+            if (current != null)
+            {
+                GameComponent_WeaponPair.Instance?.MarkSidearm(pawn, current);
             }
 
             pawn.inventory.innerContainer.Remove(stowed);
@@ -276,7 +331,13 @@ namespace Yuudong2Mod
                 return false;
             }
 
-            return pawn.equipment.TryTransferEquipmentToContainer(primary, pawn.inventory.innerContainer);
+            if (!pawn.equipment.TryTransferEquipmentToContainer(primary, pawn.inventory.innerContainer))
+            {
+                return false;
+            }
+
+            GameComponent_WeaponPair.Instance?.MarkSidearm(pawn, primary);
+            return true;
         }
 
         // 지키는 보조 무기가 "내려놓을 물건"으로 뽑혔으면 잠깐 빼고 다시 물어 다음 물건을 받는다.
