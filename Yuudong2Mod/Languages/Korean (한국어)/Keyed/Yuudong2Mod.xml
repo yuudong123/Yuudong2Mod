@@ -639,6 +639,8 @@
   <Yuudong2.OrderTools.Mine.Connected>이어진 광석 채굴</Yuudong2.OrderTools.Mine.Connected>
   <Yuudong2.OrderTools.Mine.Done>이어진 광석 {0}칸을 채굴 지정했습니다.</Yuudong2.OrderTools.Mine.Done>
   <Yuudong2.OrderTools.Mine.None>이어진 광석이 없습니다. 광석을 선택하거나 먼저 채굴 지정을 하세요.</Yuudong2.OrderTools.Mine.None>
+  <Yuudong2.Feature.GravshipNoRange>중력선 범위 제한 없음</Yuudong2.Feature.GravshipNoRange>
+  <Yuudong2.Feature.GravshipNoRange.Desc>중력 구동기와 중력장 확장기의 원형 범위를 없앱니다. 하부구조는 구동기에 이어져 있기만 하면 어디에든 깔 수 있고, 확장기는 구동기에서 멀리 떨어져 있어도 설치·연결됩니다. 배의 크기는 하부구조 지탱 수치로만 제한됩니다.</Yuudong2.Feature.GravshipNoRange.Desc>
   <Yuudong2.Surgery.Tab.Plans>이식 계획</Yuudong2.Surgery.Tab.Plans>
   <Yuudong2.Surgery.Tab.Health>건강 총괄</Yuudong2.Surgery.Tab.Health>
   <Yuudong2.Health.OnlyProblems>문제 있는 정착민만</Yuudong2.Health.OnlyProblems>

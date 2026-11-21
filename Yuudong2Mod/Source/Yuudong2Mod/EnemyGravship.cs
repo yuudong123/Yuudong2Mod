@@ -438,6 +438,9 @@ namespace Yuudong2Mod
         private const int SubstructureGap = 3;
         private const float Oversize = 1.25f;
         private const float PointsPerCell = 5f;
+        private const int VarietyPool = 10;
+        private const int RepeatRetries = 30;
+        private const float VarietySpread = 0.3f;
 
         private static readonly MethodInfo ResolveFaction = AccessTools.Method(typeof(IncidentWorker_Raid), "TryResolveRaidFaction");
         private static readonly MethodInfo ResolvePoints = AccessTools.Method(typeof(IncidentWorker_Raid), "ResolveRaidPoints");
@@ -451,6 +454,7 @@ namespace Yuudong2Mod
         public static List<Thing> lastShipThings = new List<Thing>();
         public static List<IntVec3> lastShipCells = new List<IntVec3>();
         public static string lastReport = "";
+        public static string lastSource;
 
         public static bool Active => Yuudong2Mod.AppliedFeatures.Contains(Features.EnemyGravship) && ModsConfig.OdysseyActive;
 
@@ -483,19 +487,59 @@ namespace Yuudong2Mod
 
             int target = TargetCells(points);
             List<ShipDesign> designs = ShipLibrary.Files.Select(ShipLibrary.TryLoad).Where(d => d != null).ToList();
-            IEnumerable<ShipDesign> order = designs
+            List<ShipDesign> fit = designs
                 .Where(d => d.cells.Count <= target * Oversize)
                 .OrderBy(d => Mathf.Abs(d.cells.Count - target) + Rand.Range(0f, target * 0.15f))
-                .Concat(designs.Where(d => d.cells.Count > target * Oversize).OrderBy(d => d.cells.Count));
-            foreach (ShipDesign candidate in order)
+                .ToList();
+            // 목표에 가까운 배 몇 척을 섞어서, 큰 목표에서도 같은 배만 계속 오지 않게 한다.
+            int pool = 0;
+            if (fit.Count > 0)
             {
-                if (TryFindSite(map, candidate, out root))
-                {
-                    design = candidate;
-                    return true;
-                }
+                float limit = Mathf.Abs(fit[0].cells.Count - target) + target * VarietySpread;
+                pool = fit.Take(VarietyPool).Count(d => Mathf.Abs(d.cells.Count - target) <= limit);
             }
 
+            List<ShipDesign> head = fit.Take(pool).InRandomOrder().ToList();
+            IEnumerable<ShipDesign> order = head
+                .Concat(fit.Skip(pool))
+                .Concat(designs.Where(d => d.cells.Count > target * Oversize).OrderBy(d => d.cells.Count));
+            // 직전에 온 배가 다시 걸리면, 놓을 수 있는 다른 배를 조금 더 찾아본다.
+            ShipDesign fallback = null;
+            IntVec3 fallbackRoot = IntVec3.Invalid;
+            int extraTries = 0;
+            foreach (ShipDesign candidate in order)
+            {
+                if (fallback != null && extraTries++ >= RepeatRetries)
+                {
+                    break;
+                }
+
+                if (!TryFindSite(map, candidate, out IntVec3 site))
+                {
+                    continue;
+                }
+
+                if (candidate.source == lastSource && fallback == null)
+                {
+                    fallback = candidate;
+                    fallbackRoot = site;
+                    continue;
+                }
+
+                design = candidate;
+                root = site;
+                lastSource = candidate.source;
+                return true;
+            }
+
+            if (fallback != null)
+            {
+                design = fallback;
+                root = fallbackRoot;
+                return true;
+            }
+
+            root = IntVec3.Invalid;
             lastReport = $"no landing site: none of {designs.Count} designs fits on the map";
             return false;
         }

@@ -23,6 +23,7 @@ namespace Yuudong2Test
             ("features", Features_),
             ("surgery manager", Surgery),
             ("order tools", OrderToolsProbe),
+            ("gravship no range", GravshipNoRange),
             ("sleep limits", Sleep),
             ("installed parts count", InstalledParts),
             ("roofed scanning", RoofedScanning),
@@ -953,6 +954,18 @@ namespace Yuudong2Test
                 sb.AppendLine($"info: {points} points aims at {EnemyGravshipUtility.TargetCells(points)} cells -> {(planned ? $"{plan.size.x}x{plan.size.z} {plan.cells.Count} cells at {at}" : EnemyGravshipUtility.lastReport)}");
             }
 
+            List<string> picks = new List<string>();
+            for (int i = 0; i < 8; i++)
+            {
+                if (EnemyGravshipUtility.TryPlan(map, 20000f, out ShipDesign pick, out _))
+                {
+                    picks.Add(pick.source);
+                }
+            }
+
+            bool repeated = Enumerable.Range(1, Math.Max(0, picks.Count - 1)).Any(i => picks[i] == picks[i - 1]);
+            Check(picks.Count < 2 || (!repeated && picks.Distinct().Count() > 2), $"8 plans at 20000 points pick {picks.Distinct().Count()} different ships, same ship twice in a row: {repeated}");
+
             int errorsBefore = TestRunner.TickErrors.Count;
             TestRunner.ticking = true;
             HashSet<Pawn> before = new HashSet<Pawn>(map.mapPawns.AllPawnsSpawned);
@@ -1097,6 +1110,7 @@ namespace Yuudong2Test
             {
                 float alone = first.GetStatValue(StatDefOf.SubstructureSupport);
                 float rangeAlone = first.GetStatValue(StatDefOf.GravshipRange);
+                float apartBefore = engines[1].GetStatValue(StatDefOf.SubstructureSupport);
                 int componentsAlone = first.GravshipComponents.Count;
                 Building_GravEngine second = (Building_GravEngine)GenSpawn.Spawn(ThingMaker.MakeThing(ThingDefOf.GravEngine), spot, map);
                 second.SetFaction(Faction.OfPlayer);
@@ -1115,7 +1129,7 @@ namespace Yuudong2Test
                 Check(Mathf.Approximately(first.TotalFuel, second.TotalFuel) && first.ValidSubstructure.Count == second.ValidSubstructure.Count,
                     $"fuel {first.TotalFuel:F0}/{second.TotalFuel:F0}, valid substructure {first.ValidSubstructure.Count}/{second.ValidSubstructure.Count} of {deck.Count}");
                 Building_GravEngine apart = engines[1];
-                Check(!EngineGroupUtility.SameShip(first, apart) && apart.GetStatValue(StatDefOf.SubstructureSupport) < a, $"the separate ship keeps its own support: {apart.GetStatValue(StatDefOf.SubstructureSupport):F0}");
+                Check(!EngineGroupUtility.SameShip(first, apart) && Mathf.Approximately(apart.GetStatValue(StatDefOf.SubstructureSupport), apartBefore), $"the separate ship keeps its own support: {apartBefore:F0} -> {apart.GetStatValue(StatDefOf.SubstructureSupport):F0}");
             }
             else
             {
@@ -1230,16 +1244,20 @@ namespace Yuudong2Test
                 Pawn enemy = PawnGenerator.GeneratePawn(hostile.RandomPawnKind(), hostile);
                 GenSpawn.Spawn(enemy, beside, map);
                 pawn.stances.CancelBusyStanceHard();
-                bool attacked = pawn.meleeVerbs.TryMeleeAttack(enemy);
+                string meleeState = $"enemy {enemy.kindDef?.defName} spawned {enemy.Spawned} dead {enemy.Dead} at {enemy.PositionHeld}, pawn at {pawn.Position} downed {pawn.Downed} busy {pawn.stances.FullBodyBusy} stance {pawn.stances.curStance?.GetType().Name} canMelee {pawn.kindDef.canMeleeAttack}";
+                // 자세를 풀자마자 대기 작업이 먼저 공격해 버리는 경우가 있다. 그때는 이미 근접 공격 후딜 중이다.
+                bool autoAttacked = pawn.stances.curStance is Stance_Cooldown cooldown && cooldown.verb != null && cooldown.verb.IsMeleeAttack;
+                bool attacked = pawn.meleeVerbs.TryMeleeAttack(enemy) || autoAttacked;
+                meleeState += $", after: busy {pawn.stances.FullBodyBusy} stance {pawn.stances.curStance?.GetType().Name} verb {pawn.meleeVerbs.TryGetMeleeVerb(enemy)?.ToString() ?? "none"}";
                 if (attacked || !enemy.Downed)
                 {
-                    Check(attacked && pawn.equipment.Primary == sword && pawn.inventory.innerContainer.Contains(rifle), $"melee attack on an adjacent enemy: attacked {attacked}, in hand {pawn.equipment.Primary?.def.defName}");
+                    Check(attacked && pawn.equipment.Primary == sword && pawn.inventory.innerContainer.Contains(rifle), $"melee attack on an adjacent enemy: attacked {attacked}, in hand {pawn.equipment.Primary?.def.defName}; {meleeState}");
                 }
                 else
                 {
                     sb.AppendLine("info: the test enemy arrived downed, melee attack check skipped");
                 }
-                enemy.stances.stunner.StunFor(600, null, false, false);
+                enemy.stances?.stunner?.StunFor(600, null, false, false);
                 Wait();
                 if (enemy.Spawned && !enemy.Downed && !enemy.Position.AdjacentTo8Way(pawn.Position))
                 {
@@ -2111,6 +2129,27 @@ namespace Yuudong2Test
             sb.AppendLine($"applied {Yuudong2Mod.Yuudong2Mod.AppliedFeatures.Count} / enabled {all.Count(Features.Enabled)} / total {all.Count}");
             sb.AppendLine("enabled but NOT applied: " + (notApplied.Count == 0 ? "none" : string.Join(", ", notApplied)));
             sb.AppendLine("disabled: " + string.Join(", ", all.Where(f => !Features.Enabled(f))));
+        }
+
+        private static void GravshipNoRange(StringBuilder sb)
+        {
+            if (!global::Yuudong2Mod.Yuudong2Mod.AppliedFeatures.Contains(Features.GravshipNoRange) || !ModsConfig.OdysseyActive)
+            {
+                sb.AppendLine("skipped: feature not applied or Odyssey missing");
+                return;
+            }
+
+            Map map = Find.AnyPlayerHomeMap;
+            float link = DefDatabase<ThingDef>.GetNamed("GravFieldExtender").GetCompProperties<CompProperties_GravshipFacility>().maxDistance;
+            bool anywhere = map.AllCells.Where((c, i) => i % 997 == 0).All(c => GravshipUtility.InsideFootprint(c, map));
+            bool ok = link >= GravshipNoRangeUtility.LinkDistance && anywhere;
+            sb.AppendLine($"{(ok ? "ok  " : "FAIL")} extender link distance {link}, every sampled cell counts as inside the footprint: {anywhere}");
+            foreach (Building_GravEngine engine in map.listerThings.ThingsOfDef(ThingDefOf.GravEngine).OfType<Building_GravEngine>())
+            {
+                sb.AppendLine($"info: engine at {engine.Position}: valid substructure {engine.ValidSubstructure.Count} of {engine.AllConnectedSubstructure.Count} connected, support {engine.GetStatValue(StatDefOf.SubstructureSupport)}");
+            }
+
+            sb.AppendLine(ok ? "PASS" : "FAIL: 1");
         }
 
         private static void OrderToolsProbe(StringBuilder sb)

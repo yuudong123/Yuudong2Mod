@@ -51,6 +51,7 @@ namespace Yuudong2Mod
             WhenEnabled(Features.BenchApparelRepair, ApparelRepairUtility.ApplyDefPatches);
             WhenEnabled(Features.MultiHaul, MultiLoadUtility.ApplyDriverClasses);
             WhenEnabled(Features.EnemyGravship, EngineGroupUtility.AddStatParts);
+            WhenEnabled(Features.GravshipNoRange, GravshipNoRangeUtility.ApplyDefPatches);
 
             Try(nameof(TraitDegreeFix), () => TraitDegreeFix.Apply(harmony));
 

@@ -639,6 +639,8 @@ On automatic, the melee weapon is drawn when an enemy is adjacent and the ranged
   <Yuudong2.OrderTools.Mine.Connected>Mine connected ores</Yuudong2.OrderTools.Mine.Connected>
   <Yuudong2.OrderTools.Mine.Done>Designated {0} connected ore cells.</Yuudong2.OrderTools.Mine.Done>
   <Yuudong2.OrderTools.Mine.None>No connected ores. Select an ore or designate one first.</Yuudong2.OrderTools.Mine.None>
+  <Yuudong2.Feature.GravshipNoRange>No gravship range limits</Yuudong2.Feature.GravshipNoRange>
+  <Yuudong2.Feature.GravshipNoRange.Desc>Removes the circular range of the grav engine and grav field extenders. Substructure can go anywhere as long as it connects to the engine, and extenders can be placed and linked far from the engine. Ship size is limited only by substructure support.</Yuudong2.Feature.GravshipNoRange.Desc>
   <Yuudong2.Surgery.Tab.Plans>Implant plans</Yuudong2.Surgery.Tab.Plans>
   <Yuudong2.Surgery.Tab.Health>Health overview</Yuudong2.Surgery.Tab.Health>
   <Yuudong2.Health.OnlyProblems>Only colonists with problems</Yuudong2.Health.OnlyProblems>
