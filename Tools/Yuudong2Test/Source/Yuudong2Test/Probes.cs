@@ -1298,7 +1298,7 @@ namespace Yuudong2Test
                 }
                 bool free = def.exclusionTags.NullOrEmpty();
                 List<Pawn> carriers = PawnsFinder.AllMapsCaravansAndTravellingTransporters_Alive.Where(p => p.genes != null && p.genes.GenesListForReading.Any(g => g.def == def)).ToList();
-                List<string> suppressed = carriers.SelectMany(p => p.genes.GenesListForReading.Where(g => g.overriddenByGene != null && (g.def == def || g.overriddenByGene.def == def))
+                List<string> suppressed = carriers.SelectMany(p => p.genes.GenesListForReading.Where(g => g.overriddenByGene != null && g.overriddenByGene.def != g.def && (g.def == def || g.overriddenByGene.def == def))
                     .Select(g => $"{p.LabelShort}: {g.def.defName} by {g.overriddenByGene.def.defName}")).ToList();
                 bool ok = free && suppressed.Count == 0;
                 bad += ok ? 0 : 1;
