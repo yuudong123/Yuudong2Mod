@@ -28,6 +28,11 @@ namespace Yuudong2Mod
 
         private bool sidearmsTracked;
 
+        // 장비 탭에서 보조 무기를 직접 내려놓은 정착민. 다시 직접 무기를 장착할 때까지 알아서 보조 무기를 찾지 않는다.
+        private HashSet<int> noAutoSidearm = new HashSet<int>();
+
+        private readonly Dictionary<int, int> nextSidearmSearchTick = new Dictionary<int, int>();
+
         public GameComponent_WeaponPair(Game game)
         {
             Instance = this;
@@ -41,6 +46,28 @@ namespace Yuudong2Mod
         public void MarkSidearm(Pawn pawn, Thing thing)
         {
             sidearmOwners[thing.thingIDNumber] = pawn.thingIDNumber;
+            noAutoSidearm.Remove(pawn.thingIDNumber);
+        }
+
+        public void StopAutoSidearm(Pawn pawn)
+        {
+            noAutoSidearm.Add(pawn.thingIDNumber);
+        }
+
+        public bool AutoSidearmAllowed(Pawn pawn)
+        {
+            return !noAutoSidearm.Contains(pawn.thingIDNumber);
+        }
+
+        public bool SidearmSearchDue(Pawn pawn, int tick)
+        {
+            if (nextSidearmSearchTick.TryGetValue(pawn.thingIDNumber, out int next) && tick < next)
+            {
+                return false;
+            }
+
+            nextSidearmSearchTick[pawn.thingIDNumber] = tick + WeaponPairUtility.SidearmSearchInterval + pawn.thingIDNumber % 600;
+            return true;
         }
 
         public override void StartedNewGame()
@@ -97,6 +124,8 @@ namespace Yuudong2Mod
             Scribe_Collections.Look(ref modes, "modes", LookMode.Value, LookMode.Value);
             Scribe_Collections.Look(ref sidearmOwners, "sidearmOwners", LookMode.Value, LookMode.Value);
             Scribe_Values.Look(ref sidearmsTracked, "sidearmsTracked");
+            Scribe_Collections.Look(ref noAutoSidearm, "noAutoSidearm", LookMode.Value);
+            noAutoSidearm ??= new HashSet<int>();
             modes ??= new Dictionary<string, int>();
             sidearmOwners ??= new Dictionary<int, int>();
         }
@@ -107,6 +136,8 @@ namespace Yuudong2Mod
     public static class WeaponPairUtility
     {
         private const int SwapCooldownTicks = 30;
+
+        public const int SidearmSearchInterval = 2500;
 
         private static readonly Dictionary<int, int> lastSwapTick = new Dictionary<int, int>();
 
@@ -340,6 +371,78 @@ namespace Yuudong2Mod
             return true;
         }
 
+        // 무기를 하나만 든 정착민이 한가할 때: 다른 종류의 무기 중 가장 좋은 것을 찾아 장착하러 간다. 들고 있던 무기는 소지품으로 들어간다.
+        public static Job AutoSidearmJob(Pawn pawn)
+        {
+            GameComponent_WeaponPair tracker = GameComponent_WeaponPair.Instance;
+            if (tracker == null || !pawn.Spawned || !pawn.IsColonist || !Eligible(pawn) || !pawn.Map.IsPlayerHome)
+            {
+                return null;
+            }
+
+            ThingWithComps primary = pawn.equipment.Primary;
+            if (primary == null || !IsWeapon(primary) || !tracker.SidearmSearchDue(pawn, Find.TickManager.TicksGame) || !tracker.AutoSidearmAllowed(pawn))
+            {
+                return null;
+            }
+
+            bool wantRanged = !primary.def.IsRangedWeapon;
+            if (Stowed(pawn, wantRanged) != null || pawn.IsQuestLodger() || pawn.WorkTagIsDisabled(WorkTags.Violent)
+                || !pawn.health.capacities.CapableOf(PawnCapacityDefOf.Manipulation))
+            {
+                return null;
+            }
+
+            if (wantRanged && (pawn.WorkTagIsDisabled(WorkTags.Shooting) || (pawn.story != null && pawn.story.traits.HasTrait(TraitDefOf.Brawler))))
+            {
+                return null;
+            }
+
+            Thing best = null;
+            float bestScore = 0f;
+            List<Thing> weapons = pawn.Map.listerThings.ThingsInGroup(ThingRequestGroup.Weapon);
+            for (int i = 0; i < weapons.Count; i++)
+            {
+                Thing thing = weapons[i];
+                if (thing.def.IsRangedWeapon != wantRanged || !IsWeapon(thing) || thing.IsForbidden(pawn) || thing.IsBurning())
+                {
+                    continue;
+                }
+
+                float score = SidearmScore(thing, wantRanged);
+                if (score <= bestScore || !AutoEquippable(pawn, thing))
+                {
+                    continue;
+                }
+
+                best = thing;
+                bestScore = score;
+            }
+
+            return best == null ? null : JobMaker.MakeJob(JobDefOf.Equip, best);
+        }
+
+        private static float SidearmScore(Thing thing, bool ranged)
+        {
+            return ranged ? thing.MarketValue : thing.GetStatValue(StatDefOf.MeleeWeapon_AverageDPS);
+        }
+
+        // 유대 무기는 고르지 않는다. 장착하면 그 정착민에게 묶여 되돌릴 수 없다.
+        private static bool AutoEquippable(Pawn pawn, Thing thing)
+        {
+            if (thing.TryGetComp<CompBladelinkWeapon>() != null || MassUtility.WillBeOverEncumberedAfterPickingUp(pawn, thing, 1))
+            {
+                return false;
+            }
+
+            if (pawn.Ideo != null && pawn.Ideo.GetDispositionForWeapon(thing.def) == IdeoWeaponDisposition.Despised)
+            {
+                return false;
+            }
+
+            return EquipmentUtility.CanEquip(thing, pawn, out string _, false) && pawn.CanReserveAndReach(thing, PathEndMode.ClosestTouch, pawn.NormalMaxDanger());
+        }
+
         private static readonly List<Thing> gearTabEquipment = new List<Thing>();
 
         private static readonly List<Thing> gearTabInventory = new List<Thing>();
@@ -533,6 +636,34 @@ namespace Yuudong2Mod
             if (!equipmentDone || !inventoryDone)
             {
                 Log.Error("[Yuudong2Mod] 무기 2개 착용: 장비 탭(ITab_Pawn_Gear.FillTab)에서 장비 목록이나 소지품 목록을 읽는 곳을 찾지 못해 보조 무기를 장비 칸에 보여 주지 못합니다. FillTab이 바뀌었는지 확인하세요.");
+            }
+        }
+    }
+
+    [HarmonyPatchCategory(Features.WeaponPair)]
+    [HarmonyPatch(typeof(JobGiver_OptimizeApparel), "TryGiveJob")]
+    internal static class JobGiver_OptimizeApparel_TryGiveJob_WeaponPair_Patch
+    {
+        private static void Postfix(Pawn pawn, ref Job __result)
+        {
+            if (__result == null)
+            {
+                __result = WeaponPairUtility.AutoSidearmJob(pawn);
+            }
+        }
+    }
+
+    [HarmonyPatchCategory(Features.WeaponPair)]
+    [HarmonyPatch(typeof(ITab_Pawn_Gear), "InterfaceDrop")]
+    internal static class ITab_Pawn_Gear_InterfaceDrop_WeaponPair_Patch
+    {
+        private static void Prefix(Thing t)
+        {
+            Thing holder = t?.ParentHolder is Pawn_InventoryTracker inventory ? inventory.pawn : null;
+            GameComponent_WeaponPair tracker = GameComponent_WeaponPair.Instance;
+            if (holder is Pawn pawn && tracker != null && tracker.IsSidearmOf(pawn, t))
+            {
+                tracker.StopAutoSidearm(pawn);
             }
         }
     }

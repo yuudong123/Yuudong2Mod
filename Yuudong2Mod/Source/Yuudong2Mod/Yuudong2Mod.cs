@@ -46,6 +46,8 @@ namespace Yuudong2Mod
             WhenEnabled(Features.MultiHaul, MultiLoadUtility.ApplyDriverClasses);
             WhenEnabled(Features.EnemyGravship, EngineGroupUtility.AddStatParts);
 
+            Try(nameof(TraitDegreeFix), () => TraitDegreeFix.Apply(harmony));
+
             if (AppliedFeatures.Contains(Features.BetterWorkbench))
             {
                 Try(Features.BetterWorkbench, () => BetterWorkbenchUtility.Initialize(harmony));

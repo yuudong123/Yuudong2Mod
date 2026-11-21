@@ -1051,7 +1051,7 @@ namespace Yuudong2Test
                 bool Powered(CompGravshipFacility c) => c.parent.TryGetComp<CompPowerTrader>()?.PowerOn ?? true;
                 bool Supported(CompGravshipFacility c) => c.parent.Position.InHorDistOf(engine.Position, c.Props.maxDistance)
                     && (c.Props.onlyRequiresLooseConnection ? engine.LooselyConnectedToGravEngine(c.parent) : engine.OnValidSubstructure(c.parent));
-                int supported = aboard.Count(c => Powered(c) && Supported(c));
+                int supported = aboard.Count(c => Powered(c) && Supported(c) && (c.CanLink() || linked.Contains(c.parent)));
                 int active = aboard.Count(c => c.CanBeActive);
                 foreach (CompGravshipFacility c in aboard.Where(c => !c.CanBeActive || !linked.Contains(c.parent)))
                 {
@@ -1163,6 +1163,27 @@ namespace Yuudong2Test
             ThingWithComps cargo = (ThingWithComps)ThingMaker.MakeThing(rifleDef);
             pawn.equipment.AddEquipment(sword);
             pawn.inventory.innerContainer.TryAdd(cargo, false);
+
+            Thing spare = GenSpawn.Spawn(ThingMaker.MakeThing(rifleDef), pawn.Position, map);
+            spare.SetForbidden(false, false);
+            bool canShoot = !pawn.WorkTagIsDisabled(WorkTags.Shooting) && !pawn.story.traits.HasTrait(TraitDefOf.Brawler);
+            Job fetch = WeaponPairUtility.AutoSidearmJob(pawn);
+            Check(canShoot ? fetch != null && fetch.def == JobDefOf.Equip && fetch.targetA.Thing.def.IsRangedWeapon : fetch == null,
+                $"holding only a sword: {(canShoot ? "goes to equip a ranged weapon" : "cannot shoot, fetches nothing")} ({fetch?.targetA.Thing?.LabelShort ?? "no job"})");
+            Check(WeaponPairUtility.AutoSidearmJob(pawn) == null, "does not search again right away");
+            GameComponent_WeaponPair.Instance.StopAutoSidearm(pawn);
+            bool stopped = !GameComponent_WeaponPair.Instance.AutoSidearmAllowed(pawn);
+            GameComponent_WeaponPair.Instance.MarkSidearm(pawn, spare);
+            Check(stopped && GameComponent_WeaponPair.Instance.AutoSidearmAllowed(pawn), "dropping the sidearm by hand stops the search, stowing one by hand resumes it");
+            spare.Destroy();
+
+            TraitDef nimble = DefDatabase<TraitDef>.GetNamedSilentFail("Nimble");
+            if (nimble != null)
+            {
+                Trait broken = new Trait(nimble, 2);
+                Check(TraitDegreeFix.Fix(broken) && broken.Degree == nimble.degreeDatas[0].degree && !TraitDegreeFix.Fix(new Trait(nimble, nimble.degreeDatas[0].degree)),
+                    "a trait with an undefined degree falls back to the first defined degree");
+            }
             Check(!WeaponPairUtility.DrawRanged(pawn, null) && pawn.equipment.Primary == sword && pawn.inventory.innerContainer.Contains(cargo),
                 $"a rifle carried as cargo is not drawn: in hand {pawn.equipment.Primary?.def.defName}");
             pawn.inventory.innerContainer.Remove(cargo);

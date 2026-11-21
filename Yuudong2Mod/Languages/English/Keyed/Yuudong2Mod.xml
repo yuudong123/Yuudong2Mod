@@ -42,7 +42,7 @@
   <Yuudong2.Feature.PowerOnDemand>Power on demand</Yuudong2.Feature.PowerOnDemand>
   <Yuudong2.Feature.PowerOnDemand.Desc>Workbenches, TVs, research benches and similar buildings draw full power only while in use and 1 W while idle. (Turn It On and Off)</Yuudong2.Feature.PowerOnDemand.Desc>
   <Yuudong2.Feature.WeaponPair>Carry a melee and a ranged weapon</Yuudong2.Feature.WeaponPair>
-  <Yuudong2.Feature.WeaponPair.Desc>Colonists carry one melee and one ranged weapon together. Equipping the other kind while holding one puts the held weapon into the inventory instead of dropping it. They draw the melee weapon when an enemy is adjacent and the ranged one when none is. A button on the selected colonist locks them to one of the two. The stowed weapon can be dropped from the gear tab.</Yuudong2.Feature.WeaponPair.Desc>
+  <Yuudong2.Feature.WeaponPair.Desc>Colonists carry one melee and one ranged weapon together. Equipping the other kind while holding one puts the held weapon into the inventory instead of dropping it. They draw the melee weapon when an enemy is adjacent and the ranged one when none is. A button on the selected colonist locks them to one of the two. A colonist holding only one weapon fetches the best available weapon of the other kind when idle. The stowed weapon can be dropped from the gear tab; a colonist whose sidearm was dropped that way stops fetching one until you equip one by hand again.</Yuudong2.Feature.WeaponPair.Desc>
   <Yuudong2.WeaponPair.Command>Weapon: {0}</Yuudong2.WeaponPair.Command>
   <Yuudong2.WeaponPair.CommandDesc>In hand: {0}
 Stowed: {1}
