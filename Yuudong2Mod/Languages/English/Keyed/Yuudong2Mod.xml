@@ -587,7 +587,21 @@ On automatic, the melee weapon is drawn when an enemy is adjacent and the ranged
   <Yuudong2.Feature.WorkRouteOrder>Shorter cleaning, harvesting and painting routes</Yuudong2.Feature.WorkRouteOrder>
   <Yuudong2.Feature.WorkRouteOrder.Desc>Vanilla groups nearby filth, crops or paint spots and sorts them once by distance from the starting point, so pawns zigzag between targets on both sides. A nearest-first route is refined and used only when it is shorter. In straight-line distance it is never longer than vanilla.</Yuudong2.Feature.WorkRouteOrder.Desc>
   <Yuudong2.Feature.SurgeryManager>Surgery manager tab</Yuudong2.Feature.SurgeryManager>
-  <Yuudong2.Feature.SurgeryManager.Desc>Adds a "surgery" button at the bottom right. It shows each colonist's artificial parts and implants per body part, compares them with an implant plan (preset) by color, and queues the missing surgeries in one click. It also shows the materials needed and optimization nanobot progress.</Yuudong2.Feature.SurgeryManager.Desc>
+  <Yuudong2.Feature.SurgeryManager.Desc>Adds a "surgery" button at the bottom right. It shows each colonist's artificial parts and implants per body part, compares them with an implant plan (preset) by color, and queues the missing surgeries in one click. It also shows the materials needed and optimization nanobot progress. The "Health overview" tab lists each colonist's injuries, illness progress and immunity, chronic conditions, scars and missing parts in one table. The last opened tab is remembered.</Yuudong2.Feature.SurgeryManager.Desc>
+  <Yuudong2.Surgery.Tab.Plans>Implant plans</Yuudong2.Surgery.Tab.Plans>
+  <Yuudong2.Surgery.Tab.Health>Health overview</Yuudong2.Surgery.Tab.Health>
+  <Yuudong2.Health.OnlyProblems>Only colonists with problems</Yuudong2.Health.OnlyProblems>
+  <Yuudong2.Health.OnlyProblems.Desc>Hides colonists with no injuries, illnesses, scars or anything else to show.</Yuudong2.Health.OnlyProblems.Desc>
+  <Yuudong2.Health.Column.Injuries>Injuries</Yuudong2.Health.Column.Injuries>
+  <Yuudong2.Health.Column.Illness>Illness progress</Yuudong2.Health.Column.Illness>
+  <Yuudong2.Health.Column.Chronic>Chronic</Yuudong2.Health.Column.Chronic>
+  <Yuudong2.Health.Column.Scars>Scars</Yuudong2.Health.Column.Scars>
+  <Yuudong2.Health.Column.MissingParts>Missing parts</Yuudong2.Health.Column.MissingParts>
+  <Yuudong2.Health.Column.Other>Other</Yuudong2.Health.Column.Other>
+  <Yuudong2.Health.Immunity>{0} {1} / immunity {2}</Yuudong2.Health.Immunity>
+  <Yuudong2.Health.Bleeding>Bleeding {0} per day</Yuudong2.Health.Bleeding>
+  <Yuudong2.Health.Wounds>{0} wounds</Yuudong2.Health.Wounds>
+  <Yuudong2.Health.WoundsUntended>{0} wounds ({1} need tending)</Yuudong2.Health.WoundsUntended>
   <Yuudong2.Surgery.DefaultPresetName>Default plan</Yuudong2.Surgery.DefaultPresetName>
   <Yuudong2.Surgery.Presets>Plans</Yuudong2.Surgery.Presets>
   <Yuudong2.Surgery.QueueAll>Queue all</Yuudong2.Surgery.QueueAll>

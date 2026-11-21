@@ -1051,7 +1051,8 @@ namespace Yuudong2Test
                 bool Powered(CompGravshipFacility c) => c.parent.TryGetComp<CompPowerTrader>()?.PowerOn ?? true;
                 bool Supported(CompGravshipFacility c) => c.parent.Position.InHorDistOf(engine.Position, c.Props.maxDistance)
                     && (c.Props.onlyRequiresLooseConnection ? engine.LooselyConnectedToGravEngine(c.parent) : engine.OnValidSubstructure(c.parent));
-                int supported = aboard.Count(c => Powered(c) && Supported(c) && (c.CanLink() || linked.Contains(c.parent)));
+                bool CapReached(CompGravshipFacility c) => linked.Count(l => l.def == c.parent.def) >= c.parent.def.GetCompProperties<CompProperties_Facility>().maxSimultaneous;
+                int supported = aboard.Count(c => Powered(c) && Supported(c) && (linked.Contains(c.parent) || (c.CanLink() && !CapReached(c))));
                 int active = aboard.Count(c => c.CanBeActive);
                 foreach (CompGravshipFacility c in aboard.Where(c => !c.CanBeActive || !linked.Contains(c.parent)))
                 {
@@ -1167,6 +1168,7 @@ namespace Yuudong2Test
             Thing spare = GenSpawn.Spawn(ThingMaker.MakeThing(rifleDef), pawn.Position, map);
             spare.SetForbidden(false, false);
             bool canShoot = !pawn.WorkTagIsDisabled(WorkTags.Shooting) && !pawn.story.traits.HasTrait(TraitDefOf.Brawler);
+            GameComponent_WeaponPair.Instance.SearchSidearmNow(pawn);
             Job fetch = WeaponPairUtility.AutoSidearmJob(pawn);
             Check(canShoot ? fetch != null && fetch.def == JobDefOf.Equip && fetch.targetA.Thing.def.IsRangedWeapon : fetch == null,
                 $"holding only a sword: {(canShoot ? "goes to equip a ranged weapon" : "cannot shoot, fetches nothing")} ({fetch?.targetA.Thing?.LabelShort ?? "no job"})");
@@ -1649,6 +1651,7 @@ namespace Yuudong2Test
                 zone.AddCell(new IntVec3(corner.x + i, 0, corner.z));
             }
 
+            List<Pawn> held = HoldOthers(map, pawn);
             List<Thing> rifles = new List<Thing>();
             for (int i = 0; i < Rifles; i++)
             {
@@ -1706,6 +1709,7 @@ namespace Yuudong2Test
                 }
             }
             zone.Delete();
+            ReleaseOthers(held);
 
             List<string> errors = TestRunner.TickErrors.Skip(errorsBefore).ToList();
             foreach (IGrouping<string, string> group in errors.GroupBy(m => m.Split('\n')[0]).Take(10))
@@ -1771,6 +1775,7 @@ namespace Yuudong2Test
             }
 
             int errorsBefore = TestRunner.TickErrors.Count;
+            List<Pawn> held = HoldOthers(map, pawn);
             Thing pod = GenSpawn.Spawn(ThingMaker.MakeThing(ThingDefOf.TransportPod), new IntVec3(corner.x + 2, 0, corner.z), map);
             pod.SetFaction(Faction.OfPlayer);
             CompTransporter comp = pod.TryGetComp<CompTransporter>();
@@ -1842,6 +1847,7 @@ namespace Yuudong2Test
             }
             loaded.ClearAndDestroyContents();
             comp.CancelLoad(map);
+            ReleaseOthers(held);
             if (!pod.Destroyed)
             {
                 pod.Destroy();
@@ -2134,6 +2140,62 @@ namespace Yuudong2Test
                 foreach (IGrouping<string, PlanStatus> blocked in statuses.Where(s => s.state == PlanState.Blocked).GroupBy(s => s.reason))
                 {
                     sb.AppendLine($"    blocked ({blocked.Key}): {string.Join(", ", blocked.Select(s => s.entry.hediff.defName + "@" + s.part.Label + PartHediffs(pawn, s.part)).Distinct())}");
+                }
+            }
+
+            foreach (Pawn pawn in Colonists)
+            {
+                HealthSummary health = HealthSummary.Build(pawn);
+                if (health.Any)
+                {
+                    sb.AppendLine($"health {pawn.LabelShort}: " + string.Join(" | ", Enum.GetValues(typeof(HealthColumn)).Cast<HealthColumn>()
+                        .Where(c => health[c].Count > 0).Select(c => $"{c}: {string.Join(", ", health[c].Select(l => l.text))}")));
+                }
+            }
+
+            Pawn patient = Colonists.FirstOrDefault(p => !p.health.hediffSet.HasHediff(DefDatabase<HediffDef>.GetNamed("Flu")));
+            if (patient != null)
+            {
+                Hediff flu = patient.health.AddHediff(DefDatabase<HediffDef>.GetNamed("Flu"));
+                flu.Severity = 0.4f;
+                BodyPartRecord lung = patient.health.hediffSet.GetNotMissingParts().FirstOrDefault(x => x.def == BodyPartDefOf.Lung);
+                Hediff cancer = lung == null ? null : patient.health.AddHediff(HediffDefOf.Carcinoma, lung);
+                HealthSummary sick = HealthSummary.Build(patient);
+                bool fluShown = sick[HealthColumn.Illness].Any(l => l.text.Contains(flu.LabelCap) && l.text.Contains("40%"));
+                bool cancerShown = cancer == null || sick[HealthColumn.Illness].Any(l => l.text.Contains(lung.Label));
+                sb.AppendLine($"{(fluShown && cancerShown ? "ok  " : "FAIL")} health overview lists flu progress with immunity and carcinoma with its part: {string.Join(", ", sick[HealthColumn.Illness].Select(l => l.text))}");
+                patient.health.RemoveHediff(flu);
+                if (cancer != null)
+                {
+                    patient.health.RemoveHediff(cancer);
+                }
+            }
+
+            int tabBefore = plans.openTab;
+            plans.openTab = 1;
+            sb.AppendLine($"{(plans.openTab == 1 ? "ok  " : "FAIL")} the open tab is kept in the saved surgery plans");
+            plans.openTab = tabBefore;
+        }
+
+        // 살아 있는 세이브에서는 다른 정착민이 시험용 물건을 먼저 집어 갈 수 있다. 시험하는 동안 소집해서 일을 못 하게 한다.
+        private static List<Pawn> HoldOthers(Map map, Pawn tested)
+        {
+            List<Pawn> held = map.mapPawns.FreeColonistsSpawned.Where(p => p != tested && !p.Drafted && !p.Downed && p.drafter != null && p.Awake() && !p.InMentalState).ToList();
+            foreach (Pawn pawn in held)
+            {
+                pawn.drafter.Drafted = true;
+            }
+
+            return held;
+        }
+
+        private static void ReleaseOthers(List<Pawn> held)
+        {
+            foreach (Pawn pawn in held)
+            {
+                if (pawn.drafter != null && !pawn.Dead)
+                {
+                    pawn.drafter.Drafted = false;
                 }
             }
         }

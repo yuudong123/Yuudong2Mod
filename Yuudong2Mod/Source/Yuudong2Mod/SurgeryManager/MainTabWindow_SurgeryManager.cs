@@ -31,13 +31,20 @@ namespace Yuudong2Mod.SurgeryManager
         private readonly Dictionary<Pawn, List<PlanStatus>> statusCache = new Dictionary<Pawn, List<PlanStatus>>();
         private int cacheFrame = -9999;
 
+        private const float LineHeight = 20f;
+        private const float TabBarHeight = 32f;
+
+        private Vector2 healthScroll;
+        private readonly Dictionary<Pawn, HealthSummary> healthCache = new Dictionary<Pawn, HealthSummary>();
+        private readonly List<TabRecord> tabs = new List<TabRecord>();
+
         private class Slot
         {
             public string label;
             public HashSet<BodyPartDef> defs;
         }
 
-        public override Vector2 RequestedTabSize => new Vector2(Mathf.Min(UI.screenWidth, 1600f), Mathf.Min(UI.screenHeight - 35f, 160f + RowHeight * Mathf.Max(4, Colonists().Count())));
+        public override Vector2 RequestedTabSize => new Vector2(Mathf.Min(UI.screenWidth, 1600f), Mathf.Min(UI.screenHeight - 35f, 200f + RowHeight * Mathf.Max(4, Colonists().Count())));
 
         private static GameComponent_SurgeryPlans Plans => GameComponent_SurgeryPlans.Instance;
 
@@ -100,6 +107,7 @@ namespace Yuudong2Mod.SurgeryManager
             if (Time.frameCount - cacheFrame > RefreshFrames)
             {
                 statusCache.Clear();
+                healthCache.Clear();
                 cacheFrame = Time.frameCount;
             }
 
@@ -120,6 +128,19 @@ namespace Yuudong2Mod.SurgeryManager
             }
 
             Text.Font = GameFont.Small;
+            Rect body = new Rect(inRect.x, inRect.y + TabBarHeight, inRect.width, inRect.height - TabBarHeight);
+            tabs.Clear();
+            tabs.Add(new TabRecord("Yuudong2.Surgery.Tab.Plans".Translate(), () => Plans.openTab = 0, Plans.openTab == 0));
+            tabs.Add(new TabRecord("Yuudong2.Surgery.Tab.Health".Translate(), () => Plans.openTab = 1, Plans.openTab == 1));
+            Widgets.DrawMenuSection(body);
+            TabDrawer.DrawTabs(body, tabs);
+            inRect = body.ContractedBy(8f);
+            if (Plans.openTab == 1)
+            {
+                DoHealthTab(inRect);
+                return;
+            }
+
             Rect top = new Rect(inRect.x, inRect.y, inRect.width, 30f);
             DoTopBar(top);
             Rect materials = new Rect(inRect.x, top.yMax + 4f, inRect.width, 30f);
@@ -183,6 +204,112 @@ namespace Yuudong2Mod.SurgeryManager
             }
 
             Widgets.EndScrollView();
+        }
+
+        private HealthSummary HealthFor(Pawn pawn)
+        {
+            StatusFor(pawn);
+            if (!healthCache.TryGetValue(pawn, out HealthSummary summary))
+            {
+                summary = HealthSummary.Build(pawn);
+                healthCache[pawn] = summary;
+            }
+
+            return summary;
+        }
+
+        private void DoHealthTab(Rect inRect)
+        {
+            Rect top = new Rect(inRect.x, inRect.y, inRect.width, 30f);
+            Checkbox(top.x, top, "Yuudong2.Health.OnlyProblems", ref Plans.onlyHealthProblems);
+
+            List<Pawn> pawns = Colonists().ToList();
+            PlayerPawnsDisplayOrderUtility.Sort(pawns);
+            if (Plans.onlyHealthProblems)
+            {
+                pawns = pawns.Where(p => HealthFor(p).Any).ToList();
+            }
+
+            float columnWidth = Mathf.Max(150f, (inRect.width - 16f - NameWidth) / HealthSummary.ColumnCount);
+            float tableWidth = NameWidth + columnWidth * HealthSummary.ColumnCount;
+            Rect header = new Rect(inRect.x, top.yMax + 6f, inRect.width, HeaderHeight);
+            Rect outRect = new Rect(inRect.x, header.yMax, inRect.width, inRect.yMax - header.yMax);
+            float height = 0f;
+            foreach (Pawn pawn in pawns)
+            {
+                height += HealthRowHeight(HealthFor(pawn));
+            }
+
+            GUI.BeginGroup(header);
+            Text.Anchor = TextAnchor.MiddleCenter;
+            Widgets.Label(new Rect(-healthScroll.x, 0f, NameWidth, HeaderHeight), "Yuudong2.Surgery.Colonist".Translate());
+            for (int i = 0; i < HealthSummary.ColumnCount; i++)
+            {
+                Widgets.Label(new Rect(-healthScroll.x + NameWidth + columnWidth * i, 0f, columnWidth, HeaderHeight), ("Yuudong2.Health.Column." + (HealthColumn)i).Translate());
+            }
+
+            Text.Anchor = TextAnchor.UpperLeft;
+            GUI.EndGroup();
+
+            Widgets.BeginScrollView(outRect, ref healthScroll, new Rect(0f, 0f, tableWidth, height));
+            float y = 0f;
+            for (int i = 0; i < pawns.Count; i++)
+            {
+                HealthSummary summary = HealthFor(pawns[i]);
+                Rect row = new Rect(0f, y, tableWidth, HealthRowHeight(summary));
+                y += row.height;
+                if (row.yMax < healthScroll.y || row.y > healthScroll.y + outRect.height)
+                {
+                    continue;
+                }
+
+                if (i % 2 == 1)
+                {
+                    Widgets.DrawLightHighlight(row);
+                }
+
+                DoHealthRow(row, pawns[i], summary, columnWidth);
+            }
+
+            Widgets.EndScrollView();
+        }
+
+        private static float HealthRowHeight(HealthSummary summary)
+        {
+            return Mathf.Max(RowHeight, summary.MaxLines * LineHeight + 6f);
+        }
+
+        private static void DoHealthRow(Rect row, Pawn pawn, HealthSummary summary, float columnWidth)
+        {
+            Rect nameRect = new Rect(row.x, row.y, NameWidth, RowHeight);
+            Widgets.ThingIcon(new Rect(nameRect.x + 2f, nameRect.y + 3f, 28f, 28f), pawn);
+            Text.Anchor = TextAnchor.MiddleLeft;
+            Widgets.Label(new Rect(nameRect.x + 34f, nameRect.y, nameRect.width - 34f, nameRect.height), pawn.LabelShortCap.Truncate(nameRect.width - 36f));
+            if (Widgets.ButtonInvisible(nameRect))
+            {
+                CameraJumper.TryJumpAndSelect(pawn);
+            }
+
+            Text.WordWrap = false;
+            for (int c = 0; c < HealthSummary.ColumnCount; c++)
+            {
+                List<HealthLine> lines = summary.columns[c];
+                for (int i = 0; i < lines.Count; i++)
+                {
+                    Rect rect = new Rect(row.x + NameWidth + columnWidth * c + 4f, row.y + 3f + LineHeight * i, columnWidth - 8f, LineHeight);
+                    GUI.color = lines[i].color;
+                    Widgets.Label(rect, lines[i].text.Truncate(rect.width));
+                    GUI.color = Color.white;
+                    if (Mouse.IsOver(rect))
+                    {
+                        Widgets.DrawHighlight(rect);
+                        TooltipHandler.TipRegion(rect, lines[i].tip ?? lines[i].text);
+                    }
+                }
+            }
+
+            Text.WordWrap = true;
+            Text.Anchor = TextAnchor.UpperLeft;
         }
 
         private void DoTopBar(Rect rect)

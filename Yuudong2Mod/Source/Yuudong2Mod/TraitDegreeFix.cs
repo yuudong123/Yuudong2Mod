@@ -11,6 +11,20 @@ namespace Yuudong2Mod
         public static void Apply(Harmony harmony)
         {
             harmony.Patch(AccessTools.Method(typeof(TraitSet), nameof(TraitSet.GainTrait)), prefix: new HarmonyMethod(typeof(TraitDegreeFix), nameof(Prefix)));
+            harmony.Patch(AccessTools.Method(typeof(Verse.AI.HaulAIUtility), nameof(Verse.AI.HaulAIUtility.PawnCanAutomaticallyHaulFast)),
+                prefix: new HarmonyMethod(typeof(TraitDegreeFix), nameof(HaulablePrefix)));
+        }
+
+        // 운반 후보 목록을 잠깐 기억해 두는 모드(AllowTool의 긴급 운반)는 그사이 사라진 물건을 넘길 수 있고, 바닐라는 그 물건의 맵을 읽다가 오류를 낸다.
+        private static bool HaulablePrefix(Thing t, ref bool __result)
+        {
+            if (t != null && (t.Spawned || t.MapHeld != null))
+            {
+                return true;
+            }
+
+            __result = false;
+            return false;
         }
 
         public static bool Fix(Trait trait)

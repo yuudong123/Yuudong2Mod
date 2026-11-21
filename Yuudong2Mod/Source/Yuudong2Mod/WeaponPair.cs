@@ -59,6 +59,11 @@ namespace Yuudong2Mod
             return !noAutoSidearm.Contains(pawn.thingIDNumber);
         }
 
+        public void SearchSidearmNow(Pawn pawn)
+        {
+            nextSidearmSearchTick.Remove(pawn.thingIDNumber);
+        }
+
         public bool SidearmSearchDue(Pawn pawn, int tick)
         {
             if (nextSidearmSearchTick.TryGetValue(pawn.thingIDNumber, out int next) && tick < next)

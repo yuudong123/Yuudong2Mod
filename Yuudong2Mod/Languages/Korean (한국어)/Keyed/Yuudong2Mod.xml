@@ -587,7 +587,21 @@
   <Yuudong2.Feature.WorkRouteOrder>청소·수확·칠하기 동선 정리</Yuudong2.Feature.WorkRouteOrder>
   <Yuudong2.Feature.WorkRouteOrder.Desc>바닐라는 주변 오물·작물·칠할 곳을 묶은 뒤 출발점에서 가까운 순서로 한 번만 정렬해서, 거리가 비슷한 양쪽을 지그재그로 오갑니다. 가까운 것부터 잇는 순서를 다듬어 이동 거리가 더 짧을 때만 순서를 바꿉니다. 직선 거리로는 바닐라보다 길어지지 않습니다.</Yuudong2.Feature.WorkRouteOrder.Desc>
   <Yuudong2.Feature.SurgeryManager>수술 관리 탭</Yuudong2.Feature.SurgeryManager>
-  <Yuudong2.Feature.SurgeryManager.Desc>우하단에 "수술 관리" 버튼을 추가합니다. 정착민마다 부위별로 달린 부품·임플란트를 이식 계획(프리셋)과 비교해 색으로 보여 주고, 부족한 수술을 버튼 하나로 예약합니다. 필요한 재료와 최적화 나노봇 진행 상태도 보여 줍니다.</Yuudong2.Feature.SurgeryManager.Desc>
+  <Yuudong2.Feature.SurgeryManager.Desc>우하단에 "수술 관리" 버튼을 추가합니다. 정착민마다 부위별로 달린 부품·임플란트를 이식 계획(프리셋)과 비교해 색으로 보여 주고, 부족한 수술을 버튼 하나로 예약합니다. 필요한 재료와 최적화 나노봇 진행 상태도 보여 줍니다. "건강 총괄" 탭에서는 정착민별 부상, 질병 진행도와 면역, 만성 질환, 흉터, 잃은 부위를 한 표로 봅니다. 마지막으로 연 탭을 기억합니다.</Yuudong2.Feature.SurgeryManager.Desc>
+  <Yuudong2.Surgery.Tab.Plans>이식 계획</Yuudong2.Surgery.Tab.Plans>
+  <Yuudong2.Surgery.Tab.Health>건강 총괄</Yuudong2.Surgery.Tab.Health>
+  <Yuudong2.Health.OnlyProblems>문제 있는 정착민만</Yuudong2.Health.OnlyProblems>
+  <Yuudong2.Health.OnlyProblems.Desc>부상, 질병, 흉터 등 표시할 것이 하나도 없는 정착민은 숨깁니다.</Yuudong2.Health.OnlyProblems.Desc>
+  <Yuudong2.Health.Column.Injuries>부상·출혈</Yuudong2.Health.Column.Injuries>
+  <Yuudong2.Health.Column.Illness>질병 진행도</Yuudong2.Health.Column.Illness>
+  <Yuudong2.Health.Column.Chronic>만성 질환</Yuudong2.Health.Column.Chronic>
+  <Yuudong2.Health.Column.Scars>흉터</Yuudong2.Health.Column.Scars>
+  <Yuudong2.Health.Column.MissingParts>잃은 부위</Yuudong2.Health.Column.MissingParts>
+  <Yuudong2.Health.Column.Other>기타</Yuudong2.Health.Column.Other>
+  <Yuudong2.Health.Immunity>{0} {1} / 면역 {2}</Yuudong2.Health.Immunity>
+  <Yuudong2.Health.Bleeding>출혈 하루 {0}</Yuudong2.Health.Bleeding>
+  <Yuudong2.Health.Wounds>부상 {0}곳</Yuudong2.Health.Wounds>
+  <Yuudong2.Health.WoundsUntended>부상 {0}곳 (치료 필요 {1})</Yuudong2.Health.WoundsUntended>
   <Yuudong2.Surgery.DefaultPresetName>기본 계획</Yuudong2.Surgery.DefaultPresetName>
   <Yuudong2.Surgery.Presets>계획 관리</Yuudong2.Surgery.Presets>
   <Yuudong2.Surgery.QueueAll>모두 예약</Yuudong2.Surgery.QueueAll>
