@@ -315,7 +315,7 @@
   <Yuudong2.LitterDecay.Days.Desc>내구도가 가득 찬 장비가 다 닳는 데 걸리는 날 수입니다. 이미 깎인 장비는 더 빨리 없어집니다.</Yuudong2.LitterDecay.Days.Desc>
   <Yuudong2.LitterDecay.Reason>버려진 장비</Yuudong2.LitterDecay.Reason>
   <Yuudong2.Feature.MultiHaul>여러 개 한 번에 운반</Yuudong2.Feature.MultiHaul>
-  <Yuudong2.Feature.MultiHaul.Desc>저장 구역으로 물건을 옮길 때 첫 물건은 손에 들고, 근처(12칸 안, 같은 방)의 다른 옮길 물건을 들 수 있는 무게가 찰 때까지 소지품에 담아 한 번에 나릅니다. 저장 구역에 도착하면 하나씩 내려놓습니다. 정착민, 노예, 메카노이드가 합니다. 건설 자재나 작업대 재료 운반은 바뀌지 않습니다.</Yuudong2.Feature.MultiHaul.Desc>
+  <Yuudong2.Feature.MultiHaul.Desc>저장 구역으로 물건을 옮길 때 첫 물건은 손에 들고, 근처(12칸 안, 같은 방)의 다른 옮길 물건을 들 수 있는 무게가 찰 때까지 소지품에 담아 한 번에 나릅니다. 저장 구역에 도착하면 하나씩 내려놓습니다. 수송 포드, 왕복선, 포탈에 짐을 실을 때도 근처(20칸 안)의 다른 실을 물건을 소지품에 담아 한 번에 싣습니다. 정착민, 노예, 메카노이드가 합니다. 건설 자재나 작업대 재료 운반은 바뀌지 않습니다.</Yuudong2.Feature.MultiHaul.Desc>
   <Yuudong2.Feature.SettlementConquest>파괴한 정착지 점령 선택</Yuudong2.Feature.SettlementConquest>
   <Yuudong2.Feature.SettlementConquest.Desc>다른 세력의 정착지를 파괴하면 오는 편지에 선택지가 붙습니다. 그 맵이 열려 있는 동안 우리 정착지로 삼거나, 세력 전쟁에서 함께 싸운 동맹에게 넘기거나, 그대로 둘 수 있습니다. 우리 정착지로 삼을 때는 게임 옵션의 최대 정착지 수를 따지지 않습니다. 이 기능이 켜져 있으면 동맹이 합세한 정착지도 자동으로 넘어가지 않고 여기서 고릅니다.</Yuudong2.Feature.SettlementConquest.Desc>
   <Yuudong2.Conquest.Settle>우리 정착지로 삼기</Yuudong2.Conquest.Settle>

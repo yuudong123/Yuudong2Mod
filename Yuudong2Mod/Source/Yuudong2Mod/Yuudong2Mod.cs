@@ -43,6 +43,7 @@ namespace Yuudong2Mod
             WhenEnabled(Features.MapWideTradeBeacon, MapWideTradeBeacon.ApplyDefChanges);
             WhenEnabled(Features.EquipmentDurability, EquipmentDurabilityUtility.ApplyDefPatches);
             WhenEnabled(Features.BenchApparelRepair, ApparelRepairUtility.ApplyDefPatches);
+            WhenEnabled(Features.MultiHaul, MultiLoadUtility.ApplyDriverClasses);
 
             if (AppliedFeatures.Contains(Features.BetterWorkbench))
             {
