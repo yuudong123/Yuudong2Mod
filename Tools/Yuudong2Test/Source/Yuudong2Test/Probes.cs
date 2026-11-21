@@ -33,6 +33,7 @@ namespace Yuudong2Test
             ("repair bill count", RepairBillCount),
             ("weapon pair", WeaponPair),
             ("ratkin shield", RatkinShield),
+            ("dragonborn genes", DragonbornGenes),
             ("enemy bases", EnemyBases),
             ("enemy gravship", EnemyGravship),
             ("two gravships", TwoGravships),
@@ -1269,6 +1270,34 @@ namespace Yuudong2Test
             TestRunner.ticking = false;
             List<string> errors = TestRunner.TickErrors.Skip(errorsBefore).ToList();
             Check(errors.Count == 0, $"errors: {errors.Count}" + (errors.Count > 0 ? " - " + string.Join(" | ", errors.Take(4).Select(e => e.Split('\n')[0])) : ""));
+            sb.AppendLine(bad == 0 ? "PASS" : $"FAIL: {bad}");
+        }
+
+        private static void DragonbornGenes(StringBuilder sb)
+        {
+            if (!Yuudong2Mod.Yuudong2Mod.AppliedFeatures.Contains(Features.DragonianGenes))
+            {
+                sb.AppendLine("skipped: feature not applied");
+                return;
+            }
+
+            int bad = 0;
+            foreach (string defName in new[] { "Dragonian_Dragonborn", "Dragonian_Dragonborn_Black" })
+            {
+                GeneDef def = DefDatabase<GeneDef>.GetNamedSilentFail(defName);
+                if (def == null)
+                {
+                    sb.AppendLine($"info: {defName} not loaded");
+                    continue;
+                }
+                bool free = def.exclusionTags.NullOrEmpty();
+                List<Pawn> carriers = PawnsFinder.AllMapsCaravansAndTravellingTransporters_Alive.Where(p => p.genes != null && p.genes.GenesListForReading.Any(g => g.def == def)).ToList();
+                List<string> suppressed = carriers.SelectMany(p => p.genes.GenesListForReading.Where(g => g.overriddenByGene != null && (g.def == def || g.overriddenByGene.def == def))
+                    .Select(g => $"{p.LabelShort}: {g.def.defName} by {g.overriddenByGene.def.defName}")).ToList();
+                bool ok = free && suppressed.Count == 0;
+                bad += ok ? 0 : 1;
+                sb.AppendLine($"{(ok ? "ok  " : "FAIL")} {defName}: exclusion tags {(free ? "none" : string.Join(",", def.exclusionTags))}, {carriers.Count} carriers, suppressions involving it: {suppressed.Count}{(suppressed.Count > 0 ? " - " + string.Join(" | ", suppressed.Take(5)) : "")}");
+            }
             sb.AppendLine(bad == 0 ? "PASS" : $"FAIL: {bad}");
         }
 
