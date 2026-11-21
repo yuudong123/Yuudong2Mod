@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+
+  <!-- 지정 도구 모음(Source/OrderTools). Def 이름은 AllowTool과 같게 두어 세이브의 지정과 작업 우선순위가 이어지게 한다. -->
+  <DesignationDef>
+    <defName>HaulUrgentlyDesignation</defName>
+    <texturePath>Yuudong2/OrderTools/haulDesignation</texturePath>
+    <targetType>Thing</targetType>
+  </DesignationDef>
+
+  <DesignationDef>
+    <defName>FinishOffDesignation</defName>
+    <texturePath>Yuudong2/OrderTools/finishOffDesignation</texturePath>
+    <targetType>Thing</targetType>
+  </DesignationDef>
+
+  <WorkTypeDef>
+    <defName>HaulingUrgent</defName>
+    <labelShort>Haul+</labelShort>
+    <pawnLabel>Urgent hauler</pawnLabel>
+    <gerundLabel>Hauling urgently</gerundLabel>
+    <description>High-priority hauling. Works like regular hauling, but only for things marked with the "Haul urgently" order.</description>
+    <verb>Haul urgently</verb>
+    <naturalPriority>1180</naturalPriority>
+    <alwaysStartActive>true</alwaysStartActive>
+    <workTags>
+      <li>ManualDumb</li>
+      <li>Hauling</li>
+    </workTags>
+  </WorkTypeDef>
+
+  <WorkTypeDef>
+    <defName>FinishingOff</defName>
+    <labelShort>Finish</labelShort>
+    <pawnLabel>Executor</pawnLabel>
+    <gerundLabel>Finishing off</gerundLabel>
+    <description>Quickly kill downed creatures marked with the "Finish off" order.</description>
+    <verb>Finish off</verb>
+    <naturalPriority>1140</naturalPriority>
+    <alwaysStartActive>true</alwaysStartActive>
+    <visible>false</visible>
+    <relevantSkills>
+      <li>Melee</li>
+    </relevantSkills>
+    <workTags>
+      <li>Violent</li>
+    </workTags>
+  </WorkTypeDef>
+
+  <WorkGiverDef>
+    <defName>HaulUrgently</defName>
+    <label>haul things urgently</label>
+    <giverClass>Yuudong2Mod.OrderTools.WorkGiver_HaulUrgently</giverClass>
+    <workType>HaulingUrgent</workType>
+    <verb>haul urgently</verb>
+    <gerund>hauling urgently</gerund>
+    <priorityInType>50</priorityInType>
+    <directOrderable>false</directOrderable>
+    <requiredCapacities>
+      <li>Manipulation</li>
+    </requiredCapacities>
+  </WorkGiverDef>
+
+  <WorkGiverDef>
+    <defName>FinishOff</defName>
+    <label>finish off creature</label>
+    <giverClass>Yuudong2Mod.OrderTools.WorkGiver_FinishOff</giverClass>
+    <workType>FinishingOff</workType>
+    <verb>finish off</verb>
+    <gerund>finishing off</gerund>
+    <priorityInType>50</priorityInType>
+    <directOrderable>false</directOrderable>
+    <requiredCapacities>
+      <li>Manipulation</li>
+    </requiredCapacities>
+  </WorkGiverDef>
+
+  <JobDef>
+    <defName>FinishOffPawn</defName>
+    <driverClass>Yuudong2Mod.OrderTools.JobDriver_FinishOff</driverClass>
+    <reportString>finishing off TargetA.</reportString>
+    <alwaysShowWeapon>true</alwaysShowWeapon>
+    <casualInterruptible>false</casualInterruptible>
+  </JobDef>
+
+</Defs>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+
+  <HaulUrgently.label>물건 긴급 운반</HaulUrgently.label>
+  <HaulUrgently.verb>긴급 운반</HaulUrgently.verb>
+  <HaulUrgently.gerund>긴급 운반 중</HaulUrgently.gerund>
+  <FinishOff.label>쓰러진 생물 마무리</FinishOff.label>
+  <FinishOff.verb>마무리</FinishOff.verb>
+  <FinishOff.gerund>마무리하는 중</FinishOff.gerund>
+
+</LanguageData>

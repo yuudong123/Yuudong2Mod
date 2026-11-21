@@ -10,6 +10,7 @@ using UnityEngine;
 using Verse;
 using Verse.AI;
 using Yuudong2Mod;
+using Yuudong2Mod.OrderTools;
 using Yuudong2Mod.SurgeryManager;
 
 namespace Yuudong2Test
@@ -21,6 +22,7 @@ namespace Yuudong2Test
         {
             ("features", Features_),
             ("surgery manager", Surgery),
+            ("order tools", OrderToolsProbe),
             ("sleep limits", Sleep),
             ("installed parts count", InstalledParts),
             ("roofed scanning", RoofedScanning),
@@ -2109,6 +2111,180 @@ namespace Yuudong2Test
             sb.AppendLine($"applied {Yuudong2Mod.Yuudong2Mod.AppliedFeatures.Count} / enabled {all.Count(Features.Enabled)} / total {all.Count}");
             sb.AppendLine("enabled but NOT applied: " + (notApplied.Count == 0 ? "none" : string.Join(", ", notApplied)));
             sb.AppendLine("disabled: " + string.Join(", ", all.Where(f => !Features.Enabled(f))));
+        }
+
+        private static void OrderToolsProbe(StringBuilder sb)
+        {
+            if (!OrderToolsUtility.Active)
+            {
+                sb.AppendLine(ModsConfig.IsActive(OrderToolsUtility.AllowToolPackageId) ? "skipped: AllowTool is active (run with -DropMods unlimitedhugs.allowtool)" : "skipped: feature not applied");
+                return;
+            }
+
+            int bad = 0;
+            void Check(bool ok, string text)
+            {
+                bad += ok ? 0 : 1;
+                sb.AppendLine($"{(ok ? "ok  " : "FAIL")} {text}");
+            }
+
+            Map map = Find.AnyPlayerHomeMap;
+            int errorsBefore = TestRunner.TickErrors.Count;
+            List<Designator> orders = DefDatabase<DesignationCategoryDef>.GetNamed("Orders").AllResolvedDesignators.ToList();
+            Check(orders.Any(d => d is Designator_HaulUrgently) && orders.Any(d => d is Designator_FinishOff) && orders.Any(d => d is Designator_SelectSimilar) && orders.Any(d => d is Designator_StripMine),
+                "orders menu has haul urgently, finish off, select similar and strip mine");
+            Check(new Designator_Forbid().icon?.name == "forbid" && new Designator_Unforbid().icon?.name == "allow", "forbid and allow tools use the replaced icons");
+            List<Designator> reverse = Find.ReverseDesignatorDatabase.AllDesignators;
+            Check(reverse.Any(d => d is Designator_HaulUrgently) && reverse.Any(d => d is Designator_FinishOff) && reverse.Any(d => d is Designator_SelectSimilarReverse), "selected-thing buttons include the three tools");
+
+            int kept = Find.Maps.Sum(m => m.designationManager.SpawnedDesignationsOfDef(OrderToolsUtility.HaulUrgently).Count());
+            sb.AppendLine($"info: urgent-haul designations carried over from the save: {kept}");
+            Pawn worker = map.mapPawns.FreeColonistsSpawned.FirstOrDefault(p => !p.Downed && !p.Drafted && p.Awake() && !p.InMentalState && !p.WorkTagIsDisabled(WorkTags.Violent)
+                && p.health.capacities.CapableOf(PawnCapacityDefOf.Manipulation));
+            if (worker == null)
+            {
+                sb.AppendLine("skipped the rest: no free colonist");
+                return;
+            }
+
+            WorkTypeDef haulPlus = DefDatabase<WorkTypeDef>.GetNamed("HaulingUrgent");
+            sb.AppendLine($"info: {worker.LabelShort} work priorities: " + string.Join(", ", DefDatabase<WorkTypeDef>.AllDefsListForReading.Where(d => d.index >= DefDatabase<WorkTypeDef>.DefCount - 6)
+                .Select(d => $"{d.defName}={worker.workSettings.GetPriority(d)}")));
+            List<string> fakeMods = LoadedModManager.RunningModsListForReading.Select(m => m.PackageId).ToList();
+            fakeMods.Insert(Math.Min(3, fakeMods.Count), OrderToolsUtility.AllowToolPackageId);
+            List<WorkTypeDef> order = WorkOrderMigration.OldOrder(fakeMods);
+            DefMap<WorkTypeDef, int> fake = new DefMap<WorkTypeDef, int>();
+            for (int i = 0; i < order.Count; i++)
+            {
+                fake[DefDatabase<WorkTypeDef>.AllDefsListForReading[i]] = i;
+            }
+
+            WorkOrderMigration.Remap(fake, order);
+            bool remapped = true;
+            for (int i = 0; i < order.Count; i++)
+            {
+                remapped &= fake[order[i]] == i;
+            }
+
+            int haulOld = order.IndexOf(haulPlus);
+            Check(remapped && haulOld < haulPlus.index, $"work priorities saved with AllowTool move to the new order (Haul+ was slot {haulOld}, is now {haulPlus.index} of {order.Count})");
+            Check(WorkOrderMigration.OldOrder(LoadedModManager.RunningModsListForReading.Select(m => m.PackageId).ToList()) == null, "a save made without AllowTool is left alone");
+
+            IntVec3 spot = CellFinder.RandomClosewalkCellNear(worker.Position, map, 8, c => c.Standable(map) && c.GetFirstItem(map) == null && !c.Fogged(map) && map.haulDestinationManager.SlotGroupAt(c) == null);
+            Thing steel = GenSpawn.Spawn(ThingMaker.MakeThing(ThingDefOf.Steel), spot, map);
+            steel.stackCount = 5;
+            steel.SetForbidden(true, false);
+            Designator_HaulUrgently haul = new Designator_HaulUrgently();
+            bool can = haul.CanDesignateThing(steel).Accepted;
+            haul.DesignateThing(steel);
+            List<Thing> urgent = GameComponent_OrderTools.Instance.UrgentHaulables(map);
+            Check(can && OrderToolsUtility.Has(steel, OrderToolsUtility.HaulUrgently) && !steel.IsForbidden(Faction.OfPlayer) && urgent.Contains(steel), "haul urgently designates, unforbids and lists the thing");
+            WorkGiver_Scanner hauler = (WorkGiver_Scanner)DefDatabase<WorkGiverDef>.GetNamed("HaulUrgently").Worker;
+            Job haulJob = hauler.ShouldSkip(worker) ? null : hauler.JobOnThing(worker, steel);
+            sb.AppendLine($"info: urgent haul job for {worker.LabelShort}: {haulJob?.def.defName ?? "none (no storage space for steel?)"}");
+            map.designationManager.TryRemoveDesignationOn(steel, OrderToolsUtility.HaulUrgently);
+            GameComponent_OrderTools.Instance.ForgetUrgent(map);
+
+            Thing steel2 = GenSpawn.Spawn(ThingMaker.MakeThing(ThingDefOf.Steel), spot + new IntVec3(1, 0, 0), map, WipeMode.VanishOrMoveAside);
+            try
+            {
+                Find.Selector.ClearSelection();
+                Find.Selector.Select(steel, false, false);
+                Designator_SelectSimilar similar = new Designator_SelectSimilar();
+                similar.Reindex();
+                similar.DesignateMultiCell(CellRect.CenteredOn(steel.Position, 3).Cells.Where(c => c.InBounds(map)));
+                List<object> picked = Find.Selector.SelectedObjectsListForReading;
+                Check(picked.Contains(steel2) && picked.All(o => o is Thing t && t.def == ThingDefOf.Steel), $"select similar picks only steel in the dragged area ({picked.Count} selected)");
+                Find.Selector.ClearSelection();
+            }
+            catch (Exception e)
+            {
+                Check(false, "select similar threw: " + e.Message);
+            }
+
+            steel.Destroy();
+            if (!steel2.Destroyed)
+            {
+                steel2.Destroy();
+            }
+
+            IntVec3 rock = map.AllCells.FirstOrDefault(c => !c.Fogged(map) && c.GetFirstMineable(map) != null && CellRect.CenteredOn(c, 3).Cells.All(x => x.InBounds(map) && x.GetFirstMineable(map) != null
+                && map.designationManager.DesignationAt(x, DesignationDefOf.Mine) == null));
+            if (rock.IsValid && rock != default)
+            {
+                GameComponent_OrderTools.Instance.stripSpacingX = 2;
+                GameComponent_OrderTools.Instance.stripSpacingZ = 2;
+                CellRect area = CellRect.CenteredOn(rock, 3);
+                new Designator_StripMine().DesignateMultiCell(area.Cells);
+                int marked = area.Cells.Count(c => map.designationManager.DesignationAt(c, DesignationDefOf.Mine) != null);
+                int expected = area.Cells.Count(c => (c.x - area.minX) % 3 == 0 || (c.z - area.minZ) % 3 == 0);
+                Check(marked == expected && marked < area.Area, $"strip mine marks the grid lines only: {marked} of {area.Area} cells (expected {expected})");
+                foreach (IntVec3 c in area.Cells)
+                {
+                    map.designationManager.TryRemoveDesignation(c, DesignationDefOf.Mine);
+                }
+
+                GameComponent_OrderTools.Instance.stripSpacingX = 5;
+                GameComponent_OrderTools.Instance.stripSpacingZ = 5;
+            }
+            else
+            {
+                sb.AppendLine("info: no solid 7x7 rock area, strip mine check skipped");
+            }
+
+            TestRunner.ticking = true;
+            List<Pawn> held = HoldOthers(map, worker);
+            Pawn animal = PawnGenerator.GeneratePawn(PawnKindDefOf.Thrumbo, null);
+            GenSpawn.Spawn(animal, CellFinder.RandomClosewalkCellNear(worker.Position, map, 6), map);
+            HealthUtility.DamageUntilDowned(animal);
+            if (animal.Dead || !animal.Downed)
+            {
+                sb.AppendLine("info: test animal did not end up downed, finish off check skipped");
+            }
+            else
+            {
+                Designator_FinishOff finish = new Designator_FinishOff();
+                Check(finish.CanDesignateThing(animal).Accepted, "a downed wild animal can be marked");
+                finish.DesignateThing(animal);
+                Job job = WorkGiver_FinishOff.Create().JobOnThing(worker, animal);
+                Check(job != null && job.def == OrderToolsUtility.FinishOffJob, "a colonist gets the finish off job");
+                if (job != null)
+                {
+                    worker.jobs.StopAll();
+                    worker.jobs.StartJob(job, JobCondition.InterruptForced);
+                    int ticks = 0;
+                    for (; ticks < 1500 && !animal.Dead; ticks++)
+                    {
+                        Find.TickManager.DoSingleTick();
+                    }
+
+                    Check(animal.Dead && animal.Corpse != null && !animal.Corpse.IsForbidden(Faction.OfPlayer), $"the animal is dead after {ticks} ticks and its corpse is allowed");
+                }
+            }
+
+            if (!animal.Dead && !animal.Destroyed)
+            {
+                animal.Destroy();
+            }
+            else if (animal.Corpse != null && !animal.Corpse.Destroyed)
+            {
+                animal.Corpse.Destroy();
+            }
+
+            worker.jobs.StopAll();
+            worker.drafter.Drafted = true;
+            GameComponent_OrderTools settings = GameComponent_OrderTools.Instance;
+            bool gizmo = worker.GetGizmos().Any(g => g is Command_PartyHunt);
+            settings.SetPartyHunting(worker, true);
+            bool on = settings.IsPartyHunting(worker);
+            worker.drafter.Drafted = false;
+            Check(gizmo && on && !settings.IsPartyHunting(worker), "drafted hunt button shows while drafted and turns off on undraft");
+            ReleaseOthers(held);
+            TestRunner.ticking = false;
+
+            List<string> errors = TestRunner.TickErrors.Skip(errorsBefore).ToList();
+            Check(errors.Count == 0, $"errors: {errors.Count}{(errors.Count > 0 ? " - " + string.Join(" | ", errors.Take(3).Select(e => e.Split('\n')[0])) : "")}");
+            sb.AppendLine(bad == 0 ? "PASS" : $"FAIL: {bad}");
         }
 
         private static void Surgery(StringBuilder sb)

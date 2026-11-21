@@ -4,6 +4,7 @@
 # The game runs with its own save data folder (.gametest/data), so the real config, saves and Player.log are untouched.
 # Usage: powershell -File Tools/GameTest.ps1 [-Mode boot|save] [-Save <name>] [-Ticks 5000] [-TimeoutSec 900] [-AllowRunning] [-Windowed]
 #   -DisableFeatures A,B,...: turn these Yuudong2Mod features off for this run only ("all" for every feature), to compare TPS with and without them.
+#   -DropMods a.b,c.d: leave these mods (package ids) out of the test's mod list, to test a save without a mod it was made with.
 #   -Windowed: show the game window. Needed for checks that render, such as the enemy gravship landing cutscene.
 param(
     [ValidateSet("boot", "save")] [string]$Mode = "boot",
@@ -12,7 +13,8 @@ param(
     [int]$TimeoutSec = 900,
     [switch]$AllowRunning,
     [switch]$Windowed,
-    [string]$DisableFeatures = ""
+    [string]$DisableFeatures = "",
+    [string]$DropMods = ""
 )
 
 $ErrorActionPreference = "Stop"
@@ -60,6 +62,14 @@ if (Test-Path $ruins) {
 }
 
 $modsPath = Join-Path $data "Config\ModsConfig.xml"
+if ($DropMods) {
+    $mods = [IO.File]::ReadAllText($modsPath)
+    foreach ($id in ($DropMods -split ",")) {
+        $mods = [regex]::Replace($mods, '\s*<li>' + [regex]::Escape($id.Trim()) + '</li>', '', "IgnoreCase")
+    }
+    [IO.File]::WriteAllText($modsPath, $mods)
+    Write-Output "dropped mods: $DropMods"
+}
 if ($Mode -eq "save") {
     $mods = [IO.File]::ReadAllText($modsPath)
     if ($mods -notmatch 'yuudong2\.yuudong2test') {

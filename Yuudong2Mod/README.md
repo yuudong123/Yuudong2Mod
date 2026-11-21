@@ -90,6 +90,7 @@ RimWorld 1.7용으로 다시 작성해 이 모드에 합쳤습니다. 세부 수
 
 | 원본 | 제작자 | 워크샵 ID | 적용 값 |
 | --- | --- | --- | --- |
+| Allow Tool | UnlimitedHugs | 761421485 | 긴급 운반, 마무리, 비슷한 것 선택, 격자 채굴, 우클릭 맵 전체 명령 일부, 소집 사냥, 금지·허용 아이콘만 옮김 (퍼블릭 도메인) |
 | Trade Ships Drop Spot | Smash Phil | 1969732297 | 물자 낙하 지점으로 대체 (퀘스트 보상 등까지 확장) |
 | Better Message Placement (Continued) | Mlie, Dyrewulfe | 2259516339 | 기본값 |
 | Dragonian to Super Fast Healing Patch | asdf | 3503141730 | - |

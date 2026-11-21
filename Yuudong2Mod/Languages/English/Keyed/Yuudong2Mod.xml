@@ -588,6 +588,57 @@ On automatic, the melee weapon is drawn when an enemy is adjacent and the ranged
   <Yuudong2.Feature.WorkRouteOrder.Desc>Vanilla groups nearby filth, crops or paint spots and sorts them once by distance from the starting point, so pawns zigzag between targets on both sides. A nearest-first route is refined and used only when it is shorter. In straight-line distance it is never longer than vanilla.</Yuudong2.Feature.WorkRouteOrder.Desc>
   <Yuudong2.Feature.SurgeryManager>Surgery manager tab</Yuudong2.Feature.SurgeryManager>
   <Yuudong2.Feature.SurgeryManager.Desc>Adds a "surgery" button at the bottom right. It shows each colonist's artificial parts and implants per body part, compares them with an implant plan (preset) by color, and queues the missing surgeries in one click. It also shows the materials needed and optimization nanobot progress. The "Health overview" tab lists each colonist's injuries, illness progress and immunity, chronic conditions, scars and missing parts in one table. The last opened tab is remembered.</Yuudong2.Feature.SurgeryManager.Desc>
+  <Yuudong2.Feature.OrderTools>Order tools (replaces AllowTool)</Yuudong2.Feature.OrderTools>
+  <Yuudong2.Feature.OrderTools.Desc>Selected features ported from the Allow Tool mod. Adds Haul urgently, Finish off, Select similar and Strip mine to the Orders menu, map-wide commands to the right-click menus of the Haul, Mine, Strip and Cut plants tools, a Drafted hunt toggle for drafted colonists, and clearer Forbid/Allow icons. Designation and work type names match Allow Tool, so urgent-haul designations and work priorities in a save survive removing it. Disabled while Allow Tool itself is active.</Yuudong2.Feature.OrderTools.Desc>
+  <Yuudong2.OrderTools.SkippedForAllowTool>[Yuudong2Mod] Allow Tool is active, so the 'Order tools' feature is not applied. It takes over once Allow Tool is disabled.</Yuudong2.OrderTools.SkippedForAllowTool>
+  <Yuudong2.OrderTools.HaulUrgently>Haul urgently</Yuudong2.OrderTools.HaulUrgently>
+  <Yuudong2.OrderTools.HaulUrgently.Desc>Mark things to be hauled as soon as possible. Colonists delay other work until hauling is done. Hold Shift while designating to make colonists reconsider their jobs right away.\n\nRight-click: designate everything on screen or on the map.</Yuudong2.OrderTools.HaulUrgently.Desc>
+  <Yuudong2.OrderTools.HaulUrgently.Visible>Haul visible items urgently</Yuudong2.OrderTools.HaulUrgently.Visible>
+  <Yuudong2.OrderTools.HaulUrgently.All>Haul all map items urgently</Yuudong2.OrderTools.HaulUrgently.All>
+  <Yuudong2.OrderTools.HaulUrgently.Done>{0} items marked for urgent hauling.</Yuudong2.OrderTools.HaulUrgently.Done>
+  <Yuudong2.OrderTools.HaulUrgently.None>Found no new items to haul.</Yuudong2.OrderTools.HaulUrgently.None>
+  <Yuudong2.OrderTools.FinishOff>Finish off</Yuudong2.OrderTools.FinishOff>
+  <Yuudong2.OrderTools.FinishOff.Desc>Quickly kill downed creatures. Hold Shift to mark allies and prisoners.\n\nRight-click: mark all downed creatures.</Yuudong2.OrderTools.FinishOff.Desc>
+  <Yuudong2.OrderTools.FinishOff.Skill>Requires a colonist with a melee skill of {0} or higher (anyone can finish animals).</Yuudong2.OrderTools.FinishOff.Skill>
+  <Yuudong2.OrderTools.FinishOff.PawnSkill>melee skill {0} required</Yuudong2.OrderTools.FinishOff.PawnSkill>
+  <Yuudong2.OrderTools.FinishOff.Friendly>friendly, hold Shift</Yuudong2.OrderTools.FinishOff.Friendly>
+  <Yuudong2.OrderTools.FinishOff.Menu>Finish off {0}</Yuudong2.OrderTools.FinishOff.Menu>
+  <Yuudong2.OrderTools.FinishOff.All>Finish off all downed creatures</Yuudong2.OrderTools.FinishOff.All>
+  <Yuudong2.OrderTools.FinishOff.Allies>{0} creatures will be finished off, including friendlies.</Yuudong2.OrderTools.FinishOff.Allies>
+  <Yuudong2.OrderTools.FinishOff.Done>{0} targets have been marked.</Yuudong2.OrderTools.FinishOff.Done>
+  <Yuudong2.OrderTools.FinishOff.None>No downed creatures found.</Yuudong2.OrderTools.FinishOff.None>
+  <Yuudong2.OrderTools.SelectSimilar>Select similar</Yuudong2.OrderTools.SelectSimilar>
+  <Yuudong2.OrderTools.SelectSimilar.Desc>Drag to select only things of the same kind as the current selection. Click a single cell to pick a new kind (Shift: add to the selection).\n\nRight-click: select all similar things on the map, on screen or in the home area.</Yuudong2.OrderTools.SelectSimilar.Desc>
+  <Yuudong2.OrderTools.SelectSimilar.Map>Select similar things on map</Yuudong2.OrderTools.SelectSimilar.Map>
+  <Yuudong2.OrderTools.SelectSimilar.Visible>Select similar things in visible area</Yuudong2.OrderTools.SelectSimilar.Visible>
+  <Yuudong2.OrderTools.SelectSimilar.Home>Select similar things in home area</Yuudong2.OrderTools.SelectSimilar.Home>
+  <Yuudong2.OrderTools.SelectSimilar.Nothing>Something must be selected first.</Yuudong2.OrderTools.SelectSimilar.Nothing>
+  <Yuudong2.OrderTools.SelectSimilar.Done>Selected {0} similar things.</Yuudong2.OrderTools.SelectSimilar.Done>
+  <Yuudong2.OrderTools.SelectSimilar.Part>Selected {0} closest similar things out of {1}.</Yuudong2.OrderTools.SelectSimilar.Part>
+  <Yuudong2.OrderTools.SelectSimilar.Pick>Click to pick something</Yuudong2.OrderTools.SelectSimilar.Pick>
+  <Yuudong2.OrderTools.SelectSimilar.Now>Drag to select only: {0}</Yuudong2.OrderTools.SelectSimilar.Now>
+  <Yuudong2.OrderTools.SelectSimilar.Limit>Selection limit reached</Yuudong2.OrderTools.SelectSimilar.Limit>
+  <Yuudong2.OrderTools.SelectSimilar.More>({0} more)</Yuudong2.OrderTools.SelectSimilar.More>
+  <Yuudong2.OrderTools.StripMine>Strip mine</Yuudong2.OrderTools.StripMine>
+  <Yuudong2.OrderTools.StripMine.Desc>Lays out mining orders in a grid to find hidden ores.\n\nRight-click: change the grid spacing.</Yuudong2.OrderTools.StripMine.Desc>
+  <Yuudong2.OrderTools.StripMine.Spacing>Spacing {0}</Yuudong2.OrderTools.StripMine.Spacing>
+  <Yuudong2.OrderTools.PartyHunt>Drafted hunt</Yuudong2.OrderTools.PartyHunt>
+  <Yuudong2.OrderTools.PartyHunt.Desc>When enabled, drafted colonists fire on passive wild animals on their own. Turns off when undrafted. Right-click to change settings.</Yuudong2.OrderTools.PartyHunt.Desc>
+  <Yuudong2.OrderTools.PartyHunt.FinishOff>Finish off downed animals</Yuudong2.OrderTools.PartyHunt.FinishOff>
+  <Yuudong2.OrderTools.PartyHunt.DesignatedOnly>Hunt-designated animals only</Yuudong2.OrderTools.PartyHunt.DesignatedOnly>
+  <Yuudong2.OrderTools.PartyHunt.Unforbid>Unforbid prey</Yuudong2.OrderTools.PartyHunt.Unforbid>
+  <Yuudong2.OrderTools.Haul.All>Haul everything</Yuudong2.OrderTools.Haul.All>
+  <Yuudong2.OrderTools.Haul.Done>Designated {0} things to haul.</Yuudong2.OrderTools.Haul.Done>
+  <Yuudong2.OrderTools.Haul.None>Found nothing new to haul.</Yuudong2.OrderTools.Haul.None>
+  <Yuudong2.OrderTools.Strip.All>Strip all enemies</Yuudong2.OrderTools.Strip.All>
+  <Yuudong2.OrderTools.Strip.Done>{0} bodies designated for stripping.</Yuudong2.OrderTools.Strip.Done>
+  <Yuudong2.OrderTools.Strip.None>Found no bodies to strip.</Yuudong2.OrderTools.Strip.None>
+  <Yuudong2.OrderTools.Cut.Blighted>Cut all blighted plants</Yuudong2.OrderTools.Cut.Blighted>
+  <Yuudong2.OrderTools.Cut.Done>{0} blighted plants designated for cutting.</Yuudong2.OrderTools.Cut.Done>
+  <Yuudong2.OrderTools.Cut.None>Found no blighted plants.</Yuudong2.OrderTools.Cut.None>
+  <Yuudong2.OrderTools.Mine.Connected>Mine connected ores</Yuudong2.OrderTools.Mine.Connected>
+  <Yuudong2.OrderTools.Mine.Done>Designated {0} connected ore cells.</Yuudong2.OrderTools.Mine.Done>
+  <Yuudong2.OrderTools.Mine.None>No connected ores. Select an ore or designate one first.</Yuudong2.OrderTools.Mine.None>
   <Yuudong2.Surgery.Tab.Plans>Implant plans</Yuudong2.Surgery.Tab.Plans>
   <Yuudong2.Surgery.Tab.Health>Health overview</Yuudong2.Surgery.Tab.Health>
   <Yuudong2.Health.OnlyProblems>Only colonists with problems</Yuudong2.Health.OnlyProblems>

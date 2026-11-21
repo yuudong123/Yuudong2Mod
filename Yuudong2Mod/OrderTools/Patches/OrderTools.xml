@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Patch>
+
+  <!-- 명령 메뉴에 지정 도구를 넣는다. 기능을 끄면 도구가 스스로 숨는다. -->
+  <Operation Class="PatchOperationAdd">
+    <xpath>Defs/DesignationCategoryDef[defName="Orders"]/specialDesignatorClasses</xpath>
+    <value>
+      <li>Yuudong2Mod.OrderTools.Designator_HaulUrgently</li>
+      <li>Yuudong2Mod.OrderTools.Designator_FinishOff</li>
+      <li>Yuudong2Mod.OrderTools.Designator_SelectSimilar</li>
+      <li>Yuudong2Mod.OrderTools.Designator_StripMine</li>
+    </value>
+  </Operation>
+
+</Patch>

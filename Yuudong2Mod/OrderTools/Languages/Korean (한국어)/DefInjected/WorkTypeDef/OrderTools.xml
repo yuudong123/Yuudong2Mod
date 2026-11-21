@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+
+  <HaulingUrgent.labelShort>운반+</HaulingUrgent.labelShort>
+  <HaulingUrgent.pawnLabel>긴급 운반자</HaulingUrgent.pawnLabel>
+  <HaulingUrgent.gerundLabel>긴급 운반</HaulingUrgent.gerundLabel>
+  <HaulingUrgent.description>먼저 하는 운반입니다. 일반 운반과 같지만 "긴급 운반" 명령으로 지정한 물건만 옮깁니다.</HaulingUrgent.description>
+  <HaulingUrgent.verb>긴급 운반</HaulingUrgent.verb>
+  <FinishingOff.labelShort>마무리</FinishingOff.labelShort>
+  <FinishingOff.pawnLabel>집행자</FinishingOff.pawnLabel>
+  <FinishingOff.gerundLabel>마무리</FinishingOff.gerundLabel>
+  <FinishingOff.description>"마무리" 명령으로 지정한 쓰러진 생물을 빠르게 죽입니다.</FinishingOff.description>
+  <FinishingOff.verb>마무리</FinishingOff.verb>
+
+</LanguageData>

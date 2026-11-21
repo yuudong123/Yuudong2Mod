@@ -20,6 +20,12 @@ namespace Yuudong2Mod
             {
                 foreach (string feature in group.features)
                 {
+                    if (feature == Features.OrderTools && ModsConfig.IsActive(OrderTools.OrderToolsUtility.AllowToolPackageId))
+                    {
+                        Log.Message("Yuudong2.OrderTools.SkippedForAllowTool".Translate());
+                        continue;
+                    }
+
                     if (Features.Enabled(feature) && Try(feature, () => harmony.PatchCategory(assembly, feature)))
                     {
                         AppliedFeatures.Add(feature);
