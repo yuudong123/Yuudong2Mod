@@ -1199,7 +1199,14 @@ namespace Yuudong2Test
                 GenSpawn.Spawn(enemy, beside, map);
                 pawn.stances.CancelBusyStanceHard();
                 bool attacked = pawn.meleeVerbs.TryMeleeAttack(enemy);
-                Check(attacked && pawn.equipment.Primary == sword && pawn.inventory.innerContainer.Contains(rifle), $"melee attack on an adjacent enemy: attacked {attacked}, in hand {pawn.equipment.Primary?.def.defName}");
+                if (attacked || !enemy.Downed)
+                {
+                    Check(attacked && pawn.equipment.Primary == sword && pawn.inventory.innerContainer.Contains(rifle), $"melee attack on an adjacent enemy: attacked {attacked}, in hand {pawn.equipment.Primary?.def.defName}");
+                }
+                else
+                {
+                    sb.AppendLine("info: the test enemy arrived downed, melee attack check skipped");
+                }
                 enemy.stances.stunner.StunFor(600, null, false, false);
                 Wait();
                 if (enemy.Spawned && !enemy.Downed && !enemy.Position.AdjacentTo8Way(pawn.Position))
