@@ -839,6 +839,7 @@ namespace Yuudong2Mod
                 {
                     bool done = (bool)ExecuteWorker.Invoke(worker, new object[] { parms });
                     lastReport = $"{design.source} {design.cells.Count} cells (aimed at {TargetCells(parms.points)}) at {root}, engine {(engine != null ? "placed" : "missing")}, raid {(done ? "arrived" : "failed")}";
+                    Log.Message($"[Yuudong2Mod] enemy gravship: {lastReport}, landing {EnemyGravshipLanding.lastMode}");
                     if (!done)
                     {
                         Log.Warning("[Yuudong2Mod] enemy gravship landed but the raid could not be generated: " + parms);
@@ -907,22 +908,57 @@ namespace Yuudong2Mod
         public static string lastMode = "";
         public static string stage = "";
 
+        private static Building_GravEngine wholeShipEngine;
+
         public static bool Active { get; private set; }
 
         private static Traverse Fields => Traverse.Create(Find.GravshipController);
 
-        private static bool CanPlayCutscene()
+        private static string CutsceneBlocker()
         {
             WorldComponent_GravshipController controller = Find.GravshipController;
-            return Prefs.GravshipCutscenes
-                && UnityData.IsInMainThread
-                && Current.ProgramState == ProgramState.Playing
-                && controller != null
-                && !WorldComponent_GravshipController.CutsceneInProgress
-                && !controller.IsGravshipTravelling
-                && !controller.LandingAreaConfirmationInProgress
-                && !LongEventHandler.AnyEventNowOrWaiting
-                && CutsceneFlag != null && RegenerateMask != null && ResetCutscene != null;
+            if (!Prefs.GravshipCutscenes)
+            {
+                return "gravship cutscenes are off in the game options";
+            }
+            if (!UnityData.IsInMainThread || Current.ProgramState != ProgramState.Playing || controller == null)
+            {
+                return "game not in play";
+            }
+            if (WorldComponent_GravshipController.CutsceneInProgress || controller.IsGravshipTravelling || controller.LandingAreaConfirmationInProgress)
+            {
+                return "the player's gravship is flying or landing";
+            }
+            if (LongEventHandler.AnyEventNowOrWaiting)
+            {
+                return "a loading screen is up";
+            }
+            if (CutsceneFlag == null || RegenerateMask == null || ResetCutscene == null)
+            {
+                return "the game's landing code changed";
+            }
+            return null;
+        }
+
+        public static bool HoldsSubstructure(Building_GravEngine candidate) => wholeShipEngine != null && candidate == wholeShipEngine;
+
+        // 엔진이 받칠 수 있는 칸보다 큰 배도 통째로 찍히게, 컷신 동안만 이어진 하부 구조 전체를 유효한 것으로 둔다.
+        private static void HoldWholeShip()
+        {
+            HashSet<IntVec3> all = engine.AllConnectedSubstructureNoRegen;
+            HashSet<IntVec3> valid = engine.ValidSubstructureNoRegen;
+            if (valid.Count < all.Count)
+            {
+                valid.UnionWith(all);
+                wholeShipEngine = engine;
+            }
+        }
+
+        private static void ReleaseWholeShip()
+        {
+            Building_GravEngine held = wholeShipEngine;
+            wholeShipEngine = null;
+            held?.ForceSubstructureDirty();
         }
 
         public static void Begin(Map target, ShipDesign ship, IntVec3 at, Faction owner, bool cutscene, Action<Building_GravEngine> landed)
@@ -934,9 +970,10 @@ namespace Yuudong2Mod
             onLanded = landed;
             engine = null;
             placed = false;
-            if (!cutscene || !CanPlayCutscene())
+            string blocker = cutscene ? CutsceneBlocker() : "turned off in the mod settings";
+            if (blocker != null)
             {
-                lastMode = "instant";
+                lastMode = $"instant ({blocker})";
                 PlaceNow();
                 Complete();
                 return;
@@ -964,6 +1001,7 @@ namespace Yuudong2Mod
             Action<Building_GravEngine> landed = onLanded;
             Building_GravEngine made = engine;
             EnemyGravshipUtility.GiveShipTo(faction);
+            MultiGravshipUtility.Relink(map);
             onLanded = null;
             map = null;
             design = null;
@@ -1069,6 +1107,7 @@ namespace Yuudong2Mod
                 return;
             }
 
+            HoldWholeShip();
             SectionLayer_GravshipMask.Engine = engine;
             RegenerateMask.Invoke(Find.GravshipController, null);
         }
@@ -1080,10 +1119,9 @@ namespace Yuudong2Mod
                 return;
             }
 
-            // 엔진이 받칠 수 있는 칸보다 큰 배는 일부만 찍혀서, 컷신 없이 내려놓는다.
-            if (engine == null || engine.ValidSubstructure.Count < design.cells.Count * 0.95f)
+            if (engine == null)
             {
-                lastMode = "instant (ship larger than its engine supports)";
+                lastMode = "instant (the ship's engine could not be placed)";
                 Abort();
                 return;
             }
@@ -1191,6 +1229,7 @@ namespace Yuudong2Mod
             ResetCutscene.Invoke(controller, null);
             stage = stage == "descending" ? "finished" : "stopped at " + stage;
             Active = false;
+            ReleaseWholeShip();
             Complete();
         }
 
@@ -1227,6 +1266,7 @@ namespace Yuudong2Mod
             if (EnemyGravshipUtility.Active)
             {
                 ShipLibrary.EnsureScanStarted();
+                MultiGravshipUtility.RelinkAllMaps();
             }
         }
 
@@ -1247,6 +1287,11 @@ namespace Yuudong2Mod
         private static bool Prefix(Building_GravEngine __instance, out bool __state)
         {
             __state = false;
+            if (EnemyGravshipLanding.HoldsSubstructure(__instance))
+            {
+                return false;
+            }
+
             if (depth > 0 && __instance.substructureDirty)
             {
                 return false;
