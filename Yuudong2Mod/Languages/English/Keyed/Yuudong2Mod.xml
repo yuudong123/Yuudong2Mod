@@ -49,6 +49,10 @@ Ranged: {1}
 
 On automatic, the melee weapon is drawn when an enemy is adjacent and the ranged one when none is. Locked to one, the weapons are not switched.</Yuudong2.WeaponPair.CommandDesc>
   <Yuudong2.WeaponPair.InHand>{0} (in hand)</Yuudong2.WeaponPair.InHand>
+  <Yuudong2.WeaponPair.Mode.Mixed>mixed</Yuudong2.WeaponPair.Mode.Mixed>
+  <Yuudong2.WeaponPair.CommandDescMany>Changes the setting of all {0} selected colonists at once.
+
+On automatic, the melee weapon is drawn when an enemy is adjacent and the ranged one when none is. Locked to one, the weapons are not switched.</Yuudong2.WeaponPair.CommandDescMany>
   <Yuudong2.WeaponPair.Mode.Auto>automatic</Yuudong2.WeaponPair.Mode.Auto>
   <Yuudong2.WeaponPair.Mode.Melee>melee only</Yuudong2.WeaponPair.Mode.Melee>
   <Yuudong2.WeaponPair.Mode.Ranged>ranged only</Yuudong2.WeaponPair.Mode.Ranged>

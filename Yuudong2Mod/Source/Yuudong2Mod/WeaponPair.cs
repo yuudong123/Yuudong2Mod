@@ -350,24 +350,14 @@ namespace Yuudong2Mod
             }
 
             WeaponPairMode mode = ModeOf(pawn);
-            yield return new Command_Action
+            yield return new Command_WeaponPair
             {
+                pawns = new List<Pawn> { pawn },
                 defaultLabel = "Yuudong2.WeaponPair.Command".Translate(ModeLabel(mode)),
                 defaultDesc = CommandDesc(primary, other),
                 icon = other.def.uiIcon,
                 iconAngle = other.def.uiIconAngle,
                 defaultIconColor = other.DrawColor,
-                action = () =>
-                {
-                    List<FloatMenuOption> options = new List<FloatMenuOption>();
-                    foreach (WeaponPairMode choice in Enum.GetValues(typeof(WeaponPairMode)))
-                    {
-                        WeaponPairMode chosen = choice;
-                        options.Add(new FloatMenuOption(ModeLabel(chosen), () => SetMode(pawn, chosen)));
-                    }
-
-                    Find.WindowStack.Add(new FloatMenu(options));
-                },
             };
         }
 
@@ -533,6 +523,62 @@ namespace Yuudong2Mod
                 inventory.innerContainer.TryAdd(thing, false);
                 unloadRetry = false;
             }
+        }
+    }
+
+    // 여러 명을 선택하면 버튼 하나로 합쳐지고, 고른 설정이 선택한 모두에게 적용된다.
+    public class Command_WeaponPair : Command
+    {
+        public List<Pawn> pawns = new List<Pawn>();
+
+        private bool Mixed => pawns.Count > 1 && pawns.Any(p => WeaponPairUtility.ModeOf(p) != WeaponPairUtility.ModeOf(pawns[0]));
+
+        public override string Label => Mixed
+            ? "Yuudong2.WeaponPair.Command".Translate("Yuudong2.WeaponPair.Mode.Mixed".Translate()).ToString()
+            : base.Label;
+
+        public override string Desc => pawns.Count > 1 ? "Yuudong2.WeaponPair.CommandDescMany".Translate(pawns.Count).ToString() : base.Desc;
+
+        public override bool GroupsWith(Gizmo other)
+        {
+            return other is Command_WeaponPair;
+        }
+
+        public override void MergeWith(Gizmo other)
+        {
+            if (other is Command_WeaponPair command)
+            {
+                foreach (Pawn pawn in command.pawns)
+                {
+                    if (!pawns.Contains(pawn))
+                    {
+                        pawns.Add(pawn);
+                    }
+                }
+            }
+        }
+
+        public override void ProcessInput(Event ev)
+        {
+            base.ProcessInput(ev);
+            List<Pawn> targets = new List<Pawn>(pawns);
+            List<FloatMenuOption> options = new List<FloatMenuOption>();
+            foreach (WeaponPairMode choice in Enum.GetValues(typeof(WeaponPairMode)))
+            {
+                WeaponPairMode chosen = choice;
+                options.Add(new FloatMenuOption(WeaponPairUtility.ModeLabel(chosen), () =>
+                {
+                    foreach (Pawn pawn in targets)
+                    {
+                        if (pawn.Spawned && !pawn.Dead)
+                        {
+                            WeaponPairUtility.SetMode(pawn, chosen);
+                        }
+                    }
+                }));
+            }
+
+            Find.WindowStack.Add(new FloatMenu(options));
         }
     }
 

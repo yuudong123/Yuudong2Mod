@@ -1314,6 +1314,13 @@ namespace Yuudong2Test
             Check(pawn.equipment.Primary == rifle && !WeaponPairUtility.DrawMelee(pawn) && pawn.equipment.Primary == rifle, "locked to ranged: holds the rifle and does not draw the sword");
             List<Gizmo> gizmos = WeaponPairUtility.Gizmos(pawn).ToList();
             Check(gizmos.Count == 1, $"lock button shown: {(gizmos.Count == 1 ? ((Command)gizmos[0]).defaultLabel : "none")}");
+            if (gizmos.Count == 1 && gizmos[0] is Command_WeaponPair merged)
+            {
+                Command_WeaponPair another = new Command_WeaponPair { pawns = new List<Pawn> { map.mapPawns.FreeColonistsSpawned.First(p => p != pawn) } };
+                bool groups = merged.GroupsWith(another);
+                merged.MergeWith(another);
+                Check(groups && merged.pawns.Count == 2, $"buttons of two colonists merge into one ({merged.pawns.Count} colonists, label {merged.Label})");
+            }
             WeaponPairUtility.SetMode(pawn, WeaponPairMode.Auto);
 
             if (pawn.equipment.Primary != null)
