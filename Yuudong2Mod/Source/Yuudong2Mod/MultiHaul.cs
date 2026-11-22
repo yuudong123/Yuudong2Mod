@@ -42,6 +42,14 @@ namespace Yuudong2Mod
             return thing != null && thing.Spawned && thing.Map == pawn.Map && !thing.IsForbidden(pawn);
         }
 
+        // 소지품에 더 담을 수 있는 무게. 입은 옷과 든 무기는 빼고 소지품 무게만 운반 한도에서 뺀다.
+        // 맵 안에서는 무게가 이동 속도에 영향을 주지 않는데, 갑옷과 무기만으로 한도가 거의 차는 정착민(작은 종족 등)은
+        // 바닐라 여유 무게로 세면 아무것도 더 담지 못해 한 번에 한 묶음씩만 나르게 된다.
+        public static float FreeMass(Pawn pawn)
+        {
+            return Mathf.Max(MassUtility.Capacity(pawn) - MassUtility.InventoryMass(pawn), 0f);
+        }
+
         public static int CountThatFits(Thing thing, float freeMass)
         {
             float unitMass = thing.GetStatValue(StatDefOf.Mass);
@@ -52,7 +60,7 @@ namespace Yuudong2Mod
         // 고른 물건과 그 저장 칸은 이 일로 예약해 두어, 저장 공간보다 많이 줍거나 다른 정착민과 겹치지 않게 한다.
         public static void PlanExtras(Pawn pawn, Job job, List<Thing> extras, List<int> counts)
         {
-            float free = MassUtility.FreeSpace(pawn);
+            float free = FreeMass(pawn);
             if (free < MinFreeMass)
             {
                 return;
@@ -277,7 +285,7 @@ namespace Yuudong2Mod
             {
                 return;
             }
-            int count = Mathf.Min(currentCount, MultiHaulUtility.CountThatFits(thing, MassUtility.FreeSpace(pawn)));
+            int count = Mathf.Min(currentCount, MultiHaulUtility.CountThatFits(thing, MultiHaulUtility.FreeMass(pawn)));
             if (count <= 0)
             {
                 return;

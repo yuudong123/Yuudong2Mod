@@ -321,7 +321,7 @@ namespace Yuudong2Mod
                 return;
             }
             List<TransferableOneWay> left = MultiLoadUtility.LeftToLoad(container);
-            float free = MassUtility.FreeSpace(pawn);
+            float free = MultiHaulUtility.FreeMass(pawn);
             if (left.NullOrEmpty() || free < MinFreeMass)
             {
                 return;
@@ -431,7 +431,7 @@ namespace Yuudong2Mod
             {
                 return;
             }
-            int count = Mathf.Min(currentCount, MultiHaulUtility.CountThatFits(thing, MassUtility.FreeSpace(pawn)));
+            int count = Mathf.Min(currentCount, MultiHaulUtility.CountThatFits(thing, MultiHaulUtility.FreeMass(pawn)));
             if (count <= 0)
             {
                 return;

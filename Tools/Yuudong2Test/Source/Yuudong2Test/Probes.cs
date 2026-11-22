@@ -1649,7 +1649,7 @@ namespace Yuudong2Test
             Map map = Find.AnyPlayerHomeMap;
             Pawn pawn = map?.mapPawns.FreeColonistsSpawned.Where(p => !p.Downed && !p.Drafted && p.Awake() && !p.InMentalState && MultiHaulUtility.CanBatch(p)
                 && p.health.capacities.CapableOf(PawnCapacityDefOf.Manipulation) && p.health.capacities.CapableOf(PawnCapacityDefOf.Moving))
-                .OrderByDescending(p => MassUtility.FreeSpace(p)).FirstOrDefault();
+                .OrderByDescending(p => MultiHaulUtility.FreeMass(p)).FirstOrDefault();
             if (rifleDef == null || pawn == null)
             {
                 sb.AppendLine("skipped run: no rifle def or no free colonist");
@@ -1707,7 +1707,7 @@ namespace Yuudong2Test
                 rifle.SetForbidden(false, false);
             }
 
-            float free = MassUtility.FreeSpace(pawn);
+            float free = MultiHaulUtility.FreeMass(pawn);
             float rifleMass = rifles[0].GetStatValue(StatDefOf.Mass);
             int expectedExtras = Mathf.Min(Rifles - 1, Mathf.FloorToInt(free / rifleMass));
             sb.AppendLine($"{pawn.LabelShort}: free carry mass {free:F1} kg of {MassUtility.Capacity(pawn):F1}, rifle {rifleMass:F1} kg, expecting {expectedExtras} in the inventory plus 1 in hand");
@@ -1787,8 +1787,9 @@ namespace Yuudong2Test
             Map map = Find.AnyPlayerHomeMap;
             List<Pawn> pawns = map?.mapPawns.FreeColonistsSpawned.Where(p => !p.Downed && !p.Drafted && p.Awake() && !p.InMentalState && MultiHaulUtility.CanBatch(p)
                 && p.health.capacities.CapableOf(PawnCapacityDefOf.Manipulation) && p.health.capacities.CapableOf(PawnCapacityDefOf.Moving))
-                .OrderByDescending(p => MassUtility.FreeSpace(p)).ToList();
+                .OrderByDescending(p => MultiHaulUtility.FreeMass(p)).ToList();
             Pawn pawn = pawns?.FirstOrDefault();
+            sb.AppendLine("free carry mass (vanilla -> batch): " + string.Join(", ", pawns.Take(8).Select(p => $"{p.LabelShort} {MassUtility.FreeSpace(p):F1}->{MultiHaulUtility.FreeMass(p):F1}")));
             if (pawn == null)
             {
                 sb.AppendLine("skipped run: no free colonist");
@@ -1844,7 +1845,7 @@ namespace Yuudong2Test
             pawn.jobs.StopAll();
             pawn.Position = new IntVec3(corner.x, 0, corner.z + 3);
             pawn.Notify_Teleported();
-            float free = MassUtility.FreeSpace(pawn);
+            float free = MultiHaulUtility.FreeMass(pawn);
             sb.AppendLine($"{pawn.LabelShort}: free carry mass {free:F1} kg, the three extra stacks weigh {extraMass:F1} kg");
             Check(LoadTransportersJobUtility.HasJobOnTransporter(pawn, comp), "colonist has a loading job on the pod");
             pawn.jobs.StartJob(LoadTransportersJobUtility.JobOnTransporter(pawn, comp), JobCondition.InterruptForced);
@@ -1899,6 +1900,9 @@ namespace Yuudong2Test
                 pod.Destroy();
             }
 
+            ShuttleManyStacks(sb, map, pawn, corner, Check);
+            SavedShuttleTrip(sb, map, pawns);
+
             List<string> errors = TestRunner.TickErrors.Skip(errorsBefore).ToList();
             foreach (IGrouping<string, string> group in errors.GroupBy(m => m.Split('\n')[0]).Take(10))
             {
@@ -1906,6 +1910,123 @@ namespace Yuudong2Test
             }
             bad += errors.Count;
             sb.AppendLine(bad == 0 ? "PASS" : $"FAIL: {bad}");
+        }
+
+        // 세이브에 이미 적재 중인 운반선이 있으면, 정착민 한 명에게 한 번 나르게 해서 한 번에 몇 개를 싣는지 본다.
+        private static void SavedShuttleTrip(StringBuilder sb, Map map, List<Pawn> pawns)
+        {
+            CompTransporter comp = map.listerThings.AllThings.Select(t => t.TryGetComp<CompTransporter>()).FirstOrDefault(c => c != null && c.AnythingLeftToLoad && c.leftToLoad.Any(tr => tr.CountToTransfer > 0 && tr.AnyThing?.def.category == ThingCategory.Item));
+            if (comp == null)
+            {
+                sb.AppendLine("info: no transporter is loading items in the save");
+                return;
+            }
+
+            foreach (TransferableOneWay tr in comp.leftToLoad.Where(tr => tr.CountToTransfer > 0))
+            {
+                sb.AppendLine($"info: saved {comp.parent.def.defName} at {comp.parent.Position} wants {tr.CountToTransfer} {tr.ThingDef?.defName}: {tr.things.Count} things listed, {tr.things.Count(t => t.Spawned && t.Map == map)} spawned here, {tr.things.Count(t => t.Destroyed)} destroyed");
+            }
+
+            foreach (Pawn pawn in pawns.Take(3))
+            {
+                ThingCount first = LoadTransportersJobUtility.FindThingToLoad(pawn, comp);
+                if (first.Thing == null || !LoadTransportersJobUtility.HasJobOnTransporter(pawn, comp))
+                {
+                    sb.AppendLine($"info: {pawn.LabelShort} has no loading job on it (first pick {first.Thing?.LabelCap ?? "none"})");
+                    continue;
+                }
+
+                List<Pawn> held = HoldOthers(map, pawn);
+                ThingDef def = first.Thing.def;
+                int before = comp.innerContainer.Where(t => t.def == def).Sum(t => t.stackCount);
+                pawn.jobs.StopAll();
+                Job job = LoadTransportersJobUtility.JobOnTransporter(pawn, comp);
+                pawn.jobs.StartJob(job, JobCondition.InterruptForced);
+                LoadBatch batch = (pawn.jobs.curDriver as ILoadBatchDriver)?.Batch;
+                int peak = 0, ticks = 0;
+                for (; ticks < 6000 && pawn.CurJob == job; ticks++)
+                {
+                    Find.TickManager.DoSingleTick();
+                    peak = Mathf.Max(peak, pawn.inventory.innerContainer.Where(t => t.def == def).Sum(t => t.stackCount));
+                }
+                int after = comp.innerContainer.Where(t => t.def == def).Sum(t => t.stackCount);
+                sb.AppendLine($"info: {pawn.LabelShort} (free {MultiHaulUtility.FreeMass(pawn):F1} kg, vanilla {MassUtility.FreeSpace(pawn):F1}) first picks {first.Count} {def.defName} at {first.Thing.Position}; one trip loaded {after - before} in {ticks} ticks, up to {peak} in the inventory, batch {(batch != null)}");
+                pawn.jobs.StopAll();
+                ReleaseOthers(held);
+            }
+        }
+
+        // 실제 상황처럼 여객 왕복선에 같은 물건 여러 묶음(플라스틸 75개 x 6)을 실어 본다.
+        private static void ShuttleManyStacks(StringBuilder sb, Map map, Pawn pawn, IntVec3 corner, Action<bool, string> Check)
+        {
+            ThingDef shuttleDef = ModsConfig.OdysseyActive ? ThingDefOf.PassengerShuttle : null;
+            if (shuttleDef == null || !pawn.Spawned)
+            {
+                sb.AppendLine("skipped shuttle run: Odyssey missing");
+                return;
+            }
+
+            Thing shuttle = GenSpawn.Spawn(ThingMaker.MakeThing(shuttleDef), new IntVec3(corner.x + 2, 0, corner.z + 1), map);
+            shuttle.SetFaction(Faction.OfPlayer);
+            CompTransporter comp = shuttle.TryGetComp<CompTransporter>();
+            comp.groupID = TransporterUtility.InitiateLoading(new[] { comp });
+            List<Thing> stacks = new List<Thing>();
+            TransferableOneWay transferable = new TransferableOneWay();
+            for (int i = 0; i < 6; i++)
+            {
+                Thing item = ThingMaker.MakeThing(ThingDefOf.Plasteel);
+                item.stackCount = 75;
+                IntVec3 cell = new IntVec3(corner.x + i % 5, 0, corner.z + 4 - i / 5);
+                stacks.Add(GenSpawn.Spawn(item, cell, map));
+                item.SetForbidden(false, false);
+                transferable.things.Add(item);
+            }
+            comp.AddToTheToLoadList(transferable, 450);
+
+            List<Pawn> held = HoldOthers(map, pawn);
+            pawn.jobs.StopAll();
+            pawn.Position = new IntVec3(corner.x, 0, corner.z + 3);
+            pawn.Notify_Teleported();
+            int peakInventory = 0, jobs = 0, ticks = 0;
+            Job last = null;
+            for (; ticks < 4000 && comp.AnythingLeftToLoad; ticks++)
+            {
+                if (pawn.CurJob == null || pawn.CurJob.def != JobDefOf.HaulToTransporter)
+                {
+                    if (LoadTransportersJobUtility.HasJobOnTransporter(pawn, comp))
+                    {
+                        pawn.jobs.StartJob(LoadTransportersJobUtility.JobOnTransporter(pawn, comp), JobCondition.InterruptForced);
+                    }
+                }
+                if (pawn.CurJob != last)
+                {
+                    last = pawn.CurJob;
+                    jobs += last != null && last.def == JobDefOf.HaulToTransporter ? 1 : 0;
+                }
+                Find.TickManager.DoSingleTick();
+                peakInventory = Mathf.Max(peakInventory, pawn.inventory.innerContainer.Where(t => t.def == ThingDefOf.Plasteel).Sum(t => t.stackCount));
+            }
+            int inShuttle = comp.innerContainer.Where(t => t.def == ThingDefOf.Plasteel).Sum(t => t.stackCount);
+            sb.AppendLine($"shuttle: driver {JobDefOf.HaulToTransporter.driverClass.Name}, free {MultiHaulUtility.FreeMass(pawn):F1} kg");
+            Check(inShuttle == 450 && peakInventory >= 150, $"passenger shuttle, 6 stacks of 75 plasteel: {inShuttle} loaded in {jobs} job(s) over {ticks} ticks, up to {peakInventory} carried in the inventory at once");
+
+            pawn.jobs.StopAll();
+            foreach (Thing t in pawn.inventory.innerContainer.Where(t => t.def == ThingDefOf.Plasteel).ToList())
+            {
+                pawn.inventory.innerContainer.Remove(t);
+                t.Destroy();
+            }
+            foreach (Thing t in stacks.Where(t => !t.Destroyed))
+            {
+                t.Destroy();
+            }
+            comp.innerContainer.ClearAndDestroyContents();
+            comp.CancelLoad(map);
+            ReleaseOthers(held);
+            if (!shuttle.Destroyed)
+            {
+                shuttle.Destroy();
+            }
         }
 
         private static string DescribeOption(DiaOption option)
