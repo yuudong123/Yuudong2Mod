@@ -646,6 +646,10 @@ On automatic, the melee weapon is drawn when an enemy is adjacent and the ranged
   <Yuudong2.OrderTools.Mine.None>No connected ores. Select an ore or designate one first.</Yuudong2.OrderTools.Mine.None>
   <Yuudong2.Feature.GravshipNoRange>No gravship range limits</Yuudong2.Feature.GravshipNoRange>
   <Yuudong2.Feature.GravshipNoRange.Desc>Removes the circular range of the grav engine and grav field extenders. Substructure can go anywhere as long as it connects to the engine, and extenders can be placed and linked far from the engine. Ship size is limited only by substructure support.</Yuudong2.Feature.GravshipNoRange.Desc>
+  <Yuudong2.Feature.NoEmpBrainShock>No brain shock from EMP</Yuudong2.Feature.NoEmpBrainShock>
+  <Yuudong2.Feature.NoEmpBrainShock.Desc>Brain implants hit by EMP no longer give brain shock or disorientation.</Yuudong2.Feature.NoEmpBrainShock.Desc>
+  <Yuudong2.Feature.LandOverWallAttachments>Land over wall lamps</Yuudong2.Feature.LandOverWallAttachments>
+  <Yuudong2.Feature.LandOverWallAttachments.Desc>Shuttles can land on cells taken by wall-mounted buildings such as wall lamps, and these no longer block landing beacon areas.</Yuudong2.Feature.LandOverWallAttachments.Desc>
   <Yuudong2.Feature.NoBeaconAlert>Hide the unusable beacon alert</Yuudong2.Feature.NoBeaconAlert>
   <Yuudong2.Feature.NoBeaconAlert.Desc>Does not show the "ship landing beacon unusable" alert when landing beacons do not form a landing area.</Yuudong2.Feature.NoBeaconAlert.Desc>
   <Yuudong2.Surgery.Tab.Plans>Implant plans</Yuudong2.Surgery.Tab.Plans>

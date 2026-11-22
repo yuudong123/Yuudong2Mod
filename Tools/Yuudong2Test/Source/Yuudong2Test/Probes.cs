@@ -41,6 +41,8 @@ namespace Yuudong2Test
             ("enemy gravship", EnemyGravship),
             ("two gravships", TwoGravships),
             ("no beacon alert", NoBeaconAlert),
+            ("no emp brain shock", NoEmpBrainShock),
+            ("land over wall lamps", LandOverWallLamps),
             ("faction war", FactionWar),
             // 맵을 바꾸므로 항상 마지막에 둔다.
             ("gravship replace stuff", GravshipReplace),
@@ -1025,6 +1027,118 @@ namespace Yuudong2Test
             bool patched = HarmonyLib.Harmony.GetPatchInfo(HarmonyLib.AccessTools.Method(typeof(Alert_ShuttleLandingBeaconUnusable), "GetReport"))?.Prefixes.Any(x => x.owner.Contains("uudong")) == true;
             bool active = new Alert_ShuttleLandingBeaconUnusable().GetReport().active;
             Check(patched && !active, $"unusable beacon alert: patched {patched}, active {active}");
+            sb.AppendLine(bad == 0 ? "PASS" : $"FAIL: {bad}");
+        }
+
+        // EMP에 반응하는 뇌 이식물을 가진 정착민에게 EMP 반응을 일으켜, 뇌충격류 상태가 붙지 않는지 본다.
+        private static void NoEmpBrainShock(StringBuilder sb)
+        {
+            int bad = 0;
+            void Check(bool ok, string text)
+            {
+                sb.AppendLine((ok ? "ok   " : "FAIL ") + text);
+                if (!ok)
+                {
+                    bad++;
+                }
+            }
+
+            Map map = Find.CurrentMap;
+            HediffComp_ReactOnDamage comp = null;
+            foreach (Pawn p in map.mapPawns.FreeColonistsSpawned)
+            {
+                comp = p.health.hediffSet.hediffs.Select(h => h.TryGetComp<HediffComp_ReactOnDamage>()).FirstOrDefault(c => c != null && c.Props.damageDefIncoming == DamageDefOf.EMP && Yuudong2Mod.HediffComp_ReactOnDamage_Notify_PawnPostApplyDamage_Patch.IsBrainShock(c.Props.createHediff));
+                if (comp != null)
+                {
+                    break;
+                }
+            }
+            if (comp == null)
+            {
+                Pawn p = map.mapPawns.FreeColonistsSpawned.FirstOrDefault();
+                HediffDef def = DefDatabase<HediffDef>.AllDefs.FirstOrDefault(d => d.comps != null && d.comps.OfType<HediffCompProperties_ReactOnDamage>().Any(c => c.damageDefIncoming == DamageDefOf.EMP && Yuudong2Mod.HediffComp_ReactOnDamage_Notify_PawnPostApplyDamage_Patch.IsBrainShock(c.createHediff)));
+                BodyPartRecord brain = p?.health.hediffSet.GetBrain();
+                if (p != null && def != null && brain != null)
+                {
+                    comp = p.health.AddHediff(def, brain).TryGetComp<HediffComp_ReactOnDamage>();
+                }
+            }
+            if (comp == null)
+            {
+                sb.AppendLine("skipped: no EMP-reacting implant");
+                return;
+            }
+
+            Pawn pawn = comp.parent.pawn;
+            HediffDef made = comp.Props.createHediff;
+            int before = pawn.health.hediffSet.hediffs.Count(h => h.def == made);
+            comp.Notify_PawnPostApplyDamage(new DamageInfo(DamageDefOf.EMP, 10f), 10f);
+            int after = pawn.health.hediffSet.hediffs.Count(h => h.def == made);
+            Check(after == before, $"{pawn.LabelShort} {comp.parent.def.defName} hit by EMP: {made.defName} {before} -> {after}");
+            sb.AppendLine(bad == 0 ? "PASS" : $"FAIL: {bad}");
+        }
+
+        // 벽 앞에 벽등을 달고, 그 칸을 덮는 자리에 왕복선 착륙이 허용되는지, 실제로 놓았을 때 벽등이 남는지 본다.
+        private static void LandOverWallLamps(StringBuilder sb)
+        {
+            int bad = 0;
+            void Check(bool ok, string text)
+            {
+                sb.AppendLine((ok ? "ok   " : "FAIL ") + text);
+                if (!ok)
+                {
+                    bad++;
+                }
+            }
+
+            Map map = Find.CurrentMap;
+            ThingDef shuttleDef = DefDatabase<ThingDef>.GetNamedSilentFail("PassengerShuttle") ?? ThingDefOf.Shuttle;
+            ThingDef lampDef = DefDatabase<ThingDef>.GetNamed("WallLamp");
+            Rot4 rot = shuttleDef.defaultPlacingRot;
+            IntVec3 found = IntVec3.Invalid;
+            foreach (IntVec3 c in map.AllCells.InRandomOrder().Take(30000))
+            {
+                if (!(c + IntVec3.North * 2).InBounds(map) || RoyalTitlePermitWorker_CallShuttle.ShuttleCanLandHere(c, map, shuttleDef, rot).Accepted == false)
+                {
+                    continue;
+                }
+                CellRect rect = GenAdj.OccupiedRect(c, rot, shuttleDef.size);
+                if (rect.Cells.All(x => !x.Roofed(map)) && rect.Contains(c))
+                {
+                    found = c;
+                    break;
+                }
+            }
+            if (!found.IsValid)
+            {
+                sb.AppendLine("skipped: no landing spot");
+                return;
+            }
+
+            CellRect occupied = GenAdj.OccupiedRect(found, rot, shuttleDef.size);
+            IntVec3 lampCell = new IntVec3(occupied.minX, 0, occupied.maxZ);
+            IntVec3 wallCell = lampCell + IntVec3.North;
+            Thing wall = GenSpawn.Spawn(ThingMaker.MakeThing(ThingDefOf.Wall, ThingDefOf.Steel), wallCell, map, WipeMode.Vanish);
+            Thing lamp = GenSpawn.Spawn(ThingMaker.MakeThing(lampDef), lampCell, map, Rot4.North, WipeMode.Vanish);
+            AcceptanceReport report = RoyalTitlePermitWorker_CallShuttle.ShuttleCanLandHere(found, map, shuttleDef, rot);
+            Check(report.Accepted, $"shuttle landing over a wall lamp at {lampCell}: {(report.Accepted ? "accepted" : report.Reason)}");
+
+            ShipLandingArea area = new ShipLandingArea(occupied, map);
+            area.beacons.Add(new CompShipLandingBeacon { props = new CompProperties_ShipLandingBeacon() });
+            area.RecalculateBlockingThing();
+            Check(area.FirstBlockingThing != lamp, $"beacon landing area blocked by: {area.FirstBlockingThing?.LabelShort ?? "nothing"}");
+
+            Thing shuttle = GenSpawn.Spawn(ThingMaker.MakeThing(shuttleDef), found, map, rot, WipeMode.Vanish);
+            Check(!lamp.Destroyed && lamp.Spawned, $"wall lamp after the shuttle spawned: {(lamp.Destroyed ? "destroyed" : "kept")}");
+            shuttle.Destroy();
+            if (!lamp.Destroyed)
+            {
+                lamp.Destroy();
+            }
+            if (!wall.Destroyed)
+            {
+                wall.Destroy();
+            }
             sb.AppendLine(bad == 0 ? "PASS" : $"FAIL: {bad}");
         }
 
