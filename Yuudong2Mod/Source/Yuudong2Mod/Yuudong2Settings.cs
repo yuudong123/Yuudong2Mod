@@ -62,6 +62,8 @@ namespace Yuudong2Mod
         public const string NoBeaconAlert = "NoBeaconAlert";
         public const string NoEmpBrainShock = "NoEmpBrainShock";
         public const string LandOverWallAttachments = "LandOverWallAttachments";
+        public const string StackLimit = "StackLimit";
+        public const string PolicyWeapons = "PolicyWeapons";
         public const string RoofedScanning = "RoofedScanning";
         public const string NoFloorInfestation = "NoFloorInfestation";
         public const string EggSacTargeting = "EggSacTargeting";
@@ -109,9 +111,9 @@ namespace Yuudong2Mod
         public static readonly FeatureGroup[] Groups =
         {
             new FeatureGroup("Romance", AlwaysAcceptProposal, NoBreakup, SameBedLovin, NoRandomRelations, RomanceTweaks, ConsensualIncest),
-            new FeatureGroup("Colony", ShelfNoSlowdown, ShelfAcceptAll, NoMapEdgeLimit, CustomMapSize, PowerOnDemand, ReplaceStuff, GloomyWallReplace, RoomFood, MeatOptimization, SinglePlantTexture, RoofedScanning, NoFloorInfestation, EggSacTargeting, BenchApparelRepair, LitterDecay, MultiHaul, RealisticRooms, BetterWorkbench, GeneRipper, MultiReinstall, MultiCopy, RebuildBills, InstalledPartsCount, WorkRouteOrder, SurgeryManager, GravshipNoRange, LandOverWallAttachments),
+            new FeatureGroup("Colony", ShelfNoSlowdown, ShelfAcceptAll, NoMapEdgeLimit, CustomMapSize, PowerOnDemand, ReplaceStuff, GloomyWallReplace, RoomFood, MeatOptimization, SinglePlantTexture, RoofedScanning, NoFloorInfestation, EggSacTargeting, BenchApparelRepair, LitterDecay, MultiHaul, RealisticRooms, BetterWorkbench, GeneRipper, MultiReinstall, MultiCopy, RebuildBills, InstalledPartsCount, WorkRouteOrder, SurgeryManager, GravshipNoRange, LandOverWallAttachments, StackLimit),
             new FeatureGroup("Interface", MessagePlacement, HealthCardSorting, DamageIndicators, LetterStackCleaner, SmartSpeed, TpsDisplay, SaveHotkey, DragSelect, GeneAssistant, TechprintTradeHighlight, OrderTools, NoBeaconAlert),
-            new FeatureGroup("Pawn", HairUnderHats, HiddenBionicEyes, EquipmentDurability, WeaponPair, EndlessGrowth, NoGrowthNickname, RpgLevelUp, BirthAgeByLifespan, CalmMoveSpeed, BetterHearing, SleepLimits, ImplantsOnAddedParts, NoEmpBrainShock),
+            new FeatureGroup("Pawn", HairUnderHats, HiddenBionicEyes, EquipmentDurability, WeaponPair, EndlessGrowth, NoGrowthNickname, RpgLevelUp, BirthAgeByLifespan, CalmMoveSpeed, BetterHearing, SleepLimits, ImplantsOnAddedParts, NoEmpBrainShock, PolicyWeapons),
             new FeatureGroup("Ideology", AllSpecialistsCanWork, RolesUntiedToMemes, NoIdeologyLimits, AutoCastSpecialistCommands, FasterBiosculpter),
             new FeatureGroup("Trade", CaravanArrivalSpot, TradeShipDropSpot, MapWideTradeBeacon, TradeStockBoost, OrbitalTraderFrequency, InsultFaction, EmpireGoodwillFix, EnemyBaseScaling, RealRuinsBases, EnemyGravship, FactionWar, SettlementConquest, NoFactionLimit),
             new FeatureGroup("Performance", WorldPawnSleep, FastTickInterval, FastMoodThoughts, IdleMissingParts, PlantSwayPerFrame, IdleIceChecks, DoorReachabilityCache),
@@ -122,7 +124,7 @@ namespace Yuudong2Mod
         public static readonly HashSet<string> WithDetails = new HashSet<string>
         {
             HairUnderHats, CustomMapSize, NoIdeologyLimits, RoomFood, MeatOptimization, DamageIndicators, LetterStackCleaner,
-            SmartSpeed, EndlessGrowth, AutoCastSpecialistCommands, RomanceTweaks, RpgLevelUp, GeneAssistant, RealisticRooms, BetterWorkbench, GeneRipper, TradeStockBoost, FactionWar, LitterDecay, EnemyGravship,
+            SmartSpeed, EndlessGrowth, AutoCastSpecialistCommands, RomanceTweaks, RpgLevelUp, GeneAssistant, RealisticRooms, BetterWorkbench, GeneRipper, TradeStockBoost, FactionWar, LitterDecay, EnemyGravship, StackLimit,
         };
 
         public static bool Enabled(string feature)
@@ -242,6 +244,7 @@ namespace Yuudong2Mod
         public int factionWarRuinDays = 15;
 
         public int litterDecayDays = 3;
+        public int stackLimitMultiplier = 1;
         public int enemyGravshipChance = 15;
         public bool enemyGravshipCutscene = true;
         public bool factionWarAttackPlayer = true;
@@ -367,6 +370,7 @@ namespace Yuudong2Mod
             Scribe_Values.Look(ref factionWarMaxFactions, "factionWarMaxFactions", 20);
             Scribe_Values.Look(ref factionWarRuinDays, "factionWarRuinDays", 15);
             Scribe_Values.Look(ref litterDecayDays, "litterDecayDays", 3);
+            Scribe_Values.Look(ref stackLimitMultiplier, "stackLimitMultiplier", 1);
             Scribe_Values.Look(ref enemyGravshipChance, "enemyGravshipChance", 15);
             Scribe_Values.Look(ref enemyGravshipCutscene, "enemyGravshipCutscene", true);
             Scribe_Values.Look(ref factionWarAttackPlayer, "factionWarAttackPlayer", true);
@@ -622,6 +626,9 @@ namespace Yuudong2Mod
                 case Features.EnemyGravship:
                     EnemyGravshipUtility.DrawSettings(body, settings);
                     break;
+                case Features.StackLimit:
+                    StackLimitUtility.DrawSettings(body, settings);
+                    break;
             }
         }
 
@@ -632,6 +639,10 @@ namespace Yuudong2Mod
             if (feature == Features.HairUnderHats)
             {
                 HairUnderHatsUtility.RefreshAllPawnGraphics();
+            }
+            if (feature == Features.StackLimit && Yuudong2Mod.AppliedFeatures.Contains(Features.StackLimit))
+            {
+                StackLimitUtility.Apply();
             }
         }
     }

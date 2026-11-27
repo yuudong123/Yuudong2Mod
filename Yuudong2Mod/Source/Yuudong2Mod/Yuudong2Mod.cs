@@ -52,6 +52,7 @@ namespace Yuudong2Mod
             WhenEnabled(Features.MultiHaul, MultiLoadUtility.ApplyDriverClasses);
             WhenEnabled(Features.EnemyGravship, EngineGroupUtility.AddStatParts);
             WhenEnabled(Features.GravshipNoRange, GravshipNoRangeUtility.ApplyDefPatches);
+            WhenEnabled(Features.StackLimit, StackLimitUtility.Apply);
 
             Try(nameof(TraitDegreeFix), () => TraitDegreeFix.Apply(harmony));
 

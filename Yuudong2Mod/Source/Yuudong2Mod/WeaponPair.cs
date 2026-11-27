@@ -448,6 +448,11 @@ namespace Yuudong2Mod
                 return false;
             }
 
+            if (PolicyWeaponsUtility.Active && !PolicyWeaponsUtility.AllowsPickup(pawn, thing))
+            {
+                return false;
+            }
+
             if (pawn.Ideo != null && pawn.Ideo.GetDispositionForWeapon(thing.def) == IdeoWeaponDisposition.Despised)
             {
                 return false;

@@ -43,6 +43,8 @@ namespace Yuudong2Test
             ("no beacon alert", NoBeaconAlert),
             ("no emp brain shock", NoEmpBrainShock),
             ("land over wall lamps", LandOverWallLamps),
+            ("stack limit", StackLimit),
+            ("policy weapons", PolicyWeapons),
             ("faction war", FactionWar),
             // 맵을 바꾸므로 항상 마지막에 둔다.
             ("gravship replace stuff", GravshipReplace),
@@ -1139,6 +1141,99 @@ namespace Yuudong2Test
             {
                 wall.Destroy();
             }
+            sb.AppendLine(bad == 0 ? "PASS" : $"FAIL: {bad}");
+        }
+
+        // 배수를 3으로 바꿔 다시 곱하고, 강철·식사는 3배, 무기는 그대로인지, 실제로 한 칸에 그만큼 쌓이는지 본다.
+        private static void StackLimit(StringBuilder sb)
+        {
+            int bad = 0;
+            void Check(bool ok, string text)
+            {
+                sb.AppendLine((ok ? "ok   " : "FAIL ") + text);
+                if (!ok)
+                {
+                    bad++;
+                }
+            }
+
+            if (!Yuudong2Mod.Yuudong2Mod.AppliedFeatures.Contains(Features.StackLimit))
+            {
+                sb.AppendLine("skipped: feature not applied");
+                return;
+            }
+            int saved = Yuudong2Settings.Current.stackLimitMultiplier;
+            ThingDef rifle = DefDatabase<ThingDef>.GetNamed("Gun_AssaultRifle");
+            Yuudong2Settings.Current.stackLimitMultiplier = 3;
+            StackLimitUtility.Apply();
+            int steelOriginal = StackLimitUtility.OriginalLimit(ThingDefOf.Steel);
+            Check(ThingDefOf.Steel.stackLimit == steelOriginal * 3, $"steel x3: {steelOriginal} -> {ThingDefOf.Steel.stackLimit}");
+            Check(ThingDefOf.MealSimple.stackLimit == StackLimitUtility.OriginalLimit(ThingDefOf.MealSimple) * 3, $"simple meal x3: {ThingDefOf.MealSimple.stackLimit}");
+            Check(rifle.stackLimit == 1, $"assault rifle stays {rifle.stackLimit}");
+
+            Thing a = ThingMaker.MakeThing(ThingDefOf.Steel);
+            a.stackCount = steelOriginal * 2;
+            Thing b = ThingMaker.MakeThing(ThingDefOf.Steel);
+            b.stackCount = steelOriginal;
+            bool absorbed = a.TryAbsorbStack(b, true);
+            Check(absorbed && a.stackCount == steelOriginal * 3, $"one stack holds {a.stackCount} steel after merging");
+
+            Yuudong2Settings.Current.stackLimitMultiplier = 1;
+            StackLimitUtility.Apply();
+            Check(ThingDefOf.Steel.stackLimit == steelOriginal, $"back to x1: steel {ThingDefOf.Steel.stackLimit}");
+            Yuudong2Settings.Current.stackLimitMultiplier = saved;
+            StackLimitUtility.Apply();
+            sb.AppendLine(bad == 0 ? "PASS" : $"FAIL: {bad}");
+        }
+
+        // 불러온 정책이 무기를 허용하는지, 무기를 뺀 정책을 주면 내려놓는 일을 주는지, 직접 장착시킨 무기는 두는지 본다.
+        private static void PolicyWeapons(StringBuilder sb)
+        {
+            int bad = 0;
+            void Check(bool ok, string text)
+            {
+                sb.AppendLine((ok ? "ok   " : "FAIL ") + text);
+                if (!ok)
+                {
+                    bad++;
+                }
+            }
+
+            if (!PolicyWeaponsUtility.Active)
+            {
+                sb.AppendLine("skipped: feature not applied");
+                return;
+            }
+            ThingFilter global = (ThingFilter)HarmonyLib.AccessTools.Property(typeof(Dialog_ManageApparelPolicies), "ApparelGlobalFilter").GetValue(null);
+            ThingDef rifle = DefDatabase<ThingDef>.GetNamed("Gun_AssaultRifle");
+            Check(global.Allows(rifle), "policy window lists weapons");
+            List<ApparelPolicy> policies = Current.Game.outfitDatabase.AllOutfits;
+            Check(policies.All(p => p.filter.Allows(rifle)), $"loaded policies allow the assault rifle: {policies.Count(p => p.filter.Allows(rifle))}/{policies.Count}");
+
+            Pawn pawn = Find.CurrentMap.mapPawns.FreeColonistsSpawned.FirstOrDefault(p => p.equipment?.Primary != null && !p.Drafted && !p.InMentalState);
+            if (pawn == null)
+            {
+                sb.AppendLine("skipped: no armed colonist");
+                return;
+            }
+            ThingWithComps weapon = pawn.equipment.Primary;
+            ApparelPolicy before = pawn.outfits.CurrentApparelPolicy;
+            ApparelPolicy test = Current.Game.outfitDatabase.MakeNewOutfit();
+            Check(test.filter.Allows(weapon.def), "a new policy allows weapons");
+            test.filter.SetAllow(weapon.def, false);
+            pawn.outfits.CurrentApparelPolicy = test;
+            bool wasForced = GameComponent_PolicyWeapons.Instance.IsForced(weapon);
+            GameComponent_PolicyWeapons.Instance.SetForced(weapon, false);
+            Verse.AI.Job job = PolicyWeaponsUtility.DropJob(pawn);
+            Check(job != null && job.def == JobDefOf.DropEquipment && job.targetA.Thing == weapon, $"{pawn.LabelShort} drops {weapon.LabelShort} left out of the policy: {job?.def.defName ?? "no job"}");
+            GameComponent_PolicyWeapons.Instance.SetForced(weapon, true);
+            job = PolicyWeaponsUtility.DropJob(pawn);
+            Check(job == null, $"a weapon equipped by order is kept: {job?.def.defName ?? "no job"}");
+            Check(!PolicyWeaponsUtility.AllowsPickup(pawn, weapon), "the weapon is not picked up on its own");
+
+            GameComponent_PolicyWeapons.Instance.SetForced(weapon, wasForced);
+            pawn.outfits.CurrentApparelPolicy = before;
+            Current.Game.outfitDatabase.TryDelete(test);
             sb.AppendLine(bad == 0 ? "PASS" : $"FAIL: {bad}");
         }
 

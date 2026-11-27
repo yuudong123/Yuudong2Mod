@@ -650,6 +650,12 @@ On automatic, the melee weapon is drawn when an enemy is adjacent and the ranged
   <Yuudong2.Feature.NoEmpBrainShock.Desc>Brain implants hit by EMP no longer give brain shock or disorientation.</Yuudong2.Feature.NoEmpBrainShock.Desc>
   <Yuudong2.Feature.LandOverWallAttachments>Land over wall lamps</Yuudong2.Feature.LandOverWallAttachments>
   <Yuudong2.Feature.LandOverWallAttachments.Desc>Shuttles can land on cells taken by wall-mounted buildings such as wall lamps, and these no longer block landing beacon areas.</Yuudong2.Feature.LandOverWallAttachments.Desc>
+  <Yuudong2.Feature.StackLimit>Stack size multiplier</Yuudong2.Feature.StackLimit>
+  <Yuudong2.Feature.StackLimit.Desc>Multiplies how many of an item fit in one stack. Only items that already stack (2 or more per cell) are affected. Change the multiplier in the details; it applies right away.</Yuudong2.Feature.StackLimit.Desc>
+  <Yuudong2.StackLimit.Multiplier>Stack size: x{0}</Yuudong2.StackLimit.Multiplier>
+  <Yuudong2.StackLimit.Multiplier.Desc>For example, at x3 steel stacks up to 225. Stacks already bigger than a lowered limit stay as they are.</Yuudong2.StackLimit.Multiplier.Desc>
+  <Yuudong2.Feature.PolicyWeapons>Weapons in apparel policies</Yuudong2.Feature.PolicyWeapons>
+  <Yuudong2.Feature.PolicyWeapons.Desc>Apparel policies also list weapons. Colonists do not pick up weapons their policy leaves out, and drop such weapons when idle. Weapons you order a colonist to equip are kept, like forced apparel. Existing policies start with every weapon allowed.</Yuudong2.Feature.PolicyWeapons.Desc>
   <Yuudong2.Feature.NoBeaconAlert>Hide the unusable beacon alert</Yuudong2.Feature.NoBeaconAlert>
   <Yuudong2.Feature.NoBeaconAlert.Desc>Does not show the "ship landing beacon unusable" alert when landing beacons do not form a landing area.</Yuudong2.Feature.NoBeaconAlert.Desc>
   <Yuudong2.Surgery.Tab.Plans>Implant plans</Yuudong2.Surgery.Tab.Plans>
