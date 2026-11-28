@@ -333,6 +333,8 @@ On automatic, the melee weapon is drawn when an enemy is adjacent and the ranged
   <Yuudong2.Conquest.GivenToAlly>Settlement {0} handed to {1}. Relations {2}</Yuudong2.Conquest.GivenToAlly>
   <Yuudong2.Feature.BenchApparelRepair>Apparel repair at tailoring benches</Yuudong2.Feature.BenchApparelRepair>
   <Yuudong2.Feature.BenchApparelRepair.Desc>When a worn piece of apparel drops below 80% durability, the colonist goes to a tailoring bench on their own: they load the materials, take the apparel off, repair it at the bench and put it back on. Materials are the apparel's crafting cost (without components and advanced components) times the fraction of durability lost. Quality doesn't change, and the colonist gains Crafting experience while repairing. Works at hand and electric tailoring benches and at tailoring-type benches from other mods.</Yuudong2.Feature.BenchApparelRepair.Desc>
+  <Yuudong2.Feature.IngredientPlaceFix>Ingredient drop crash fix</Yuudong2.Feature.IngredientPlaceFix>
+  <Yuudong2.Feature.IngredientPlaceFix.Desc>When a pawn cannot drop a bill ingredient on the cell it picked next to the workbench, vanilla picks the same cell again forever within one tick and the game crashes with a stack overflow. Cells that failed are skipped, and the job is abandoned if no cell is left.</Yuudong2.Feature.IngredientPlaceFix.Desc>
   <Yuudong2.ApparelRepair.Eject>Eject repair contents</Yuudong2.ApparelRepair.Eject>
   <Yuudong2.ApparelRepair.EjectDesc>Drop the apparel and repair materials held by this bench. Apparel under repair keeps only the repair done so far, and materials already used are not returned.</Yuudong2.ApparelRepair.EjectDesc>
   <Yuudong2.ApparelRepair.Working>Repairing {1} apparel of {0}: {2}</Yuudong2.ApparelRepair.Working>

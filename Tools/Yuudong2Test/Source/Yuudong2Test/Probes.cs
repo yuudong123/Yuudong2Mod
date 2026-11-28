@@ -33,6 +33,7 @@ namespace Yuudong2Test
             ("litter decay", LitterDecay),
             ("multi haul", MultiHaul),
             ("multi load", MultiLoad),
+            ("ingredient place fix", IngredientPlace),
             ("repair bill count", RepairBillCount),
             ("weapon pair", WeaponPair),
             ("ratkin shield", RatkinShield),
@@ -2256,6 +2257,87 @@ namespace Yuudong2Test
         }
 
         // 수송 포드 하나와 서로 다른 물건 네 더미를 놓고, 정착민 한 명에게 적재를 시켜 게임 틱으로 끝까지 돌려 본다.
+        // 작업대 재료 내려놓기: 바닐라가 고르는 첫 칸에 아이템을 받지 않는 선반을 두면, 바닐라는 그 칸을 같은 틱 안에서 끝없이 다시 골라 스택 오버플로로 죽는다.
+        private static void IngredientPlace(StringBuilder sb)
+        {
+            if (!Yuudong2Mod.Yuudong2Mod.AppliedFeatures.Contains(Features.IngredientPlaceFix))
+            {
+                sb.AppendLine("skipped: feature not applied");
+                return;
+            }
+
+            int bad = 0;
+            void Check(bool ok, string text)
+            {
+                bad += ok ? 0 : 1;
+                sb.AppendLine($"{(ok ? "ok  " : "FAIL")} {text}");
+            }
+
+            Map map = Find.AnyPlayerHomeMap;
+            Pawn pawn = map?.mapPawns.FreeColonistsSpawned.FirstOrDefault(p => !p.Downed && p.carryTracker.CarriedThing == null);
+            ThingDef shelfDef = DefDatabase<ThingDef>.GetNamedSilentFail("ShelfSmall");
+            if (pawn == null || shelfDef?.building == null)
+            {
+                sb.AppendLine("skipped: no free colonist or no small shelf");
+                return;
+            }
+
+            bool Free(IntVec3 c)
+            {
+                foreach (IntVec3 cell in CellRect.CenteredOn(c, 3))
+                {
+                    if (!cell.InBounds(map) || !cell.Standable(map) || cell.Fogged(map) || cell.GetFirstItem(map) != null || cell.GetEdifice(map) != null || map.thingGrid.ThingsListAt(cell).Any(t => t is Pawn))
+                    {
+                        return false;
+                    }
+                }
+                return true;
+            }
+            if (!CellFinder.TryFindRandomCellNear(pawn.Position, map, 60, Free, out IntVec3 center))
+            {
+                sb.AppendLine("skipped: no free 7x7 area");
+                return;
+            }
+
+            // 가운데 벽은 재료 칸 고르기의 기준점일 뿐이다. 바닐라가 처음 고를 칸(벽 다음으로 가까운 칸)에 선반을 둔다.
+            Thing wall = GenSpawn.Spawn(ThingMaker.MakeThing(ThingDefOf.Wall, ThingDefOf.Steel), center, map);
+            IntVec3 blocked = Enumerable.Range(1, 8).Select(i => center + GenRadial.RadialPattern[i]).First();
+            int oldMax = shelfDef.building.maxItemsInCell;
+            Thing shelf = GenSpawn.Spawn(ThingMaker.MakeThing(shelfDef, GenStuff.DefaultStuffFor(shelfDef)), blocked, map);
+            shelfDef.building.maxItemsInCell = 0;
+            Thing steel = ThingMaker.MakeThing(ThingDefOf.Steel);
+            steel.stackCount = 50;
+            Job previous = pawn.CurJob;
+            int before = IngredientPlaceFixUtility.Interventions;
+            try
+            {
+                pawn.jobs.StopAll();
+                Check(pawn.carryTracker.TryStartCarry(steel), "colonist carries 50 steel");
+                JobDef def = new JobDef { defName = "Yuudong2Test_IngredientPlace", driverClass = typeof(JobDriver_IngredientPlaceTest), reportString = "placing." };
+                pawn.jobs.StartJob(JobMaker.MakeJob(def, wall, steel), JobCondition.InterruptForced, keepCarryingThingOverride: true);
+                Check(IngredientPlaceFixUtility.Interventions > before, $"vanilla picked the shelf cell again and the fix chose another cell ({IngredientPlaceFixUtility.Interventions - before} time(s))");
+                Check(pawn.carryTracker.CarriedThing == null, $"colonist no longer carries the steel: {pawn.carryTracker.CarriedThing?.LabelCap ?? "nothing"}");
+                Check(steel.Spawned && steel.Position != blocked && steel.Position.InHorDistOf(center, 3f), $"steel placed next to the wall: {(steel.Spawned ? steel.Position.ToString() : "not spawned")} (shelf at {blocked})");
+            }
+            finally
+            {
+                shelfDef.building.maxItemsInCell = oldMax;
+                if (pawn.carryTracker.CarriedThing == steel)
+                {
+                    pawn.carryTracker.innerContainer.Remove(steel);
+                }
+                pawn.jobs.StopAll();
+                foreach (Thing t in new[] { steel, shelf, wall })
+                {
+                    if (!t.Destroyed)
+                    {
+                        t.Destroy();
+                    }
+                }
+            }
+            sb.AppendLine(bad == 0 ? "PASS" : $"FAIL: {bad}");
+        }
+
         private static void MultiLoad(StringBuilder sb)
         {
             if (!Yuudong2Mod.Yuudong2Mod.AppliedFeatures.Contains(Features.MultiHaul))
@@ -3093,6 +3175,22 @@ namespace Yuudong2Test
             }
 
             sb.AppendLine(bad == 0 ? "PASS" : $"FAIL: {bad} pawns out of limits");
+        }
+    }
+
+    // 작업대 재료 내려놓기 두 단계만 돈다: 칸 고르기, 내려놓기(못 놓으면 칸 고르기로).
+    public class JobDriver_IngredientPlaceTest : JobDriver
+    {
+        public override bool TryMakePreToilReservations(bool errorOnFailed)
+        {
+            return true;
+        }
+
+        protected override IEnumerable<Toil> MakeNewToils()
+        {
+            Toil find = Toils_JobTransforms.SetTargetToIngredientPlaceCell(TargetIndex.A, TargetIndex.B, TargetIndex.C);
+            yield return find;
+            yield return Toils_Haul.PlaceHauledThingInCell(TargetIndex.C, find, false);
         }
     }
 }

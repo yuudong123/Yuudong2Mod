@@ -333,6 +333,8 @@
   <Yuudong2.Conquest.GivenToAlly>정착지 {0}(을)를 {1}에게 넘겼습니다. 관계 {2}</Yuudong2.Conquest.GivenToAlly>
   <Yuudong2.Feature.BenchApparelRepair>재봉대 옷 수선</Yuudong2.Feature.BenchApparelRepair>
   <Yuudong2.Feature.BenchApparelRepair.Desc>입은 옷의 내구도가 80% 밑으로 내려가면 정착민이 스스로 재봉대에 가서 수선합니다. 재료를 가져다 넣고, 옷을 벗어 맡기고, 재봉대에서 고친 뒤 다시 입습니다. 재료는 옷의 제작 비용(부품·고급 부품 제외)에 깎인 비율을 곱한 만큼 듭니다. 품질은 바뀌지 않고, 수선하는 동안 제작 경험치를 얻습니다. 수동·전기 재봉대와 다른 모드의 재봉대 종류에서 됩니다.</Yuudong2.Feature.BenchApparelRepair.Desc>
+  <Yuudong2.Feature.IngredientPlaceFix>작업대 재료 내려놓기 튕김 방지</Yuudong2.Feature.IngredientPlaceFix>
+  <Yuudong2.Feature.IngredientPlaceFix.Desc>작업대 재료를 옆 칸에 내려놓다가 못 놓으면, 바닐라는 같은 칸을 같은 틱 안에서 끝없이 다시 골라 게임이 튕깁니다(스택 오버플로). 못 놓은 칸은 건너뛰고 다른 칸에 놓으며, 놓을 칸이 없으면 그 작업을 그만둡니다.</Yuudong2.Feature.IngredientPlaceFix.Desc>
   <Yuudong2.ApparelRepair.Eject>수선 내용물 꺼내기</Yuudong2.ApparelRepair.Eject>
   <Yuudong2.ApparelRepair.EjectDesc>재봉대에 맡긴 옷과 수선 재료를 모두 꺼냅니다. 수선 중이던 옷은 지금까지 진행한 만큼만 고쳐지고, 이미 쓴 재료는 돌려받지 못합니다.</Yuudong2.ApparelRepair.EjectDesc>
   <Yuudong2.ApparelRepair.Working>{0}의 옷 {1}벌 수선 중: {2}</Yuudong2.ApparelRepair.Working>
