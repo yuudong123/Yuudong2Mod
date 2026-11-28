@@ -1317,7 +1317,7 @@ namespace Yuudong2Test
                 ThingWithComps primary = pawn.equipment?.Primary;
                 string stowed = string.Join("/", pawn.inventory.innerContainer.Where(t => WeaponPairUtility.IsWeapon(t)).Select(t => t.LabelShort + (tracker.IsSidearmOf(pawn, t) ? "(sidearm)" : "")));
                 List<string> why = new List<string>();
-                if (primary == null) why.Add($"unarmed: allowed by policy and equippable - ranged {weapons.Count(w => w.def.IsRangedWeapon && !w.IsForbidden(pawn) && WeaponPairUtility.AutoEquippable(pawn, w))}, melee {weapons.Count(w => w.def.IsMeleeWeapon && !w.IsForbidden(pawn) && WeaponPairUtility.AutoEquippable(pawn, w))}");
+                if (primary == null) why.Add($"unarmed: allowed by policy and equippable - ranged {weapons.Count(w => w.def.IsRangedWeapon && !w.IsForbidden(pawn) && PolicyWeaponsUtility.AllowsPickup(pawn, w) && EquipmentUtility.CanEquip(w, pawn))}, melee {weapons.Count(w => w.def.IsMeleeWeapon && !w.IsForbidden(pawn) && PolicyWeaponsUtility.AllowsPickup(pawn, w) && EquipmentUtility.CanEquip(w, pawn))}");
                 if (!tracker.AutoSidearmAllowed(pawn)) why.Add("auto sidearm stopped (dropped from gear tab)");
                 if (pawn.WorkTagIsDisabled(WorkTags.Violent)) why.Add("incapable of violence");
                 if (primary != null)
@@ -1332,7 +1332,7 @@ namespace Yuudong2Test
                     int reach = kind.Count(w => pawn.CanReserveAndReach(w, Verse.AI.PathEndMode.ClosestTouch, pawn.NormalMaxDanger()));
                     why.Add($"{(wantRanged ? "ranged" : "melee")} candidates {kind.Count}: policy ok {policyOk}, can equip {equipOk}, reachable {reach}");
                 }
-                Verse.AI.Job job = primary == null ? PolicyWeaponsUtility.AutoArmJob(pawn) : WeaponPairUtility.AutoSidearmJob(pawn);
+                Verse.AI.Job job = WeaponPairUtility.AutoArmJob(pawn);
                 sb.AppendLine($"info: {pawn.LabelShort} [{pawn.def.defName}] holds {primary?.LabelShort ?? "nothing"}; inventory weapons {(stowed.Length > 0 ? stowed : "none")}; policy {pawn.outfits?.CurrentApparelPolicy?.label}; job now: {job?.targetA.Thing?.LabelShort ?? "none"} | {string.Join("; ", why)}");
             }
         }
@@ -1521,14 +1521,25 @@ namespace Yuudong2Test
             spare.SetForbidden(false, false);
             bool canShoot = !pawn.WorkTagIsDisabled(WorkTags.Shooting) && !pawn.story.traits.HasTrait(TraitDefOf.Brawler);
             GameComponent_WeaponPair.Instance.SearchSidearmNow(pawn);
-            Job fetch = WeaponPairUtility.AutoSidearmJob(pawn);
+            Job fetch = WeaponPairUtility.AutoArmJob(pawn);
             Check(canShoot ? fetch != null && fetch.def == JobDefOf.Equip && fetch.targetA.Thing.def.IsRangedWeapon : fetch == null,
                 $"holding only a sword: {(canShoot ? "goes to equip a ranged weapon" : "cannot shoot, fetches nothing")} ({fetch?.targetA.Thing?.LabelShort ?? "no job"})");
-            Check(WeaponPairUtility.AutoSidearmJob(pawn) == null, "does not search again right away");
+            Check(WeaponPairUtility.AutoArmJob(pawn) == null, "does not search again right away");
             GameComponent_WeaponPair.Instance.StopAutoSidearm(pawn);
             bool stopped = !GameComponent_WeaponPair.Instance.AutoSidearmAllowed(pawn);
             GameComponent_WeaponPair.Instance.MarkSidearm(pawn, spare);
             Check(stopped && GameComponent_WeaponPair.Instance.AutoSidearmAllowed(pawn), "dropping the sidearm by hand stops the search, stowing one by hand resumes it");
+
+            // 맨손에 소지품의 근접 무기만 있을 때: 근접 무기를 꺼내 들고, 총을 찾으러 간다.
+            ThingWithComps held = pawn.equipment.Primary;
+            pawn.equipment.TryTransferEquipmentToContainer(held, pawn.inventory.innerContainer);
+            GameComponent_WeaponPair.Instance.MarkSidearm(pawn, held);
+            GameComponent_WeaponPair.Instance.SearchSidearmNow(pawn);
+            Job arm = WeaponPairUtility.AutoArmJob(pawn);
+            Check(pawn.equipment.Primary == held && (canShoot ? arm != null && arm.targetA.Thing.def.IsRangedWeapon : arm == null),
+                $"unarmed with a stowed sword: draws {pawn.equipment.Primary?.LabelShort ?? "nothing"}, then fetches {arm?.targetA.Thing?.LabelShort ?? "nothing"}");
+            // 꺼내 들 때 걸린 바꿔 들기 대기 시간을 지워, 뒤의 바꿔 들기 검사에 영향을 주지 않게 한다.
+            ((Dictionary<int, int>)HarmonyLib.AccessTools.Field(typeof(WeaponPairUtility), "lastSwapTick").GetValue(null)).Clear();
             spare.Destroy();
 
             TraitDef nimble = DefDatabase<TraitDef>.GetNamedSilentFail("Nimble");

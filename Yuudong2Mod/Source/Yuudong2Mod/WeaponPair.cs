@@ -384,64 +384,93 @@ namespace Yuudong2Mod
             return true;
         }
 
-        // 무기를 하나만 든 정착민이 한가할 때: 다른 종류의 무기 중 가장 좋은 것을 찾아 장착하러 간다. 들고 있던 무기는 소지품으로 들어간다.
-        public static Job AutoSidearmJob(Pawn pawn)
+        // 정착민이 한가할 때: 근접·원거리 무기를 하나씩 지니도록, 없는 종류 중 가장 좋은 무기를 찾아 장착하러 간다.
+        // 맨손인데 소지품에 무기가 있으면 먼저 꺼내 든다. 새로 든 무기와 종류가 다른 무기는 소지품으로 들어간다(StowInsteadOfDrop).
+        public static Job AutoArmJob(Pawn pawn)
         {
             GameComponent_WeaponPair tracker = GameComponent_WeaponPair.Instance;
-            if (tracker == null || !pawn.Spawned || !pawn.IsColonist || !Eligible(pawn) || !pawn.Map.IsPlayerHome)
+            if (tracker == null || !CanArmItself(pawn) || !tracker.AutoSidearmAllowed(pawn) || !tracker.SidearmSearchDue(pawn, Find.TickManager.TicksGame))
             {
                 return null;
             }
 
+            bool meleeFirst = ModeOf(pawn) == WeaponPairMode.Melee || !CanShoot(pawn);
+            if (pawn.equipment.Primary == null)
+            {
+                ThingWithComps stowed = Stowed(pawn, !meleeFirst) ?? Stowed(pawn, meleeFirst);
+                if (stowed != null)
+                {
+                    Swap(pawn, stowed, true);
+                }
+            }
+
+            foreach (bool ranged in meleeFirst ? new[] { false, true } : new[] { true, false })
+            {
+                if (Carries(pawn, ranged) || (ranged && !CanShoot(pawn)))
+                {
+                    continue;
+                }
+
+                Thing best = BestWeapon(pawn, ranged);
+                if (best != null)
+                {
+                    return JobMaker.MakeJob(JobDefOf.Equip, best);
+                }
+            }
+
+            return null;
+        }
+
+        private static bool CanArmItself(Pawn pawn)
+        {
+            return pawn.Spawned && pawn.IsColonist && Eligible(pawn) && pawn.Map.IsPlayerHome && !pawn.Drafted && !pawn.InMentalState && !pawn.IsQuestLodger()
+                && !pawn.WorkTagIsDisabled(WorkTags.Violent) && pawn.health.capacities.CapableOf(PawnCapacityDefOf.Manipulation);
+        }
+
+        // 난투가는 총을 들면 기분이 나빠지므로 원거리 무기를 지니지 않는다.
+        private static bool CanShoot(Pawn pawn)
+        {
+            return !pawn.WorkTagIsDisabled(WorkTags.Shooting) && (pawn.story == null || !pawn.story.traits.HasTrait(TraitDefOf.Brawler));
+        }
+
+        // 그 종류의 무기를 손에 들었거나 소지품에 넣어 두었는지.
+        private static bool Carries(Pawn pawn, bool ranged)
+        {
             ThingWithComps primary = pawn.equipment.Primary;
-            if (primary == null || !IsWeapon(primary) || !tracker.SidearmSearchDue(pawn, Find.TickManager.TicksGame) || !tracker.AutoSidearmAllowed(pawn))
-            {
-                return null;
-            }
+            return (primary != null && IsWeapon(primary) && primary.def.IsRangedWeapon == ranged) || Stowed(pawn, ranged) != null;
+        }
 
-            bool wantRanged = !primary.def.IsRangedWeapon;
-            if (Stowed(pawn, wantRanged) != null || pawn.IsQuestLodger() || pawn.WorkTagIsDisabled(WorkTags.Violent)
-                || !pawn.health.capacities.CapableOf(PawnCapacityDefOf.Manipulation))
-            {
-                return null;
-            }
-
-            if (wantRanged && (pawn.WorkTagIsDisabled(WorkTags.Shooting) || (pawn.story != null && pawn.story.traits.HasTrait(TraitDefOf.Brawler))))
-            {
-                return null;
-            }
-
+        private static Thing BestWeapon(Pawn pawn, bool ranged)
+        {
             Thing best = null;
             float bestScore = 0f;
             List<Thing> weapons = pawn.Map.listerThings.ThingsInGroup(ThingRequestGroup.Weapon);
             for (int i = 0; i < weapons.Count; i++)
             {
                 Thing thing = weapons[i];
-                if (thing.def.IsRangedWeapon != wantRanged || !IsWeapon(thing) || thing.IsForbidden(pawn) || thing.IsBurning())
+                if (!thing.Spawned || thing.def.IsRangedWeapon != ranged || !IsWeapon(thing) || thing.IsForbidden(pawn) || thing.IsBurning())
                 {
                     continue;
                 }
 
-                float score = SidearmScore(thing, wantRanged);
-                if (score <= bestScore || !AutoEquippable(pawn, thing))
+                float score = WeaponScore(thing, ranged);
+                if (score > bestScore && AutoEquippable(pawn, thing))
                 {
-                    continue;
+                    best = thing;
+                    bestScore = score;
                 }
-
-                best = thing;
-                bestScore = score;
             }
 
-            return best == null ? null : JobMaker.MakeJob(JobDefOf.Equip, best);
+            return best;
         }
 
-        public static float SidearmScore(Thing thing, bool ranged)
+        private static float WeaponScore(Thing thing, bool ranged)
         {
             return ranged ? thing.MarketValue : thing.GetStatValue(StatDefOf.MeleeWeapon_AverageDPS);
         }
 
         // 유대 무기는 고르지 않는다. 장착하면 그 정착민에게 묶여 되돌릴 수 없다.
-        public static bool AutoEquippable(Pawn pawn, Thing thing)
+        private static bool AutoEquippable(Pawn pawn, Thing thing)
         {
             if (thing.TryGetComp<CompBladelinkWeapon>() != null || MassUtility.WillBeOverEncumberedAfterPickingUp(pawn, thing, 1))
             {
@@ -722,7 +751,7 @@ namespace Yuudong2Mod
         {
             if (__result == null)
             {
-                __result = WeaponPairUtility.AutoSidearmJob(pawn);
+                __result = WeaponPairUtility.AutoArmJob(pawn);
             }
         }
     }

@@ -84,69 +84,13 @@ namespace Yuudong2Mod
             {
                 return false;
             }
+            // 유대한 인격 무기는 내려놓으면 유대가 끊긴 것처럼 괴로워하므로 정책과 상관없이 둔다.
+            CompBladelinkWeapon bladelink = weapon.TryGetComp<CompBladelinkWeapon>();
+            if (bladelink != null && bladelink.CodedPawn == pawn)
+            {
+                return false;
+            }
             return GameComponent_PolicyWeapons.Instance == null || !GameComponent_PolicyWeapons.Instance.IsForced(weapon);
-        }
-
-        private const int ArmSearchInterval = 2500;
-
-        private static readonly Dictionary<int, int> nextArmSearch = new Dictionary<int, int>();
-
-        // 맨손인 정착민이 한가할 때: 정책이 허용하는 무기 중 가장 좋은 것을 찾아 장착하러 간다.
-        // 총을 먼저 찾고(난투가·사격 불가·근접 고정이면 근접 먼저), 없으면 다른 종류를 찾는다.
-        public static Job AutoArmJob(Pawn pawn)
-        {
-            if (!pawn.Spawned || pawn.Drafted || !pawn.IsColonist || pawn.Map == null || !pawn.Map.IsPlayerHome || pawn.equipment == null
-                || pawn.equipment.Primary != null || pawn.InMentalState || pawn.IsQuestLodger() || pawn.WorkTagIsDisabled(WorkTags.Violent)
-                || !pawn.health.capacities.CapableOf(PawnCapacityDefOf.Manipulation))
-            {
-                return null;
-            }
-
-            int tick = Find.TickManager.TicksGame;
-            if (nextArmSearch.TryGetValue(pawn.thingIDNumber, out int next) && tick < next)
-            {
-                return null;
-            }
-            nextArmSearch[pawn.thingIDNumber] = tick + ArmSearchInterval + pawn.thingIDNumber % 600;
-
-            // 소지품에 보조 무기가 있으면 무기 2개 착용이 싸울 때 꺼내 든다.
-            if (WeaponPairUtility.Active && (WeaponPairUtility.Stowed(pawn, true) != null || WeaponPairUtility.Stowed(pawn, false) != null))
-            {
-                return null;
-            }
-
-            WeaponPairMode mode = WeaponPairUtility.Active ? WeaponPairUtility.ModeOf(pawn) : WeaponPairMode.Auto;
-            bool canShoot = !pawn.WorkTagIsDisabled(WorkTags.Shooting) && (pawn.story == null || !pawn.story.traits.HasTrait(TraitDefOf.Brawler));
-            bool rangedFirst = canShoot && mode != WeaponPairMode.Melee;
-            Thing best = BestWeapon(pawn, rangedFirst);
-            if (best == null && mode == WeaponPairMode.Auto && (canShoot || rangedFirst))
-            {
-                best = BestWeapon(pawn, !rangedFirst);
-            }
-            return best == null ? null : JobMaker.MakeJob(JobDefOf.Equip, best);
-        }
-
-        private static Thing BestWeapon(Pawn pawn, bool ranged)
-        {
-            Thing best = null;
-            float bestScore = 0f;
-            List<Thing> weapons = pawn.Map.listerThings.ThingsInGroup(ThingRequestGroup.Weapon);
-            for (int i = 0; i < weapons.Count; i++)
-            {
-                Thing thing = weapons[i];
-                if (!thing.Spawned || thing.def.IsRangedWeapon != ranged || !WeaponPairUtility.IsWeapon(thing) || thing.IsForbidden(pawn) || thing.IsBurning())
-                {
-                    continue;
-                }
-                float score = WeaponPairUtility.SidearmScore(thing, ranged);
-                if (score <= bestScore || !WeaponPairUtility.AutoEquippable(pawn, thing))
-                {
-                    continue;
-                }
-                best = thing;
-                bestScore = score;
-            }
-            return best;
         }
 
         public static Job DropJob(Pawn pawn)
@@ -252,7 +196,7 @@ namespace Yuudong2Mod
         }
     }
 
-    // 한가할 때 정책에서 빠진 무기를 내려놓는다. 무기 2개 착용의 보조 무기 찾기보다 먼저 본다.
+    // 한가할 때 정책에서 빠진 무기를 내려놓는다. 무기 2개 착용의 무기 찾기보다 먼저 본다.
     [HarmonyPatchCategory(Features.PolicyWeapons)]
     [HarmonyPatch(typeof(JobGiver_OptimizeApparel), "TryGiveJob")]
     internal static class JobGiver_OptimizeApparel_TryGiveJob_PolicyWeapons_Patch
@@ -262,7 +206,7 @@ namespace Yuudong2Mod
         {
             if (__result == null)
             {
-                __result = PolicyWeaponsUtility.DropJob(pawn) ?? PolicyWeaponsUtility.AutoArmJob(pawn);
+                __result = PolicyWeaponsUtility.DropJob(pawn);
             }
         }
     }

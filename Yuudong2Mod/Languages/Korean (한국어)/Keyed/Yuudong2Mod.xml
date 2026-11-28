@@ -42,7 +42,7 @@
   <Yuudong2.Feature.PowerOnDemand>사용할 때만 전력 소모</Yuudong2.Feature.PowerOnDemand>
   <Yuudong2.Feature.PowerOnDemand.Desc>작업대, TV, 연구대 같은 건물이 쓰는 동안만 정격 전력을 쓰고 쉬는 동안에는 1W만 씁니다. (Turn It On and Off)</Yuudong2.Feature.PowerOnDemand.Desc>
   <Yuudong2.Feature.WeaponPair>근접·원거리 무기 함께 들기</Yuudong2.Feature.WeaponPair>
-  <Yuudong2.Feature.WeaponPair.Desc>정착민이 근접 무기와 원거리 무기를 하나씩 함께 지닙니다. 한쪽을 든 채로 다른 종류의 무기를 장착하면 들고 있던 무기는 떨어뜨리지 않고 소지품에 넣습니다. 적이 붙으면 근접 무기로, 붙은 적이 없으면 원거리 무기로 알아서 바꿔 듭니다. 정착민을 선택하면 나오는 버튼으로 한쪽 무기에 고정할 수 있습니다. 무기를 하나만 든 정착민은 한가할 때 다른 종류의 무기 중 가장 좋은 것을 알아서 찾아 지닙니다. 보조 무기는 장비 탭에서 내려놓을 수 있고, 그렇게 내려놓은 정착민은 다시 직접 장착시킬 때까지 알아서 찾지 않습니다.</Yuudong2.Feature.WeaponPair.Desc>
+  <Yuudong2.Feature.WeaponPair.Desc>정착민이 근접 무기와 원거리 무기를 하나씩 함께 지닙니다. 한쪽을 든 채로 다른 종류의 무기를 장착하면 들고 있던 무기는 떨어뜨리지 않고 소지품에 넣습니다. 적이 붙으면 근접 무기로, 붙은 적이 없으면 원거리 무기로 알아서 바꿔 듭니다. 정착민을 선택하면 나오는 버튼으로 한쪽 무기에 고정할 수 있습니다. 정착민은 한가할 때 지니지 않은 종류의 무기 중 가장 좋은 것을 알아서 찾아 근접·원거리를 하나씩 갖춥니다. 맨손이면 소지품의 무기를 먼저 꺼내 듭니다. 난투가와 사격 불가인 정착민은 근접 무기만 찾습니다. 의류 정책에 무기 포함을 켜면 정책이 허용하는 무기만 고릅니다. 소지품의 무기는 장비 탭에서 내려놓을 수 있고, 그렇게 내려놓은 정착민은 다시 직접 장착시킬 때까지 알아서 찾지 않습니다.</Yuudong2.Feature.WeaponPair.Desc>
   <Yuudong2.WeaponPair.Command>무기: {0}</Yuudong2.WeaponPair.Command>
   <Yuudong2.WeaponPair.CommandDesc>근접: {0}
 원거리: {1}
@@ -655,7 +655,7 @@
   <Yuudong2.StackLimit.Multiplier>겹치기 배수: x{0}</Yuudong2.StackLimit.Multiplier>
   <Yuudong2.StackLimit.Multiplier.Desc>예를 들어 x3이면 강철이 한 칸에 225개까지 쌓입니다. 배수를 낮춰도 이미 더 크게 쌓인 묶음은 그대로 둡니다.</Yuudong2.StackLimit.Multiplier.Desc>
   <Yuudong2.Feature.PolicyWeapons>의류 정책에 무기 포함</Yuudong2.Feature.PolicyWeapons>
-  <Yuudong2.Feature.PolicyWeapons.Desc>의류 정책에서 무기도 고를 수 있습니다. 정책에서 뺀 무기는 정착민이 알아서 집지 않고, 들고 있으면 한가할 때 내려놓습니다. 맨손인 정착민은 한가할 때 정책이 허용하는 무기 중 가장 좋은 것을 찾아 듭니다(총 먼저, 난투가는 근접 먼저). 직접 장착시킨 무기는 강제 착용한 옷처럼 그대로 둡니다. 기존 정책은 모든 무기를 허용한 상태로 시작합니다.</Yuudong2.Feature.PolicyWeapons.Desc>
+  <Yuudong2.Feature.PolicyWeapons.Desc>의류 정책에서 무기도 고를 수 있습니다. 정책에서 뺀 무기는 정착민이 알아서 집지 않고, 들고 있으면 한가할 때 내려놓습니다. 직접 장착시킨 무기는 강제 착용한 옷처럼 그대로 둡니다. 기존 정책은 모든 무기를 허용한 상태로 시작합니다.</Yuudong2.Feature.PolicyWeapons.Desc>
   <Yuudong2.Feature.NoBeaconAlert>신호기 사용불가 경고 숨김</Yuudong2.Feature.NoBeaconAlert>
   <Yuudong2.Feature.NoBeaconAlert.Desc>착륙 신호기가 착륙장을 이루지 못했을 때 뜨는 "신호기 사용불가" 경고를 띄우지 않습니다.</Yuudong2.Feature.NoBeaconAlert.Desc>
   <Yuudong2.Surgery.Tab.Plans>이식 계획</Yuudong2.Surgery.Tab.Plans>
