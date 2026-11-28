@@ -11,5 +11,7 @@
     <li IfModActiveAll="RooAndGloomy.DragonianRaceMod, Ludeon.RimWorld.Biotech">DragonianMix/Bio1.7</li>
     <li IfModActiveAll="RooAndGloomy.DragonianRaceMod, Ludeon.RimWorld.Royalty">DragonianMix/Royal1.7</li>
     <li IfModActiveAll="RooAndGloomy.DragonianRaceMod, hailuan.customquestframework">DragonianMix/CQF1.7</li>
+    <!-- 파동 미니건과 광폭쥐 프로젝트: 랫킨 종족 모드가 있을 때만 읽는다. -->
+    <li IfModActive="Solaris.RatkinRaceMod">Ratkin</li>
   </v1.7>
 </loadFolders>

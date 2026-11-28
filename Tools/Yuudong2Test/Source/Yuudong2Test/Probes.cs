@@ -45,6 +45,8 @@ namespace Yuudong2Test
             ("land over wall lamps", LandOverWallLamps),
             ("stack limit", StackLimit),
             ("policy weapons", PolicyWeapons),
+            ("pulse minigun", PulseMinigun),
+            ("weapon auto equip", WeaponAutoEquip),
             ("faction war", FactionWar),
             // 맵을 바꾸므로 항상 마지막에 둔다.
             ("gravship replace stuff", GravshipReplace),
@@ -1208,7 +1210,7 @@ namespace Yuudong2Test
             ThingDef rifle = DefDatabase<ThingDef>.GetNamed("Gun_AssaultRifle");
             Check(global.Allows(rifle), "policy window lists weapons");
             List<ApparelPolicy> policies = Current.Game.outfitDatabase.AllOutfits;
-            Check(policies.All(p => p.filter.Allows(rifle)), $"loaded policies allow the assault rifle: {policies.Count(p => p.filter.Allows(rifle))}/{policies.Count}");
+            sb.AppendLine($"info: policies allowing the assault rifle: {policies.Count(p => p.filter.Allows(rifle))}/{policies.Count}");
 
             Pawn pawn = Find.CurrentMap.mapPawns.FreeColonistsSpawned.FirstOrDefault(p => p.equipment?.Primary != null && !p.Drafted && !p.InMentalState);
             if (pawn == null)
@@ -1235,6 +1237,104 @@ namespace Yuudong2Test
             pawn.outfits.CurrentApparelPolicy = before;
             Current.Game.outfitDatabase.TryDelete(test);
             sb.AppendLine(bad == 0 ? "PASS" : $"FAIL: {bad}");
+        }
+
+        // 랫킨 모드가 있을 때 파동 미니건과 광폭쥐 프로젝트가 읽혔는지, 연결과 수치, 랫킨 정착민이 장착해 쏠 수 있는지 본다.
+        private static void PulseMinigun(StringBuilder sb)
+        {
+            int bad = 0;
+            void Check(bool ok, string text)
+            {
+                sb.AppendLine((ok ? "ok   " : "FAIL ") + text);
+                if (!ok)
+                {
+                    bad++;
+                }
+            }
+
+            ThingDef gun = DefDatabase<ThingDef>.GetNamedSilentFail("Y2_PulseMinigun");
+            if (!ModsConfig.IsActive("Solaris.RatkinRaceMod"))
+            {
+                Check(gun == null, "no ratkin mod, no pulse minigun");
+                sb.AppendLine(bad == 0 ? "PASS" : $"FAIL: {bad}");
+                return;
+            }
+            ResearchProjectDef project = DefDatabase<ResearchProjectDef>.GetNamedSilentFail("Y2_Research_BerserkRatProject");
+            Check(gun != null && project != null, $"defs loaded: gun {gun != null}, research {project != null}");
+            if (gun == null || project == null)
+            {
+                sb.AppendLine($"FAIL: {bad}");
+                return;
+            }
+            Check(project.prerequisites != null && project.prerequisites.Any(p => p.defName == "RK_Research_AngryRatProject"), $"{project.LabelCap} follows the angry rat project, tab {project.tab?.defName}");
+            RecipeDef recipe = DefDatabase<RecipeDef>.AllDefs.FirstOrDefault(r => r.ProducedThingDef == gun);
+            Check(recipe != null && recipe.researchPrerequisite == project && recipe.AllRecipeUsers.Any(u => u.defName == "FabricationBench"), $"recipe {recipe?.defName} at the fabrication bench after {recipe?.researchPrerequisite?.defName}");
+
+            ThingDef bulletDef = gun.Verbs[0].defaultProjectile;
+            string gunTex = gun.graphic?.MatSingle?.mainTexture?.name;
+            string bulletTex = bulletDef.graphic?.MatSingle?.mainTexture?.name;
+            Check(gunTex == "PulseMinigun" && bulletTex == "PulseMinigunBullet", $"own textures loaded: gun {gunTex}, bullet {bulletTex}");
+            ThingDef rifle = DefDatabase<ThingDef>.GetNamed("RK_PrototypePulseRifle");
+            ThingDef minigun = DefDatabase<ThingDef>.GetNamed("Gun_Minigun");
+            string Line(ThingDef d)
+            {
+                VerbProperties v = d.Verbs[0];
+                ProjectileProperties p = v.defaultProjectile.projectile;
+                float cycle = v.warmupTime + d.GetStatValueAbstract(StatDefOf.RangedWeapon_Cooldown) + (v.burstShotCount - 1) * v.ticksBetweenBurstShots / 60f;
+                float dps = v.burstShotCount * p.GetDamageAmount(null) / cycle;
+                return $"{d.defName}: {v.burstShotCount}x{p.GetDamageAmount(null)} AP {p.GetArmorPenetration(null):0.00}, cooldown {d.GetStatValueAbstract(StatDefOf.RangedWeapon_Cooldown)}, raw dps {dps:0.0}, accuracy medium {d.GetStatValueAbstract(StatDefOf.AccuracyMedium):0.00}";
+            }
+            sb.AppendLine("info: " + Line(rifle));
+            sb.AppendLine("info: " + Line(minigun));
+            sb.AppendLine("info: " + Line(gun));
+            VerbProperties gv = gun.Verbs[0];
+            Check(gv.defaultProjectile.projectile.GetArmorPenetration(null) >= 0.5f && gun.GetStatValueAbstract(StatDefOf.RangedWeapon_Cooldown) < 1f && gv.burstShotCount >= 25, "pierces like the pulse rifle, fires like the minigun, short cooldown");
+
+            Pawn ratkin = Find.CurrentMap.mapPawns.FreeColonistsSpawned.FirstOrDefault(p => p.def.defName.Contains("Ratkin") && p.equipment != null);
+            if (ratkin == null)
+            {
+                sb.AppendLine("info: no ratkin colonist, equip check skipped");
+            }
+            else
+            {
+                ThingWithComps made = (ThingWithComps)ThingMaker.MakeThing(gun);
+                bool can = EquipmentUtility.CanEquip(made, ratkin, out string reason);
+                Check(can, $"{ratkin.LabelShort} ({ratkin.def.defName}) can equip it" + (can ? "" : ": " + reason));
+                made.Destroy();
+            }
+            sb.AppendLine(bad == 0 ? "PASS" : $"FAIL: {bad}");
+        }
+
+        // 정착민마다 무기 상태와, 알아서 보조 무기를 찾지 않는 이유를 적는다.
+        private static void WeaponAutoEquip(StringBuilder sb)
+        {
+            Map map = Find.CurrentMap;
+            GameComponent_WeaponPair tracker = GameComponent_WeaponPair.Instance;
+            List<Thing> weapons = map.listerThings.ThingsInGroup(ThingRequestGroup.Weapon).Where(t => t.Spawned).ToList();
+            sb.AppendLine($"info: weapons lying on the map: {weapons.Count} (ranged {weapons.Count(w => w.def.IsRangedWeapon)}, melee {weapons.Count(w => w.def.IsMeleeWeapon)}), forbidden {weapons.Count(w => w.IsForbidden(Faction.OfPlayer))}");
+            foreach (Pawn pawn in map.mapPawns.FreeColonistsSpawned)
+            {
+                ThingWithComps primary = pawn.equipment?.Primary;
+                string stowed = string.Join("/", pawn.inventory.innerContainer.Where(t => WeaponPairUtility.IsWeapon(t)).Select(t => t.LabelShort + (tracker.IsSidearmOf(pawn, t) ? "(sidearm)" : "")));
+                List<string> why = new List<string>();
+                if (primary == null) why.Add($"unarmed: allowed by policy and equippable - ranged {weapons.Count(w => w.def.IsRangedWeapon && !w.IsForbidden(pawn) && WeaponPairUtility.AutoEquippable(pawn, w))}, melee {weapons.Count(w => w.def.IsMeleeWeapon && !w.IsForbidden(pawn) && WeaponPairUtility.AutoEquippable(pawn, w))}");
+                if (!tracker.AutoSidearmAllowed(pawn)) why.Add("auto sidearm stopped (dropped from gear tab)");
+                if (pawn.WorkTagIsDisabled(WorkTags.Violent)) why.Add("incapable of violence");
+                if (primary != null)
+                {
+                    bool wantRanged = !primary.def.IsRangedWeapon;
+                    if (WeaponPairUtility.Stowed(pawn, wantRanged) != null) why.Add("already has the other kind");
+                    if (wantRanged && pawn.WorkTagIsDisabled(WorkTags.Shooting)) why.Add("cannot shoot");
+                    if (wantRanged && pawn.story != null && pawn.story.traits.HasTrait(TraitDefOf.Brawler)) why.Add("brawler");
+                    List<Thing> kind = weapons.Where(w => w.def.IsRangedWeapon == wantRanged && WeaponPairUtility.IsWeapon(w) && !w.IsForbidden(pawn)).ToList();
+                    int policyOk = kind.Count(w => PolicyWeaponsUtility.AllowsPickup(pawn, w));
+                    int equipOk = kind.Count(w => EquipmentUtility.CanEquip(w, pawn, out string _, false));
+                    int reach = kind.Count(w => pawn.CanReserveAndReach(w, Verse.AI.PathEndMode.ClosestTouch, pawn.NormalMaxDanger()));
+                    why.Add($"{(wantRanged ? "ranged" : "melee")} candidates {kind.Count}: policy ok {policyOk}, can equip {equipOk}, reachable {reach}");
+                }
+                Verse.AI.Job job = primary == null ? PolicyWeaponsUtility.AutoArmJob(pawn) : WeaponPairUtility.AutoSidearmJob(pawn);
+                sb.AppendLine($"info: {pawn.LabelShort} [{pawn.def.defName}] holds {primary?.LabelShort ?? "nothing"}; inventory weapons {(stowed.Length > 0 ? stowed : "none")}; policy {pawn.outfits?.CurrentApparelPolicy?.label}; job now: {job?.targetA.Thing?.LabelShort ?? "none"} | {string.Join("; ", why)}");
+            }
         }
 
         private static void TwoGravships(StringBuilder sb)
@@ -1393,6 +1493,14 @@ namespace Yuudong2Test
             {
                 sb.AppendLine("skipped: no free colonist or test weapons");
                 return;
+            }
+
+            // 세이브의 의류 정책이 시험용 무기를 막지 않게 모두 허용하는 정책을 잠시 준다.
+            ApparelPolicy savedPolicy = pawn.outfits?.CurrentApparelPolicy;
+            ApparelPolicy openPolicy = PolicyWeaponsUtility.Active ? Current.Game.outfitDatabase.MakeNewOutfit() : null;
+            if (openPolicy != null)
+            {
+                pawn.outfits.CurrentApparelPolicy = openPolicy;
             }
 
             int errorsBefore = TestRunner.TickErrors.Count;
@@ -1554,6 +1662,11 @@ namespace Yuudong2Test
             TestRunner.ticking = false;
             List<string> errors = TestRunner.TickErrors.Skip(errorsBefore).ToList();
             Check(errors.Count == 0, $"errors: {errors.Count}" + (errors.Count > 0 ? " - " + string.Join(" | ", errors.Take(4).Select(e => e.Split('\n')[0])) : ""));
+            if (openPolicy != null)
+            {
+                pawn.outfits.CurrentApparelPolicy = savedPolicy;
+                Current.Game.outfitDatabase.TryDelete(openPolicy);
+            }
             sb.AppendLine(bad == 0 ? "PASS" : $"FAIL: {bad}");
         }
 

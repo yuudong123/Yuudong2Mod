@@ -7,6 +7,7 @@ using Verse.AI;
 namespace Yuudong2Mod
 {
     // 의류 정책 필터에 무기 분류를 더한다. 정책에서 뺀 무기는 정착민이 알아서 집지 않고, 들고 있으면 한가할 때 내려놓는다.
+    // 맨손인 정착민은 한가할 때 정책이 허용하는 무기를 찾아 든다.
     // 플레이어가 직접 장착시킨 무기는 의류의 강제 착용처럼 정책에서 빠져 있어도 그대로 둔다.
     public class GameComponent_PolicyWeapons : GameComponent
     {
@@ -53,6 +54,12 @@ namespace Yuudong2Mod
             policy.filter.SetAllow(ThingCategoryDefOf.Weapons, true);
         }
 
+        // 정책 창에 나오는 무기(무기 분류 아래에 있는 것)만 정책을 따른다. 분류 밖의 모드 무기는 고를 수 없으니 막지 않는다.
+        public static bool InScope(ThingDef def)
+        {
+            return def.IsWithinCategory(ThingCategoryDefOf.Weapons);
+        }
+
         private static ApparelPolicy PolicyOf(Pawn pawn)
         {
             if (pawn.outfits == null || pawn.Faction == null || !pawn.Faction.IsPlayer || !pawn.RaceProps.Humanlike)
@@ -66,18 +73,80 @@ namespace Yuudong2Mod
         public static bool AllowsPickup(Pawn pawn, Thing weapon)
         {
             ApparelPolicy policy = PolicyOf(pawn);
-            return policy == null || policy.filter.Allows(weapon);
+            return policy == null || !InScope(weapon.def) || policy.filter.Allows(weapon);
         }
 
         // 들고 있는 무기를 내려놓을 때: 무기 종류가 빠졌는지만 본다. 싸우다 닳았다고 유일한 무기를 버리지 않게 한다.
         public static bool MustDrop(Pawn pawn, Thing weapon)
         {
             ApparelPolicy policy = PolicyOf(pawn);
-            if (policy == null || weapon == null || !weapon.def.IsWeapon || policy.filter.Allows(weapon.def))
+            if (policy == null || weapon == null || !weapon.def.IsWeapon || !InScope(weapon.def) || policy.filter.Allows(weapon.def))
             {
                 return false;
             }
             return GameComponent_PolicyWeapons.Instance == null || !GameComponent_PolicyWeapons.Instance.IsForced(weapon);
+        }
+
+        private const int ArmSearchInterval = 2500;
+
+        private static readonly Dictionary<int, int> nextArmSearch = new Dictionary<int, int>();
+
+        // 맨손인 정착민이 한가할 때: 정책이 허용하는 무기 중 가장 좋은 것을 찾아 장착하러 간다.
+        // 총을 먼저 찾고(난투가·사격 불가·근접 고정이면 근접 먼저), 없으면 다른 종류를 찾는다.
+        public static Job AutoArmJob(Pawn pawn)
+        {
+            if (!pawn.Spawned || pawn.Drafted || !pawn.IsColonist || pawn.Map == null || !pawn.Map.IsPlayerHome || pawn.equipment == null
+                || pawn.equipment.Primary != null || pawn.InMentalState || pawn.IsQuestLodger() || pawn.WorkTagIsDisabled(WorkTags.Violent)
+                || !pawn.health.capacities.CapableOf(PawnCapacityDefOf.Manipulation))
+            {
+                return null;
+            }
+
+            int tick = Find.TickManager.TicksGame;
+            if (nextArmSearch.TryGetValue(pawn.thingIDNumber, out int next) && tick < next)
+            {
+                return null;
+            }
+            nextArmSearch[pawn.thingIDNumber] = tick + ArmSearchInterval + pawn.thingIDNumber % 600;
+
+            // 소지품에 보조 무기가 있으면 무기 2개 착용이 싸울 때 꺼내 든다.
+            if (WeaponPairUtility.Active && (WeaponPairUtility.Stowed(pawn, true) != null || WeaponPairUtility.Stowed(pawn, false) != null))
+            {
+                return null;
+            }
+
+            WeaponPairMode mode = WeaponPairUtility.Active ? WeaponPairUtility.ModeOf(pawn) : WeaponPairMode.Auto;
+            bool canShoot = !pawn.WorkTagIsDisabled(WorkTags.Shooting) && (pawn.story == null || !pawn.story.traits.HasTrait(TraitDefOf.Brawler));
+            bool rangedFirst = canShoot && mode != WeaponPairMode.Melee;
+            Thing best = BestWeapon(pawn, rangedFirst);
+            if (best == null && mode == WeaponPairMode.Auto && (canShoot || rangedFirst))
+            {
+                best = BestWeapon(pawn, !rangedFirst);
+            }
+            return best == null ? null : JobMaker.MakeJob(JobDefOf.Equip, best);
+        }
+
+        private static Thing BestWeapon(Pawn pawn, bool ranged)
+        {
+            Thing best = null;
+            float bestScore = 0f;
+            List<Thing> weapons = pawn.Map.listerThings.ThingsInGroup(ThingRequestGroup.Weapon);
+            for (int i = 0; i < weapons.Count; i++)
+            {
+                Thing thing = weapons[i];
+                if (!thing.Spawned || thing.def.IsRangedWeapon != ranged || !WeaponPairUtility.IsWeapon(thing) || thing.IsForbidden(pawn) || thing.IsBurning())
+                {
+                    continue;
+                }
+                float score = WeaponPairUtility.SidearmScore(thing, ranged);
+                if (score <= bestScore || !WeaponPairUtility.AutoEquippable(pawn, thing))
+                {
+                    continue;
+                }
+                best = thing;
+                bestScore = score;
+            }
+            return best;
         }
 
         public static Job DropJob(Pawn pawn)
@@ -193,7 +262,7 @@ namespace Yuudong2Mod
         {
             if (__result == null)
             {
-                __result = PolicyWeaponsUtility.DropJob(pawn);
+                __result = PolicyWeaponsUtility.DropJob(pawn) ?? PolicyWeaponsUtility.AutoArmJob(pawn);
             }
         }
     }

@@ -655,7 +655,7 @@
   <Yuudong2.StackLimit.Multiplier>겹치기 배수: x{0}</Yuudong2.StackLimit.Multiplier>
   <Yuudong2.StackLimit.Multiplier.Desc>예를 들어 x3이면 강철이 한 칸에 225개까지 쌓입니다. 배수를 낮춰도 이미 더 크게 쌓인 묶음은 그대로 둡니다.</Yuudong2.StackLimit.Multiplier.Desc>
   <Yuudong2.Feature.PolicyWeapons>의류 정책에 무기 포함</Yuudong2.Feature.PolicyWeapons>
-  <Yuudong2.Feature.PolicyWeapons.Desc>의류 정책에서 무기도 고를 수 있습니다. 정책에서 뺀 무기는 정착민이 알아서 집지 않고, 들고 있으면 한가할 때 내려놓습니다. 직접 장착시킨 무기는 강제 착용한 옷처럼 그대로 둡니다. 기존 정책은 모든 무기를 허용한 상태로 시작합니다.</Yuudong2.Feature.PolicyWeapons.Desc>
+  <Yuudong2.Feature.PolicyWeapons.Desc>의류 정책에서 무기도 고를 수 있습니다. 정책에서 뺀 무기는 정착민이 알아서 집지 않고, 들고 있으면 한가할 때 내려놓습니다. 맨손인 정착민은 한가할 때 정책이 허용하는 무기 중 가장 좋은 것을 찾아 듭니다(총 먼저, 난투가는 근접 먼저). 직접 장착시킨 무기는 강제 착용한 옷처럼 그대로 둡니다. 기존 정책은 모든 무기를 허용한 상태로 시작합니다.</Yuudong2.Feature.PolicyWeapons.Desc>
   <Yuudong2.Feature.NoBeaconAlert>신호기 사용불가 경고 숨김</Yuudong2.Feature.NoBeaconAlert>
   <Yuudong2.Feature.NoBeaconAlert.Desc>착륙 신호기가 착륙장을 이루지 못했을 때 뜨는 "신호기 사용불가" 경고를 띄우지 않습니다.</Yuudong2.Feature.NoBeaconAlert.Desc>
   <Yuudong2.Surgery.Tab.Plans>이식 계획</Yuudong2.Surgery.Tab.Plans>

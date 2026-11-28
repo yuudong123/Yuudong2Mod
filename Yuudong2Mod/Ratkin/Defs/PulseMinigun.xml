@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+
+  <!-- 광폭쥐 프로젝트: 성난쥐 프로젝트(랫킨 파동 소총)에서 이어지는 연구 -->
+  <ResearchProjectDef ParentName="RK_ResearchAttr_Base">
+    <defName>Y2_Research_BerserkRatProject</defName>
+    <label>berserk rat project</label>
+    <description>Pushes the angry rat project further: the wedge-shaped energy rounds of the prototype pulse rifle, fed through a spinning multi-barrel frame.</description>
+    <techLevel>Spacer</techLevel>
+    <baseCost>5000</baseCost>
+    <researchViewX>6</researchViewX>
+    <researchViewY>1</researchViewY>
+    <prerequisites>
+      <li>RK_Research_AngryRatProject</li>
+    </prerequisites>
+    <requiredResearchBuilding>HiTechResearchBench</requiredResearchBuilding>
+    <requiredResearchFacilities>
+      <li>MultiAnalyzer</li>
+    </requiredResearchFacilities>
+  </ResearchProjectDef>
+
+  <!-- 파동 미니건: 파동 소총의 관통력·정확도와 미니건의 연사를 합치고, 사격 후 대기를 줄였다 -->
+  <ThingDef ParentName="RK_IndustrialRangeWeapon">
+    <defName>Y2_PulseMinigun</defName>
+    <label>pulse minigun</label>
+    <description>A multi-barrel gun that fires the pulse rifle's wedge-shaped, high-penetration energy rounds as fast as a minigun. Its targeting lens keeps the stream tight at every range, and the barrels keep spinning between bursts so it is ready again almost at once.</description>
+    <graphicData>
+      <texPath>Yuudong2/Weapon/PulseMinigun</texPath>
+      <graphicClass>Graphic_Single</graphicClass>
+    </graphicData>
+    <soundInteract>Interact_Rifle</soundInteract>
+    <techLevel>Spacer</techLevel>
+    <weaponClasses>
+      <li>RangedHeavy</li>
+    </weaponClasses>
+    <statBases>
+      <WorkToMake>80000</WorkToMake>
+      <Mass>9</Mass>
+      <AccuracyTouch>0.75</AccuracyTouch>
+      <AccuracyShort>0.85</AccuracyShort>
+      <AccuracyMedium>0.65</AccuracyMedium>
+      <AccuracyLong>0.45</AccuracyLong>
+      <RangedWeapon_Cooldown>0.5</RangedWeapon_Cooldown>
+    </statBases>
+    <equippedStatOffsets>
+      <MoveSpeed>-0.15</MoveSpeed>
+    </equippedStatOffsets>
+    <costList>
+      <Plasteel>150</Plasteel>
+      <ComponentIndustrial>10</ComponentIndustrial>
+      <ComponentSpacer>3</ComponentSpacer>
+    </costList>
+    <comps Inherit="False">
+      <li Class="CompProperties_Forbiddable"/>
+      <li>
+        <compClass>CompEquippable</compClass>
+      </li>
+      <li Class="CompProperties_Styleable"/>
+      <li Class="CompProperties_Biocodable"/>
+      <li>
+        <compClass>CompQuality</compClass>
+      </li>
+      <li Class="NewRatkin.CompProperties_WeaponGripType">
+        <gripTypes>
+          <li>TwoHand</li>
+        </gripTypes>
+      </li>
+    </comps>
+    <verbs>
+      <li>
+        <verbClass>Verb_Shoot</verbClass>
+        <hasStandardCommand>true</hasStandardCommand>
+        <defaultProjectile>Y2_Bullet_PulseMinigun</defaultProjectile>
+        <warmupTime>1.5</warmupTime>
+        <range>32.9</range>
+        <burstShotCount>25</burstShotCount>
+        <ticksBetweenBurstShots>4</ticksBetweenBurstShots>
+        <soundCast>PrototypePulse</soundCast>
+        <soundCastTail>GunTail_Heavy</soundCastTail>
+        <muzzleFlashScale>9</muzzleFlashScale>
+      </li>
+    </verbs>
+    <recipeMaker Inherit="false">
+      <workSpeedStat>GeneralLaborSpeed</workSpeedStat>
+      <workSkill>Crafting</workSkill>
+      <effectWorking>Smith</effectWorking>
+      <soundWorking>Recipe_Smith</soundWorking>
+      <recipeUsers>
+        <li>FabricationBench</li>
+      </recipeUsers>
+      <skillRequirements>
+        <Crafting>12</Crafting>
+      </skillRequirements>
+      <unfinishedThingDef>UnfinishedGun</unfinishedThingDef>
+      <researchPrerequisite>Y2_Research_BerserkRatProject</researchPrerequisite>
+      <displayPriority>78511</displayPriority>
+    </recipeMaker>
+    <!-- 랫킨·다른 세력이 들고 나오지 않게 무기 태그는 이 무기 전용 하나만 둔다. -->
+    <weaponTags Inherit="false">
+      <li>Y2_PulseMinigun</li>
+    </weaponTags>
+    <tradeTags Inherit="false" />
+    <tools>
+      <li>
+        <label>barrels</label>
+        <capacities>
+          <li>Blunt</li>
+          <li>Poke</li>
+        </capacities>
+        <power>9</power>
+        <cooldownTime>2.6</cooldownTime>
+      </li>
+    </tools>
+    <tradeability>Sellable</tradeability>
+  </ThingDef>
+
+  <ThingDef ParentName="RK_BaseBullet">
+    <defName>Y2_Bullet_PulseMinigun</defName>
+    <label>wedge bullet</label>
+    <graphicData>
+      <texPath>Yuudong2/Weapon/PulseMinigunBullet</texPath>
+      <shaderType>TransparentPostLight</shaderType>
+      <graphicClass>Graphic_Single</graphicClass>
+    </graphicData>
+    <projectile>
+      <damageDef>Bullet</damageDef>
+      <damageAmountBase>13</damageAmountBase>
+      <speed>88</speed>
+      <armorPenetrationBase>0.55</armorPenetrationBase>
+    </projectile>
+  </ThingDef>
+
+</Defs>

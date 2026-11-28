@@ -435,13 +435,13 @@ namespace Yuudong2Mod
             return best == null ? null : JobMaker.MakeJob(JobDefOf.Equip, best);
         }
 
-        private static float SidearmScore(Thing thing, bool ranged)
+        public static float SidearmScore(Thing thing, bool ranged)
         {
             return ranged ? thing.MarketValue : thing.GetStatValue(StatDefOf.MeleeWeapon_AverageDPS);
         }
 
         // 유대 무기는 고르지 않는다. 장착하면 그 정착민에게 묶여 되돌릴 수 없다.
-        private static bool AutoEquippable(Pawn pawn, Thing thing)
+        public static bool AutoEquippable(Pawn pawn, Thing thing)
         {
             if (thing.TryGetComp<CompBladelinkWeapon>() != null || MassUtility.WillBeOverEncumberedAfterPickingUp(pawn, thing, 1))
             {

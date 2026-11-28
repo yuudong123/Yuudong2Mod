@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <Y2_PulseMinigun.label>파동 미니건</Y2_PulseMinigun.label>
+  <Y2_PulseMinigun.description>파동 소총의 쐐기 모양 고관통 에너지탄을 미니건처럼 쏟아붓는 다총열 화기입니다. 특수망원렌즈 덕분에 거리와 상관없이 탄이 잘 모이고, 사격 사이에도 총열이 계속 돌아 거의 바로 다시 쏠 수 있습니다.</Y2_PulseMinigun.description>
+  <Y2_PulseMinigun.tools.barrels.label>총열</Y2_PulseMinigun.tools.barrels.label>
+  <Y2_Bullet_PulseMinigun.label>쐐기탄</Y2_Bullet_PulseMinigun.label>
+</LanguageData>
