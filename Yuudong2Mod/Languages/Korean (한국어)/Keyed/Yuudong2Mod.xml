@@ -42,7 +42,7 @@
   <Yuudong2.Feature.PowerOnDemand>사용할 때만 전력 소모</Yuudong2.Feature.PowerOnDemand>
   <Yuudong2.Feature.PowerOnDemand.Desc>작업대, TV, 연구대 같은 건물이 쓰는 동안만 정격 전력을 쓰고 쉬는 동안에는 1W만 씁니다. (Turn It On and Off)</Yuudong2.Feature.PowerOnDemand.Desc>
   <Yuudong2.Feature.WeaponPair>근접·원거리 무기 함께 들기</Yuudong2.Feature.WeaponPair>
-  <Yuudong2.Feature.WeaponPair.Desc>정착민이 근접 무기와 원거리 무기를 하나씩 함께 지닙니다. 한쪽을 든 채로 다른 종류의 무기를 장착하면 들고 있던 무기는 떨어뜨리지 않고 소지품에 넣습니다. 적이 붙으면 근접 무기로, 붙은 적이 없으면 원거리 무기로 알아서 바꿔 듭니다. 정착민을 선택하면 나오는 버튼으로 한쪽 무기에 고정할 수 있습니다. 정착민은 한가할 때 지니지 않은 종류의 무기 중 가장 좋은 것을 알아서 찾아 근접·원거리를 하나씩 갖춥니다. 맨손이면 소지품의 무기를 먼저 꺼내 듭니다. 난투가와 사격 불가인 정착민은 근접 무기만 찾습니다. 의류 정책에 무기 포함을 켜면 정책이 허용하는 무기만 고릅니다. 소지품의 무기는 장비 탭에서 내려놓을 수 있고, 그렇게 내려놓은 정착민은 다시 직접 장착시킬 때까지 알아서 찾지 않습니다.</Yuudong2.Feature.WeaponPair.Desc>
+  <Yuudong2.Feature.WeaponPair.Desc>정착민이 근접 무기와 원거리 무기를 하나씩 함께 지닙니다. 한쪽을 든 채로 다른 종류의 무기를 장착하면 들고 있던 무기는 떨어뜨리지 않고 소지품에 넣습니다. 적이 붙으면 근접 무기로, 붙은 적이 없으면 원거리 무기로 알아서 바꿔 듭니다. 정착민을 선택하면 나오는 버튼으로 한쪽 무기에 고정할 수 있습니다. 정착민은 한가할 때 지니지 않은 종류의 무기 중 가장 좋은 것을 알아서 찾아 근접·원거리를 하나씩 갖춥니다. 맨손이면 소지품의 무기를 먼저 꺼내 듭니다. 난투가와 사격 불가인 정착민은 근접 무기만 찾습니다. 의류 정책 창의 무기 목록에 나오는 것만 찾고, 모드가 들 수 있게 만든 목재나 맥주잔 같은 것은 들지 않습니다. 의류 정책에 무기 포함을 켜면 정책이 허용하는 무기만 고릅니다. 소지품의 무기는 장비 탭에서 내려놓을 수 있고, 그렇게 내려놓은 정착민은 다시 직접 장착시킬 때까지 알아서 찾지 않습니다.</Yuudong2.Feature.WeaponPair.Desc>
   <Yuudong2.WeaponPair.Command>무기: {0}</Yuudong2.WeaponPair.Command>
   <Yuudong2.WeaponPair.CommandDesc>근접: {0}
 원거리: {1}

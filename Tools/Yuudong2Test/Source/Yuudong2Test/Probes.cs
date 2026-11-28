@@ -1315,6 +1315,15 @@ namespace Yuudong2Test
             GameComponent_WeaponPair tracker = GameComponent_WeaponPair.Instance;
             List<Thing> weapons = map.listerThings.ThingsInGroup(ThingRequestGroup.Weapon).Where(t => t.Spawned).ToList();
             sb.AppendLine($"info: weapons lying on the map: {weapons.Count} (ranged {weapons.Count(w => w.def.IsRangedWeapon)}, melee {weapons.Count(w => w.def.IsMeleeWeapon)}), forbidden {weapons.Count(w => w.IsForbidden(Faction.OfPlayer))}");
+            // 모드가 들 수 있게 만든 무기 분류 밖의 물건(목재, 맥주잔 등)은 알아서 들지 않는다.
+            List<ThingDef> oddDefs = DefDatabase<ThingDef>.AllDefs.Where(d => d.equipmentType == EquipmentType.Primary && (d.IsRangedWeapon || d.IsMeleeWeapon) && !PolicyWeaponsUtility.InScope(d)).ToList();
+            sb.AppendLine($"info: equippable things outside the weapon category: {oddDefs.Count}: {string.Join(", ", oddDefs.Take(15).Select(d => d.defName))}");
+            int oddPickable = oddDefs.Count(d => WeaponPairUtility.AutoPickable(d));
+            ThingDef revolver = DefDatabase<ThingDef>.GetNamedSilentFail("Gun_Revolver");
+            bool revolverPickable = revolver == null || WeaponPairUtility.AutoPickable(revolver);
+            sb.AppendLine($"{(oddPickable == 0 && revolverPickable ? "ok  " : "FAIL")} auto equip skips them ({oddPickable} pickable) and still takes a revolver ({revolverPickable})");
+            List<Thing> oddOnMap = weapons.Where(w => !PolicyWeaponsUtility.InScope(w.def)).ToList();
+            sb.AppendLine($"info: of them lying on the map: {oddOnMap.Count}: {string.Join(", ", oddOnMap.Take(10).Select(w => w.LabelShort))}");
             foreach (Pawn pawn in map.mapPawns.FreeColonistsSpawned)
             {
                 ThingWithComps primary = pawn.equipment?.Primary;
@@ -1336,6 +1345,10 @@ namespace Yuudong2Test
                     why.Add($"{(wantRanged ? "ranged" : "melee")} candidates {kind.Count}: policy ok {policyOk}, can equip {equipOk}, reachable {reach}");
                 }
                 Verse.AI.Job job = WeaponPairUtility.AutoArmJob(pawn);
+                if (job?.targetA.Thing != null && !PolicyWeaponsUtility.InScope(job.targetA.Thing.def))
+                {
+                    sb.AppendLine($"FAIL {pawn.LabelShort} goes to equip {job.targetA.Thing.LabelShort}, which is not in the weapon category");
+                }
                 sb.AppendLine($"info: {pawn.LabelShort} [{pawn.def.defName}] holds {primary?.LabelShort ?? "nothing"}; inventory weapons {(stowed.Length > 0 ? stowed : "none")}; policy {pawn.outfits?.CurrentApparelPolicy?.label}; job now: {job?.targetA.Thing?.LabelShort ?? "none"} | {string.Join("; ", why)}");
             }
         }

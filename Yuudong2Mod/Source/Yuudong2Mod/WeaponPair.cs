@@ -448,7 +448,7 @@ namespace Yuudong2Mod
             for (int i = 0; i < weapons.Count; i++)
             {
                 Thing thing = weapons[i];
-                if (!thing.Spawned || thing.def.IsRangedWeapon != ranged || !IsWeapon(thing) || thing.IsForbidden(pawn) || thing.IsBurning())
+                if (!thing.Spawned || thing.def.IsRangedWeapon != ranged || !IsWeapon(thing) || !AutoPickable(thing.def) || thing.IsForbidden(pawn) || thing.IsBurning())
                 {
                     continue;
                 }
@@ -462,6 +462,12 @@ namespace Yuudong2Mod
             }
 
             return best;
+        }
+
+        // 알아서 찾아 드는 것은 의류 정책 창에 나오는 무기(무기 분류 아래)뿐이다. 모드가 들 수 있게 만든 목재·맥주잔 같은 것은 고르지 않는다.
+        public static bool AutoPickable(ThingDef def)
+        {
+            return PolicyWeaponsUtility.InScope(def);
         }
 
         private static float WeaponScore(Thing thing, bool ranged)
