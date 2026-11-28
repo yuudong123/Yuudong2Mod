@@ -646,6 +646,12 @@ On automatic, the melee weapon is drawn when an enemy is adjacent and the ranged
   <Yuudong2.OrderTools.Mine.None>No connected ores. Select an ore or designate one first.</Yuudong2.OrderTools.Mine.None>
   <Yuudong2.Feature.GravshipNoRange>No gravship range limits</Yuudong2.Feature.GravshipNoRange>
   <Yuudong2.Feature.GravshipNoRange.Desc>Removes the circular range of the grav engine and grav field extenders. Substructure can go anywhere as long as it connects to the engine, and extenders can be placed and linked far from the engine. Ship size is limited only by substructure support.</Yuudong2.Feature.GravshipNoRange.Desc>
+  <Yuudong2.Feature.GravshipLaunchSiteExpiry>Reland at gravship launch sites</Yuudong2.Feature.GravshipLaunchSiteExpiry>
+  <Yuudong2.Feature.GravshipLaunchSiteExpiry.Desc>Leaving a tile without a grav anchor leaves a "gravship launch" marker that never goes away in vanilla, so you can never land there again. Markers older than the set number of days are removed, so you can land there again. Change the days in the details.</Yuudong2.Feature.GravshipLaunchSiteExpiry.Desc>
+  <Yuudong2.GravshipLaunchSiteExpiry.Days>Can land again after: {0} days</Yuudong2.GravshipLaunchSiteExpiry.Days>
+  <Yuudong2.GravshipLaunchSiteExpiry.Days.Desc>The launch marker disappears this long after leaving. At 0 days you can land again right away.</Yuudong2.GravshipLaunchSiteExpiry.Days.Desc>
+  <Yuudong2.Feature.UnattendedAnchorMap>Empty grav anchor maps are not colonies</Yuudong2.Feature.UnattendedAnchorMap>
+  <Yuudong2.Feature.UnattendedAnchorMap.Desc>In vanilla a map left behind with a grav anchor stays a colony: it gets raids and events and counts toward wealth and threat points. A map with a grav anchor but no colonists and no grav engine no longer counts as a colony. The map stays, and becomes a colony again when colonists go there or the ship returns.</Yuudong2.Feature.UnattendedAnchorMap.Desc>
   <Yuudong2.Feature.NoEmpBrainShock>No brain shock from EMP</Yuudong2.Feature.NoEmpBrainShock>
   <Yuudong2.Feature.NoEmpBrainShock.Desc>Brain implants hit by EMP no longer give brain shock or disorientation.</Yuudong2.Feature.NoEmpBrainShock.Desc>
   <Yuudong2.Feature.LandOverWallAttachments>Land over wall lamps</Yuudong2.Feature.LandOverWallAttachments>

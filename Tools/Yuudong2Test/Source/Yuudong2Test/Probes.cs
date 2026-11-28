@@ -48,6 +48,7 @@ namespace Yuudong2Test
             ("pulse minigun", PulseMinigun),
             ("weapon auto equip", WeaponAutoEquip),
             ("trader request cooldown", TraderRequestCooldownProbe),
+            ("gravship sites", GravshipSitesProbe),
             ("faction war", FactionWar),
             // 맵을 바꾸므로 항상 마지막에 둔다.
             ("gravship replace stuff", GravshipReplace),
@@ -1387,6 +1388,90 @@ namespace Yuudong2Test
 
             ally.lastTraderRequestTick = savedCaravan;
             ally.lastOrbitalTraderRequestTick = savedOrbital;
+            sb.AppendLine(bad == 0 ? "PASS" : $"FAIL: {bad}");
+        }
+
+        // 발진지 표시는 정한 날짜가 지나야 사라지고, 사라지면 그 타일에 중력선이 다시 내릴 수 있어야 한다.
+        // 닻만 있고 정착민·엔진이 없는 맵은 거점이 아니고, 정착민이 있으면 닻이 있어도 거점이다.
+        private static void GravshipSitesProbe(StringBuilder sb)
+        {
+            int bad = 0;
+            void Check(bool ok, string text)
+            {
+                sb.AppendLine((ok ? "ok   " : "FAIL ") + text);
+                if (!ok)
+                {
+                    bad++;
+                }
+            }
+
+            Map home = Find.AnyPlayerHomeMap;
+            if (!ModsConfig.OdysseyActive || home == null)
+            {
+                sb.AppendLine("skipped: no Odyssey or no home map");
+                return;
+            }
+            bool found = TileFinder.TryFindPassableTileWithTraversalDistance(home.Tile, 3, 12, out PlanetTile tile,
+                t => !Find.WorldObjects.AnyWorldObjectAt(t) && TileFinder.IsValidTileForNewSettlement(t, null, forGravship: true));
+            if (!found)
+            {
+                sb.AppendLine("skipped: no free tile near home");
+                return;
+            }
+
+            if (GravshipLaunchSiteUtility.Active)
+            {
+                int days = GravshipLaunchSiteUtility.Days;
+                int now = Find.TickManager.TicksGame;
+                WorldObject launch = WorldObjectMaker.MakeWorldObject(WorldObjectDefOf.GravshipLaunch);
+                launch.Tile = tile;
+                launch.SetFaction(Faction.OfPlayer);
+                Find.WorldObjects.Add(launch);
+                launch.creationGameTicks = now - days * GenDate.TicksPerDay + 1000;
+                GravshipLaunchSiteUtility.Sweep();
+                bool keptYoung = !launch.Destroyed && Find.WorldObjects.Contains(launch);
+                bool blockedYoung = !TileFinder.IsValidTileForNewSettlement(tile, null, forGravship: true);
+                launch.creationGameTicks = now - days * GenDate.TicksPerDay - 1;
+                GravshipLaunchSiteUtility.Sweep();
+                bool removedOld = !Find.WorldObjects.Contains(launch);
+                bool openOld = TileFinder.IsValidTileForNewSettlement(tile, null, forGravship: true);
+                Check(days > 0 ? keptYoung && blockedYoung && removedOld && openOld : removedOld && openOld,
+                    $"launch marker at {tile} with {days} days: just under -> kept {keptYoung}, blocks landing {blockedYoung}; past -> removed {removedOld}, can land {openOld}");
+                if (Find.WorldObjects.Contains(launch))
+                {
+                    Find.WorldObjects.Remove(launch);
+                }
+            }
+            else
+            {
+                sb.AppendLine("skipped: launch site expiry not applied");
+            }
+
+            if (Yuudong2Mod.Yuudong2Mod.AppliedFeatures.Contains(Features.UnattendedAnchorMap))
+            {
+                foreach (Map m in Find.Maps)
+                {
+                    sb.AppendLine($"info {m}: anchor={m.listerThings.AnyThingWithDef(ThingDefOf.GravAnchor)} colonists={m.mapPawns.AnyColonistSpawned} engine={GravshipUtility.PlayerHasGravEngine(m)} home={m.IsPlayerHome}");
+                }
+
+                Settlement outpost = SettleUtility.AddNewHome(tile, Faction.OfPlayer);
+                Map map = GetOrGenerateMapUtility.GetOrGenerateMap(tile, new IntVec3(50, 1, 50), null);
+                bool homeBare = map.IsPlayerHome;
+                Thing anchor = GenSpawn.Spawn(ThingMaker.MakeThing(ThingDefOf.GravAnchor), map.Center, map);
+                bool homeAnchored = map.IsPlayerHome;
+                Check(homeBare && !homeAnchored, $"new settlement map: home without anchor {homeBare}; anchor, no colonists, no engine -> home {homeAnchored}");
+                Find.WorldObjects.Remove(outpost);
+                Check(!Find.Maps.Contains(map), "test map removed");
+
+                IntVec3 cell = CellFinder.RandomClosewalkCellNear(home.Center, home, 20, c => c.Standable(home) && c.GetFirstBuilding(home) == null);
+                Thing homeAnchor = home.listerThings.AnyThingWithDef(ThingDefOf.GravAnchor) ? null : GenSpawn.Spawn(ThingMaker.MakeThing(ThingDefOf.GravAnchor), cell, home);
+                Check(home.IsPlayerHome, $"home map with colonists and an anchor stays home ({home.IsPlayerHome})");
+                homeAnchor?.Destroy();
+            }
+            else
+            {
+                sb.AppendLine("skipped: unattended anchor map not applied");
+            }
             sb.AppendLine(bad == 0 ? "PASS" : $"FAIL: {bad}");
         }
 
