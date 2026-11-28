@@ -78,7 +78,7 @@
   <Yuudong2.TradeStock.Settlement>정착지: {0}배</Yuudong2.TradeStock.Settlement>
   <Yuudong2.TradeStock.Visitor>방문객 상인: {0}배</Yuudong2.TradeStock.Visitor>
   <Yuudong2.Feature.OrbitalTraderFrequency>궤도 상선 빈도 4배</Yuudong2.Feature.OrbitalTraderFrequency>
-  <Yuudong2.Feature.OrbitalTraderFrequency.Desc>랜디처럼 무작위 사건을 쓰는 스토리텔러에서 궤도 상선이 4배 자주 옵니다. (Trading Options)</Yuudong2.Feature.OrbitalTraderFrequency.Desc>
+  <Yuudong2.Feature.OrbitalTraderFrequency.Desc>랜디처럼 무작위 사건을 쓰는 스토리텔러에서 궤도 상선이 4배 자주 옵니다. 통신기로 궤도 상선이나 상단을 부른 뒤 다시 부를 수 있을 때까지의 대기 시간도 4분의 1로 줄어듭니다(상단 4일 → 1일, 궤도 상선 15일 → 3.75일). (Trading Options)</Yuudong2.Feature.OrbitalTraderFrequency.Desc>
   <Yuudong2.Feature.InsultFaction>세력 모욕하기</Yuudong2.Feature.InsultFaction>
   <Yuudong2.Feature.InsultFaction.Desc>통신기 세력 대화에 모욕하기를 추가합니다. 적대 세력을 모욕하면 1~7시간 뒤 습격이 옵니다. (Raids For Me)</Yuudong2.Feature.InsultFaction.Desc>
   <Yuudong2.Feature.EpoeAiCore>EPOE 인공자아 핵</Yuudong2.Feature.EpoeAiCore>

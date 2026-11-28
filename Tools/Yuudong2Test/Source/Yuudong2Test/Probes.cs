@@ -47,6 +47,7 @@ namespace Yuudong2Test
             ("policy weapons", PolicyWeapons),
             ("pulse minigun", PulseMinigun),
             ("weapon auto equip", WeaponAutoEquip),
+            ("trader request cooldown", TraderRequestCooldownProbe),
             ("faction war", FactionWar),
             // 맵을 바꾸므로 항상 마지막에 둔다.
             ("gravship replace stuff", GravshipReplace),
@@ -1335,6 +1336,58 @@ namespace Yuudong2Test
                 Verse.AI.Job job = WeaponPairUtility.AutoArmJob(pawn);
                 sb.AppendLine($"info: {pawn.LabelShort} [{pawn.def.defName}] holds {primary?.LabelShort ?? "nothing"}; inventory weapons {(stowed.Length > 0 ? stowed : "none")}; policy {pawn.outfits?.CurrentApparelPolicy?.label}; job now: {job?.targetA.Thing?.LabelShort ?? "none"} | {string.Join("; ", why)}");
             }
+        }
+
+        // 동맹 세력에게 상단·궤도 상선을 부르는 메뉴를 만들어, 줄어든 대기 시간 안팎에서 켜지고 꺼지는지, 마지막 요청 시각이 그대로인지 본다.
+        private static void TraderRequestCooldownProbe(StringBuilder sb)
+        {
+            int bad = 0;
+            void Check(bool ok, string text)
+            {
+                sb.AppendLine((ok ? "ok   " : "FAIL ") + text);
+                if (!ok)
+                {
+                    bad++;
+                }
+            }
+
+            if (!Yuudong2Mod.Yuudong2Mod.AppliedFeatures.Contains(Features.OrbitalTraderFrequency))
+            {
+                sb.AppendLine("skipped: feature not applied");
+                return;
+            }
+            Map map = Find.AnyPlayerHomeMap;
+            Pawn negotiator = map.mapPawns.FreeColonistsSpawned.FirstOrDefault();
+            Faction ally = Find.FactionManager.AllFactionsVisible.FirstOrDefault(f => !f.IsPlayer && f.PlayerRelationKind == FactionRelationKind.Ally && f.def.canRequestTraders
+                && f.def.allowedArrivalTemperatureRange.ExpandedBy(-4f).Includes(map.mapTemperature.SeasonalTemp));
+            if (ally == null || negotiator == null)
+            {
+                sb.AppendLine("skipped: no ally that can send traders");
+                return;
+            }
+            int now = Find.TickManager.TicksGame;
+            DiaOption Make(string method)
+            {
+                return (DiaOption)HarmonyLib.AccessTools.Method(typeof(FactionDialogMaker), method).Invoke(null, new object[] { map, ally, negotiator });
+            }
+            int savedCaravan = ally.lastTraderRequestTick;
+            int savedOrbital = ally.lastOrbitalTraderRequestTick;
+
+            ally.lastTraderRequestTick = now - 70000;
+            bool caravanOpen = !Make("RequestTraderOption").disabled;
+            ally.lastTraderRequestTick = now - 50000;
+            DiaOption caravanWait = Make("RequestTraderOption");
+            Check(caravanOpen && caravanWait.disabled && ally.lastTraderRequestTick == now - 50000, $"{ally.Name}: caravan can be called again after 1 day (1.2 days ago: open {caravanOpen}; 0.8 days ago: {caravanWait.disabledReason})");
+
+            ally.lastOrbitalTraderRequestTick = now - 230000;
+            bool orbitalOpen = !Make("RequestOrbitalTraderOption").disabled;
+            ally.lastOrbitalTraderRequestTick = now - 200000;
+            DiaOption orbitalWait = Make("RequestOrbitalTraderOption");
+            Check(orbitalOpen && orbitalWait.disabled && ally.lastOrbitalTraderRequestTick == now - 200000, $"orbital trader can be called again after 3.75 days (3.8 days ago: open {orbitalOpen}; 3.3 days ago: {orbitalWait.disabledReason})");
+
+            ally.lastTraderRequestTick = savedCaravan;
+            ally.lastOrbitalTraderRequestTick = savedOrbital;
+            sb.AppendLine(bad == 0 ? "PASS" : $"FAIL: {bad}");
         }
 
         private static void TwoGravships(StringBuilder sb)

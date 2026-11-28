@@ -10,9 +10,10 @@ namespace Yuudong2Mod
     // Trading Options Continue 포팅.
     // - 궤도 상선·상단·정착지·방문객 상인의 재고와 은에 각각 배율을 곱한다. 기본값은 기존에 쓰던 8배(방문객 1배).
     // - 랜디 계열 스토리텔러의 궤도 방문 사건 가중치: 4배
+    // - 통신기로 궤도 상선·상단을 부른 뒤 다시 부를 수 있을 때까지의 대기 시간: 4분의 1
     internal static class TradingStockUtility
     {
-        private const float OrbitalVisitorWeightFactor = 4f;
+        public const float OrbitalVisitorWeightFactor = 4f;
         private const float MaxStockMultiplier = 20f;
 
         private enum TraderType
@@ -136,6 +137,52 @@ namespace Yuudong2Mod
         private static void Postfix(StockGenerator __instance, ref int __result)
         {
             __result = TradingStockUtility.ScaleCount(__instance.trader, __result);
+        }
+    }
+
+    // 통신기의 상인 요청 대기 시간을 궤도 상선 빈도와 같은 비율로 줄인다.
+    // 바닐라는 "마지막 요청 시각 + 대기 시간(상단 4일, 궤도 상선 15일)"과 지금을 비교하므로,
+    // 메뉴를 만드는 동안만 마지막 요청 시각을 줄어든 만큼 앞당겼다가 되돌린다.
+    internal static class TraderRequestCooldown
+    {
+        public const int CaravanTicks = 240000;
+        public const int OrbitalTicks = 900000;
+
+        public static int Shift(int cooldown)
+        {
+            return cooldown - Mathf.RoundToInt(cooldown / TradingStockUtility.OrbitalVisitorWeightFactor);
+        }
+    }
+
+    [HarmonyPatchCategory(Features.OrbitalTraderFrequency)]
+    [HarmonyPatch(typeof(FactionDialogMaker), "RequestTraderOption")]
+    internal static class FactionDialogMaker_RequestTraderOption_Patch
+    {
+        private static void Prefix(Faction faction, out int __state)
+        {
+            __state = faction.lastTraderRequestTick;
+            faction.lastTraderRequestTick -= TraderRequestCooldown.Shift(TraderRequestCooldown.CaravanTicks);
+        }
+
+        private static void Finalizer(Faction faction, int __state)
+        {
+            faction.lastTraderRequestTick = __state;
+        }
+    }
+
+    [HarmonyPatchCategory(Features.OrbitalTraderFrequency)]
+    [HarmonyPatch(typeof(FactionDialogMaker), "RequestOrbitalTraderOption")]
+    internal static class FactionDialogMaker_RequestOrbitalTraderOption_Patch
+    {
+        private static void Prefix(Faction faction, out int __state)
+        {
+            __state = faction.lastOrbitalTraderRequestTick;
+            faction.lastOrbitalTraderRequestTick -= TraderRequestCooldown.Shift(TraderRequestCooldown.OrbitalTicks);
+        }
+
+        private static void Finalizer(Faction faction, int __state)
+        {
+            faction.lastOrbitalTraderRequestTick = __state;
         }
     }
 }

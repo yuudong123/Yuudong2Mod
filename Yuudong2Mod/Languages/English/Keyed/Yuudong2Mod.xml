@@ -78,7 +78,7 @@ On automatic, the melee weapon is drawn when an enemy is adjacent and the ranged
   <Yuudong2.Feature.TradeStockBoost>Trader stock multiplier</Yuudong2.Feature.TradeStockBoost>
   <Yuudong2.Feature.TradeStockBoost.Desc>Multiplies the stock and silver of orbital traders, trade caravans, settlements and visiting traders, each with its own setting. Defaults are 8x for orbital, caravan and settlement traders and 1x for visitors. (Trading Options)</Yuudong2.Feature.TradeStockBoost.Desc>
   <Yuudong2.Feature.OrbitalTraderFrequency>4x orbital trader frequency</Yuudong2.Feature.OrbitalTraderFrequency>
-  <Yuudong2.Feature.OrbitalTraderFrequency.Desc>Orbital traders come 4x as often under storytellers that use random incidents, such as Randy. (Trading Options)</Yuudong2.Feature.OrbitalTraderFrequency.Desc>
+  <Yuudong2.Feature.OrbitalTraderFrequency.Desc>Orbital traders come 4x as often under storytellers that use random incidents, such as Randy. The wait before you can call an orbital trader or a trade caravan again from the comms console is cut to a quarter as well (caravan 4 days to 1, orbital trader 15 days to 3.75). (Trading Options)</Yuudong2.Feature.OrbitalTraderFrequency.Desc>
   <Yuudong2.Feature.InsultFaction>Insult factions</Yuudong2.Feature.InsultFaction>
   <Yuudong2.Feature.InsultFaction.Desc>Adds an insult option to comms console faction dialogs. Insulting a hostile faction brings a raid in 1 to 7 hours. (Raids For Me)</Yuudong2.Feature.InsultFaction.Desc>
   <Yuudong2.Feature.EpoeAiCore>EPOE persona core</Yuudong2.Feature.EpoeAiCore>
