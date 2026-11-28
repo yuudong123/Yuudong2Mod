@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using HarmonyLib;
 using RimWorld;
 using RimWorld.Planet;
@@ -87,57 +88,71 @@ namespace Yuudong2Mod
         }
     }
 
-    // 중력 닻을 두고 떠난 맵은 바닐라에서 계속 정착지(플레이어 거점)로 남아 습격·사건을 받고 부와 위협 점수에 들어간다.
-    // 닻만 있고 정착민도 중력 엔진도 없으면 거점으로 보지 않는다. 정착민이 가거나 배가 돌아오면 다시 거점이 된다.
-    public static class UnattendedAnchorUtility
+    // 바닐라는 중력 닻이 있으면 떠난 맵을 그대로 남겨서 계속 틱이 돈다. 닻은 그 자리에 바로 다시 내려오려고 짓는 것이므로,
+    // 남는 정착민도 다른 중력 엔진도 없으면 닻 없이 떠날 때처럼 맵을 버리되 발진지 표시는 남기지 않아 바로 다시 착륙할 수 있게 한다.
+    // 같은 타일 안에서 자리만 옮길 때는 그 맵에 다시 내리므로 그대로 둔다.
+    public static class AnchorDepartureUtility
     {
-        private static readonly Dictionary<Map, int> checkedTick = new Dictionary<Map, int>();
-        private static readonly Dictionary<Map, bool> unattended = new Dictionary<Map, bool>();
+        private static readonly AccessTools.FieldRef<WorldComponent_GravshipController, Map> MapRef =
+            AccessTools.FieldRefAccess<WorldComponent_GravshipController, Map>("map");
 
-        public static bool Unattended(Map map)
+        private static readonly AccessTools.FieldRef<WorldComponent_GravshipController, bool> AnchorRef =
+            AccessTools.FieldRefAccess<WorldComponent_GravshipController, bool>("mapHasGravAnchor");
+
+        private static readonly AccessTools.FieldRef<WorldComponent_GravshipController, PlanetTile> TakeoffTileRef =
+            AccessTools.FieldRefAccess<WorldComponent_GravshipController, PlanetTile>("takeoffTile");
+
+        private static readonly AccessTools.FieldRef<WorldComponent_GravshipController, PlanetTile> LandingTileRef =
+            AccessTools.FieldRefAccess<WorldComponent_GravshipController, PlanetTile>("landingTile");
+
+        public static bool ShouldLeaveMap(Map map, PlanetTile takeoffTile, PlanetTile landingTile)
         {
-            if (!ModsConfig.OdysseyActive || !map.listerThings.AnyThingWithDef(ThingDefOf.GravAnchor))
-            {
-                return false;
-            }
-            int tick = Find.TickManager.TicksGame;
-            if (checkedTick.TryGetValue(map, out int last) && last == tick && unattended.TryGetValue(map, out bool cached))
-            {
-                return cached;
-            }
-            bool value = !map.mapPawns.AnyColonistSpawned && !GravshipUtility.PlayerHasGravEngine(map);
-            checkedTick[map] = tick;
-            unattended[map] = value;
-            return value;
+            return map != null && takeoffTile != landingTile && !map.mapPawns.AnyColonistSpawned
+                && !map.listerThings.ThingsOfDef(ThingDefOf.GravEngine).Any(e => e.Spawned && e.Faction == Faction.OfPlayer);
         }
 
-        public static void Forget(Map map)
+        // 버릴 맵이면 닻이 없던 것으로 돌리고 그 타일을 돌려준다. 바닐라가 맵을 버린 뒤 그 타일의 발진지 표시를 지운다.
+        public static PlanetTile PrepareTakeoffEnd(WorldComponent_GravshipController controller)
         {
-            checkedTick.Remove(map);
-            unattended.Remove(map);
+            if (!ModsConfig.OdysseyActive || !AnchorRef(controller))
+            {
+                return PlanetTile.Invalid;
+            }
+            PlanetTile takeoff = TakeoffTileRef(controller);
+            if (!ShouldLeaveMap(MapRef(controller), takeoff, LandingTileRef(controller)))
+            {
+                return PlanetTile.Invalid;
+            }
+            AnchorRef(controller) = false;
+            return takeoff;
+        }
+
+        public static void RemoveLaunchMarker(PlanetTile tile)
+        {
+            if (!tile.Valid || WorldObjectDefOf.GravshipLaunch == null)
+            {
+                return;
+            }
+            List<WorldObject> here = Find.WorldObjects.ObjectsAt(tile).Where(o => o.def == WorldObjectDefOf.GravshipLaunch).ToList();
+            for (int i = 0; i < here.Count; i++)
+            {
+                Find.WorldObjects.Remove(here[i]);
+            }
         }
     }
 
-    [HarmonyPatchCategory(Features.UnattendedAnchorMap)]
-    [HarmonyPatch(typeof(Map), nameof(Map.IsPlayerHome), MethodType.Getter)]
-    internal static class Map_IsPlayerHome_UnattendedAnchor_Patch
+    [HarmonyPatchCategory(Features.AnchorDeparture)]
+    [HarmonyPatch(typeof(WorldComponent_GravshipController), "TakeoffEnded")]
+    internal static class WorldComponent_GravshipController_TakeoffEnded_AnchorDeparture_Patch
     {
-        private static void Postfix(Map __instance, ref bool __result)
+        private static void Prefix(WorldComponent_GravshipController __instance, out PlanetTile __state)
         {
-            if (__result && UnattendedAnchorUtility.Unattended(__instance))
-            {
-                __result = false;
-            }
+            __state = AnchorDepartureUtility.PrepareTakeoffEnd(__instance);
         }
-    }
 
-    [HarmonyPatchCategory(Features.UnattendedAnchorMap)]
-    [HarmonyPatch(typeof(Game), nameof(Game.DeinitAndRemoveMap))]
-    internal static class Game_DeinitAndRemoveMap_UnattendedAnchor_Patch
-    {
-        private static void Postfix(Map map)
+        private static void Postfix(PlanetTile __state)
         {
-            UnattendedAnchorUtility.Forget(map);
+            AnchorDepartureUtility.RemoveLaunchMarker(__state);
         }
     }
 }

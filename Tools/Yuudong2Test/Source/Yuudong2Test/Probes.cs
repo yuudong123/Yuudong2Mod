@@ -1392,7 +1392,7 @@ namespace Yuudong2Test
         }
 
         // 발진지 표시는 정한 날짜가 지나야 사라지고, 사라지면 그 타일에 중력선이 다시 내릴 수 있어야 한다.
-        // 닻만 있고 정착민·엔진이 없는 맵은 거점이 아니고, 정착민이 있으면 닻이 있어도 거점이다.
+        // 닻이 있어도 남는 정착민·엔진이 없으면 떠날 때 맵을 버리고 발진지 표시를 남기지 않는다. 같은 타일 이동과 정착민이 남는 맵은 그대로 둔다.
         private static void GravshipSitesProbe(StringBuilder sb)
         {
             int bad = 0;
@@ -1447,30 +1447,48 @@ namespace Yuudong2Test
                 sb.AppendLine("skipped: launch site expiry not applied");
             }
 
-            if (Yuudong2Mod.Yuudong2Mod.AppliedFeatures.Contains(Features.UnattendedAnchorMap))
+            if (Yuudong2Mod.Yuudong2Mod.AppliedFeatures.Contains(Features.AnchorDeparture))
             {
-                foreach (Map m in Find.Maps)
+                WorldComponent_GravshipController controller = Find.GravshipController;
+                Traverse t = Traverse.Create(controller);
+                Map savedMap = t.Field("map").GetValue<Map>();
+                bool savedAnchor = t.Field("mapHasGravAnchor").GetValue<bool>();
+                PlanetTile savedTakeoff = t.Field("takeoffTile").GetValue<PlanetTile>();
+                PlanetTile savedLanding = t.Field("landingTile").GetValue<PlanetTile>();
+                PlanetTile Prepare(Map m, PlanetTile from, PlanetTile to)
                 {
-                    sb.AppendLine($"info {m}: anchor={m.listerThings.AnyThingWithDef(ThingDefOf.GravAnchor)} colonists={m.mapPawns.AnyColonistSpawned} engine={GravshipUtility.PlayerHasGravEngine(m)} home={m.IsPlayerHome}");
+                    t.Field("map").SetValue(m);
+                    t.Field("mapHasGravAnchor").SetValue(true);
+                    t.Field("takeoffTile").SetValue(from);
+                    t.Field("landingTile").SetValue(to);
+                    return AnchorDepartureUtility.PrepareTakeoffEnd(controller);
                 }
 
                 Settlement outpost = SettleUtility.AddNewHome(tile, Faction.OfPlayer);
                 Map map = GetOrGenerateMapUtility.GetOrGenerateMap(tile, new IntVec3(50, 1, 50), null);
-                bool homeBare = map.IsPlayerHome;
-                Thing anchor = GenSpawn.Spawn(ThingMaker.MakeThing(ThingDefOf.GravAnchor), map.Center, map);
-                bool homeAnchored = map.IsPlayerHome;
-                Check(homeBare && !homeAnchored, $"new settlement map: home without anchor {homeBare}; anchor, no colonists, no engine -> home {homeAnchored}");
+                GenSpawn.Spawn(ThingMaker.MakeThing(ThingDefOf.GravAnchor), map.Center, map);
+                PlanetTile left = Prepare(map, tile, home.Tile);
+                bool anchorCleared = !t.Field("mapHasGravAnchor").GetValue<bool>();
+                Check(left == tile && anchorCleared, $"empty map with an anchor, flying elsewhere: map is abandoned ({left == tile}, anchor flag cleared {anchorCleared})");
+                Check(!Prepare(map, tile, tile).Valid && t.Field("mapHasGravAnchor").GetValue<bool>(), "moving within the same tile keeps the map");
+                Check(!Prepare(home, home.Tile, tile).Valid, "home map (colonists and a grav engine stay) is kept");
                 Find.WorldObjects.Remove(outpost);
-                Check(!Find.Maps.Contains(map), "test map removed");
 
-                IntVec3 cell = CellFinder.RandomClosewalkCellNear(home.Center, home, 20, c => c.Standable(home) && c.GetFirstBuilding(home) == null);
-                Thing homeAnchor = home.listerThings.AnyThingWithDef(ThingDefOf.GravAnchor) ? null : GenSpawn.Spawn(ThingMaker.MakeThing(ThingDefOf.GravAnchor), cell, home);
-                Check(home.IsPlayerHome, $"home map with colonists and an anchor stays home ({home.IsPlayerHome})");
-                homeAnchor?.Destroy();
+                WorldObject launch = WorldObjectMaker.MakeWorldObject(WorldObjectDefOf.GravshipLaunch);
+                launch.Tile = tile;
+                launch.SetFaction(Faction.OfPlayer);
+                Find.WorldObjects.Add(launch);
+                AnchorDepartureUtility.RemoveLaunchMarker(tile);
+                Check(!Find.WorldObjects.Contains(launch) && TileFinder.IsValidTileForNewSettlement(tile, null, forGravship: true), "no launch marker is left, the tile can be landed on right away");
+
+                t.Field("map").SetValue(savedMap);
+                t.Field("mapHasGravAnchor").SetValue(savedAnchor);
+                t.Field("takeoffTile").SetValue(savedTakeoff);
+                t.Field("landingTile").SetValue(savedLanding);
             }
             else
             {
-                sb.AppendLine("skipped: unattended anchor map not applied");
+                sb.AppendLine("skipped: anchor departure not applied");
             }
             sb.AppendLine(bad == 0 ? "PASS" : $"FAIL: {bad}");
         }
@@ -2437,6 +2455,9 @@ namespace Yuudong2Test
                 return;
             }
 
+            // 한 칸 한도가 크면 실은 묶음이 왕복선 안 묶음에 합쳐져 사라진다. 그래도 소지품 몫까지 다 실어야 한다(겹치기 배수 x4와 같은 300).
+            int savedLimit = ThingDefOf.Plasteel.stackLimit;
+            ThingDefOf.Plasteel.stackLimit = 300;
             Thing shuttle = GenSpawn.Spawn(ThingMaker.MakeThing(shuttleDef), new IntVec3(corner.x + 2, 0, corner.z + 1), map);
             shuttle.SetFaction(Faction.OfPlayer);
             CompTransporter comp = shuttle.TryGetComp<CompTransporter>();
@@ -2479,7 +2500,14 @@ namespace Yuudong2Test
             }
             int inShuttle = comp.innerContainer.Where(t => t.def == ThingDefOf.Plasteel).Sum(t => t.stackCount);
             sb.AppendLine($"shuttle: driver {JobDefOf.HaulToTransporter.driverClass.Name}, free {MultiHaulUtility.FreeMass(pawn):F1} kg");
-            Check(inShuttle == 450 && peakInventory >= 150, $"passenger shuttle, 6 stacks of 75 plasteel: {inShuttle} loaded in {jobs} job(s) over {ticks} ticks, up to {peakInventory} carried in the inventory at once");
+            Check(inShuttle == 450 && peakInventory >= 150, $"passenger shuttle, 6 stacks of 75 plasteel (stack limit 300): {inShuttle} loaded in {jobs} job(s) over {ticks} ticks, up to {peakInventory} carried in the inventory at once");
+            if (inShuttle != 450)
+            {
+                List<Thing> listed = comp.leftToLoad?.SelectMany(t => t.things).ToList() ?? new List<Thing>();
+                sb.AppendLine($"info: plasteel stackLimit {ThingDefOf.Plasteel.stackLimit}, left to load {comp.leftToLoad?.Sum(t => t.CountToTransfer)}, listed things [{string.Join(", ", listed.Select(t => $"{t.stackCount}{(t.Destroyed ? " destroyed" : t.Spawned ? " at " + t.Position : " held by " + t.ParentHolder)}"))}]");
+                sb.AppendLine($"info: plasteel on map near [{string.Join(", ", map.listerThings.ThingsOfDef(ThingDefOf.Plasteel).Where(t => t.Position.InHorDistOf(corner, 15f)).Select(t => $"{t.stackCount} at {t.Position} listed {listed.Contains(t)} forbidden {t.IsForbidden(pawn)} reserver {map.reservationManager.FirstRespectedReserver(t, pawn)?.LabelShort}"))}]");
+                sb.AppendLine($"info: pawn job {pawn.CurJobDef?.defName}, carried {pawn.carryTracker.CarriedThing}, inventory plasteel {pawn.inventory.innerContainer.Where(t => t.def == ThingDefOf.Plasteel).Sum(t => t.stackCount)}, find {LoadTransportersJobUtility.FindThingToLoad(pawn, comp)}");
+            }
 
             pawn.jobs.StopAll();
             foreach (Thing t in pawn.inventory.innerContainer.Where(t => t.def == ThingDefOf.Plasteel).ToList())
@@ -2493,6 +2521,7 @@ namespace Yuudong2Test
             }
             comp.innerContainer.ClearAndDestroyContents();
             comp.CancelLoad(map);
+            ThingDefOf.Plasteel.stackLimit = savedLimit;
             ReleaseOthers(held);
             if (!shuttle.Destroyed)
             {

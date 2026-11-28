@@ -210,6 +210,8 @@ namespace Yuudong2Mod
     {
         private const string CarryToilName = "CarryHauledThingToContainer";
 
+        private const string DepositToilName = "DepositHauledThingInContainer";
+
         private const float MinFreeMass = 0.05f;
 
         private List<Thing> extras = new List<Thing>();
@@ -289,6 +291,15 @@ namespace Yuudong2Mod
             bool inserted = false;
             foreach (Toil toil in vanilla)
             {
+                if (toil.debugName == DepositToilName)
+                {
+                    Action vanillaDeposit = toil.initAction;
+                    toil.initAction = delegate
+                    {
+                        vanillaDeposit?.Invoke();
+                        KeepTarget();
+                    };
+                }
                 if (!inserted && toil.debugName == CarryToilName)
                 {
                     inserted = true;
@@ -448,6 +459,27 @@ namespace Yuudong2Mod
             }
         }
 
+        // 실은 물건이 대상 안의 같은 물건 묶음에 합쳐지면 그 물건은 없어지고, 바닐라는 손에 든 물건(A)이 없어졌다고 일을 끝낸다.
+        // 소지품에 실을 것이 남아 있으면 A를 그 물건으로 바꿔 일을 이어 간다.
+        private void KeepTarget()
+        {
+            Job job = driver?.job;
+            Thing target = job?.GetTarget(TargetIndex.A).Thing;
+            if (job == null || (target != null && !target.Destroyed))
+            {
+                return;
+            }
+            for (int i = deposited; i < taken.Count; i++)
+            {
+                Thing thing = taken[i];
+                if (thing != null && !thing.Destroyed && Pawn.inventory.innerContainer.Contains(thing))
+                {
+                    job.SetTarget(TargetIndex.A, thing);
+                    return;
+                }
+            }
+        }
+
         // 손에 든 물건을 실은 뒤, 소지품에 담아 온 물건을 아직 필요한 만큼만 차례로 싣는다.
         private IEnumerable<Toil> DepositToils(int depositTicks, Action<int> setInHandCount)
         {
@@ -497,6 +529,7 @@ namespace Yuudong2Mod
             }
             int need = MultiLoadUtility.Need(container, thing);
             int moved = need > 0 ? pawn.inventory.innerContainer.TryTransferToContainer(thing, owner, need) : 0;
+            KeepTarget();
             if (moved == 0)
             {
                 return;

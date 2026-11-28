@@ -650,8 +650,8 @@
   <Yuudong2.Feature.GravshipLaunchSiteExpiry.Desc>중력 닻 없이 떠난 타일에 남는 "중력선 발진지" 표시는 바닐라에서 영영 사라지지 않아 그 타일에 다시 착륙할 수 없습니다. 표시가 정한 날짜보다 오래되면 지워서 다시 착륙할 수 있게 합니다. 날짜는 세부 설정에서 바꿉니다.</Yuudong2.Feature.GravshipLaunchSiteExpiry.Desc>
   <Yuudong2.GravshipLaunchSiteExpiry.Days>다시 착륙까지: {0}일</Yuudong2.GravshipLaunchSiteExpiry.Days>
   <Yuudong2.GravshipLaunchSiteExpiry.Days.Desc>떠난 뒤 이만큼 지나면 발진지 표시가 사라집니다. 0일이면 떠나자마자 다시 착륙할 수 있습니다.</Yuudong2.GravshipLaunchSiteExpiry.Days.Desc>
-  <Yuudong2.Feature.UnattendedAnchorMap>비워 둔 중력 닻 맵은 정착지 아님</Yuudong2.Feature.UnattendedAnchorMap>
-  <Yuudong2.Feature.UnattendedAnchorMap.Desc>중력 닻을 두고 떠난 맵은 바닐라에서 계속 정착지로 남아 습격·사건을 받고 부와 위협 점수에 들어갑니다. 중력 닻만 있고 정착민과 중력 엔진이 없으면 정착지로 보지 않습니다. 맵은 그대로 남고, 정착민이 가거나 배가 돌아오면 다시 정착지가 됩니다.</Yuudong2.Feature.UnattendedAnchorMap.Desc>
+  <Yuudong2.Feature.AnchorDeparture>중력 닻 맵도 떠나면 정리</Yuudong2.Feature.AnchorDeparture>
+  <Yuudong2.Feature.AnchorDeparture.Desc>바닐라는 중력 닻이 있으면 떠난 맵을 남겨 두어 계속 틱을 씁니다. 남는 정착민과 다른 중력 엔진이 없으면 닻이 있어도 닻 없이 떠날 때처럼 맵을 버리고, 발진지 표시를 남기지 않아 그 타일에 바로 다시 착륙할 수 있습니다. 맵에 남은 닻과 물건은 함께 사라집니다. 같은 타일 안에서 자리만 옮길 때와 정착민을 남겨 두고 떠날 때는 맵을 그대로 둡니다.</Yuudong2.Feature.AnchorDeparture.Desc>
   <Yuudong2.Feature.NoEmpBrainShock>EMP 뇌충격 없음</Yuudong2.Feature.NoEmpBrainShock>
   <Yuudong2.Feature.NoEmpBrainShock.Desc>뇌 이식물이 EMP에 맞아도 뇌충격이나 방향감각 상실(Disorientation)이 생기지 않습니다.</Yuudong2.Feature.NoEmpBrainShock.Desc>
   <Yuudong2.Feature.LandOverWallAttachments>벽등 위 착륙</Yuudong2.Feature.LandOverWallAttachments>

@@ -64,7 +64,7 @@ namespace Yuudong2Mod
         public const string LandOverWallAttachments = "LandOverWallAttachments";
         public const string StackLimit = "StackLimit";
         public const string GravshipLaunchSiteExpiry = "GravshipLaunchSiteExpiry";
-        public const string UnattendedAnchorMap = "UnattendedAnchorMap";
+        public const string AnchorDeparture = "AnchorDeparture";
         public const string PolicyWeapons = "PolicyWeapons";
         public const string RoofedScanning = "RoofedScanning";
         public const string NoFloorInfestation = "NoFloorInfestation";
@@ -113,7 +113,7 @@ namespace Yuudong2Mod
         public static readonly FeatureGroup[] Groups =
         {
             new FeatureGroup("Romance", AlwaysAcceptProposal, NoBreakup, SameBedLovin, NoRandomRelations, RomanceTweaks, ConsensualIncest),
-            new FeatureGroup("Colony", ShelfNoSlowdown, ShelfAcceptAll, NoMapEdgeLimit, CustomMapSize, PowerOnDemand, ReplaceStuff, GloomyWallReplace, RoomFood, MeatOptimization, SinglePlantTexture, RoofedScanning, NoFloorInfestation, EggSacTargeting, BenchApparelRepair, LitterDecay, MultiHaul, RealisticRooms, BetterWorkbench, GeneRipper, MultiReinstall, MultiCopy, RebuildBills, InstalledPartsCount, WorkRouteOrder, SurgeryManager, GravshipNoRange, GravshipLaunchSiteExpiry, UnattendedAnchorMap, LandOverWallAttachments, StackLimit),
+            new FeatureGroup("Colony", ShelfNoSlowdown, ShelfAcceptAll, NoMapEdgeLimit, CustomMapSize, PowerOnDemand, ReplaceStuff, GloomyWallReplace, RoomFood, MeatOptimization, SinglePlantTexture, RoofedScanning, NoFloorInfestation, EggSacTargeting, BenchApparelRepair, LitterDecay, MultiHaul, RealisticRooms, BetterWorkbench, GeneRipper, MultiReinstall, MultiCopy, RebuildBills, InstalledPartsCount, WorkRouteOrder, SurgeryManager, GravshipNoRange, GravshipLaunchSiteExpiry, AnchorDeparture, LandOverWallAttachments, StackLimit),
             new FeatureGroup("Interface", MessagePlacement, HealthCardSorting, DamageIndicators, LetterStackCleaner, SmartSpeed, TpsDisplay, SaveHotkey, DragSelect, GeneAssistant, TechprintTradeHighlight, OrderTools, NoBeaconAlert),
             new FeatureGroup("Pawn", HairUnderHats, HiddenBionicEyes, EquipmentDurability, WeaponPair, EndlessGrowth, NoGrowthNickname, RpgLevelUp, BirthAgeByLifespan, CalmMoveSpeed, BetterHearing, SleepLimits, ImplantsOnAddedParts, NoEmpBrainShock, PolicyWeapons),
             new FeatureGroup("Ideology", AllSpecialistsCanWork, RolesUntiedToMemes, NoIdeologyLimits, AutoCastSpecialistCommands, FasterBiosculpter),
